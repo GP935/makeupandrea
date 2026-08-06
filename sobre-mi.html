@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== DOMINIO SEO ===== -->
+  <!-- Rellena aquí: <title>, meta description, canonical, Open Graph, Twitter Card.
+       Front no toca este bloque. -->
+  <!-- ===== FIN bloque SEO ===== -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ===== 1 · HEADER (reutilizado del home, ver comentario completo en index.html) ===== -->
+  <header class="site-header" id="site-header">
+    <div class="site-header__inner">
+
+      <a class="header-logo" href="index.html" aria-label="Makeup Andrea inicio">
+        <span class="header-logo__wordmark">Makeup Andrea</span>
+      </a>
+
+      <nav class="nav-cluster" aria-label="Navegación principal">
+        <a class="nav-link" href="novias.html">Novias</a>
+        <a class="nav-link" href="clases.html">Clases</a>
+        <a class="nav-link nav-link--active" href="sobre-mi.html" aria-current="page">Sobre mí</a>
+      </nav>
+
+      <div class="header-right">
+        <a href="CTA_DESTINO_PENDIENTE" class="btn-editorial btn-editorial--solid header-cta" data-cta-pendiente="CTA_DESTINO">
+          <svg class="header-cta__icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.06-1.33A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.2c-.22.62-1.28 1.2-1.77 1.24-.45.05-1.02.07-1.65-.1-.38-.11-.87-.27-1.5-.53-2.64-1.14-4.36-3.8-4.5-3.98-.13-.18-1.08-1.43-1.08-2.73 0-1.3.68-1.94.93-2.2.24-.27.53-.33.7-.33h.5c.16 0 .38-.06.6.46.22.53.75 1.83.82 1.97.07.13.11.29.02.47-.09.18-.14.29-.27.44-.13.16-.28.35-.4.47-.13.13-.27.27-.12.53.16.27.7 1.15 1.5 1.86 1.04.92 1.91 1.21 2.18 1.35.27.13.42.11.58-.07.16-.18.68-.79.86-1.06.18-.27.36-.22.6-.13.24.09 1.53.72 1.79.85.27.13.44.2.51.31.07.11.07.65-.15 1.27z"/></svg>
+          Reservar
+        </a>
+        <button class="menu-toggle" id="btn-menu" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-panel">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ===== MENÚ MÓVIL (reutilizado del home) ===== -->
+  <div class="menu-backdrop" id="menu-backdrop" hidden></div>
+  <aside class="menu-panel" id="menu-panel" aria-label="Menú de navegación" aria-hidden="true">
+    <div class="menu-top">
+      <span class="header-logo__wordmark">Makeup Andrea</span>
+      <button class="menu-close" id="btn-menu-close" aria-label="Cerrar menú">✕</button>
+    </div>
+    <nav class="menu-primary" aria-label="Navegación principal">
+      <a href="index.html">Inicio</a>
+      <a href="novias.html">Novias</a>
+      <a href="clases.html">Clases</a>
+      <a href="sobre-mi.html" aria-current="page">Sobre mí</a>
+    </nav>
+    <a href="CTA_DESTINO_PENDIENTE" class="btn-editorial btn-editorial--solid menu-cta" data-cta-pendiente="CTA_DESTINO">Reservar</a>
+  </aside>
+
+  <main>
+
+    <!-- ===== 2 · RETRATO + BIO ===== -->
+    <!-- Bio = texto real de los PDFs (briefing 2026-08-01), usado tal cual, no Lorem Ipsum.
+         REDACCIÓN 2026-08-05 (briefing maestro v2 §7 y §11): [CREDENCIAL_MATTA] queda BLOQUEADO —
+         la cláusula "actualmente me encuentro en el staff de Christian Mata" (además con la grafía
+         incorrecta, es "Matta" con 2 t) no está verificada. Se retira de la bio publicada hasta
+         confirmación; el resto del texto original se conserva literal. Restaurar completo cuando
+         Andrea confirme el vínculo real y la grafía. -->
+    <section class="sobre-mi-hero" id="sobre-mi" aria-labelledby="sobre-mi-titulo">
+      <div class="sobre-mi-hero__grid">
+        <div class="sobre-mi-hero__media">
+          <img src="assets/img/sobre-mi/retrato.jpg" alt="[ALT_PENDIENTE]" loading="eager" fetchpriority="high">
+        </div>
+        <div class="sobre-mi-hero__content">
+          <p class="eyebrow">SOBRE MÍ</p>
+          <h1 id="sobre-mi-titulo">Andrea Piñango</h1>
+          <p class="sobre-mi-hero__bio">¡Hola! Si llegaste aquí es porque te interesa saber quién está detrás de todo esto, hace 4 años he descubierto mi amor por la belleza y he logrado capacitarme para lograr técnicas de perfeccionamiento. He decidido dedicarme al 100% a mi emprendimiento porque me apasiona lo que hago. <mark class="content-tbd">[CREDENCIAL_MATTA]</mark> Mi misión: empoderarte para tu ocasión especial.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 3 · CREDENCIALES (datos destacados, no párrafo) ===== -->
+    <!-- Segundo dato ("Christian Mata / Staff actual") retirado — mismo bloqueo de [CREDENCIAL_MATTA]
+         que la bio de arriba. Queda 1 credencial verificada (4 años); grid a 1 columna hasta que
+         haya un segundo dato real que publicar (css puede decidir tratamiento visual). -->
+    <section class="credenciales" id="credenciales" data-bg="dark" aria-labelledby="credenciales-titulo">
+      <div class="container">
+        <h2 id="credenciales-titulo" class="section-title">Trayectoria</h2>
+        <div class="credenciales-grid">
+          <div class="credencial-item">
+            <span class="credencial-item__num">4 años</span>
+            <span class="credencial-item__label">De trayectoria en maquillaje profesional</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 4 · CIERRE — CTA doble ===== -->
+    <!-- H2 corregido de "Lorem ipsum dolor sit amet" (placeholder sin ajustar, no lo que pide el
+         brief para copy en decisión abierta) a "Destaca tu belleza" — mismo titular real que ya se
+         repite en index.html/novias.html/clases.html para el mismo tipo de bloque (CTA final de
+         cierre). Decisión propia por consistencia, documentada en el log de sesión. -->
+    <section class="sobre-mi-cierre" id="sobre-mi-cierre" data-bg="light" aria-labelledby="sobre-mi-cierre-titulo">
+      <div class="container">
+        <h2 id="sobre-mi-cierre-titulo">Destaca tu belleza</h2>
+        <div class="sobre-mi-cierre__cta">
+          <a href="novias.html#paquetes" class="btn-editorial btn-editorial--solid">Ver paquetes de novias</a>
+          <a href="clases.html" class="btn-editorial btn-editorial--ghost">Ver clases</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== 5 · FOOTER (reutilizado del home) ===== -->
+  <footer class="site-footer">
+    <div class="site-footer__main">
+      <div class="container site-footer__grid">
+
+        <!-- Columna 1 — Marca -->
+        <div class="footer-col footer-col--brand">
+          <div class="footer-col__brand-logo">
+            <span class="footer-col__brand-name">Makeup Andrea</span>
+          </div>
+          <p class="footer-col__desc">
+            Maquillaje de novias y clases personalizadas. Lima y Madrid.
+          </p>
+          <ul class="footer-social" aria-label="Síguenos en redes sociales">
+            <li>
+              <a href="https://www.instagram.com/makeup.andrea.ps/" aria-label="Instagram">
+                <svg class="footer-social__icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                  <rect x="3" y="3" width="18" height="18" rx="5"/>
+                  <circle cx="12" cy="12" r="4.2"/>
+                  <circle cx="17.3" cy="6.7" r="0.9" fill="currentColor" stroke="none"/>
+                </svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Columna 2 — Navegar -->
+        <nav class="footer-col" aria-label="Navegar">
+          <h2 class="footer-col__title">Navegar</h2>
+          <ul class="footer-col__links">
+            <li><a href="novias.html">Novias</a></li>
+            <li><a href="clases.html">Clases</a></li>
+            <li><a href="sobre-mi.html">Sobre mí</a></li>
+          </ul>
+        </nav>
+
+        <!-- Columna 3 — Contacto -->
+        <div class="footer-col footer-col--contact">
+          <h2 class="footer-col__title">Contacto</h2>
+          <a class="footer-col__contact-email" href="mailto:estefip97@gmail.com">estefip97@gmail.com</a>
+          <p class="footer-col__contact-hours">WhatsApp 920 595 147</p>
+          <p class="footer-col__contact-hours">Lima, Perú · Madrid, España</p>
+        </div>
+
+        <!-- Columna — Cómo reservas (trust elements reales, ver comentario completo en index.html) -->
+        <div class="footer-col footer-col--trust">
+          <h2 class="footer-col__title">Cómo reservas</h2>
+          <ul class="footer-col__links footer-col__links--plain">
+            <li>Reserva por WhatsApp, sin pago online</li>
+            <li>Adelanto no reembolsable, transferible a un cambio de fecha</li>
+            <li>Atención personal directa</li>
+          </ul>
+        </div>
+
+        <!-- Columna 4 — Legal -->
+        <nav class="footer-col" aria-label="Legal">
+          <h2 class="footer-col__title">Legal</h2>
+          <ul class="footer-col__links">
+            <li><a href="LEGAL_PENDIENTE" data-legal-pendiente="LEGAL_ANDREA">Aviso legal</a></li>
+            <li><a href="LEGAL_PENDIENTE" data-legal-pendiente="LEGAL_ANDREA">Privacidad</a></li>
+          </ul>
+        </nav>
+
+      </div>
+    </div>
+
+    <div class="site-footer__bottom">
+      <div class="container">
+        <span class="site-footer__copy">© <span id="footer-year">2026</span> Makeup Andrea. Todos los derechos reservados.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== DOMINIO SEO: JSON-LD ===== -->
+  <!-- Front no toca este bloque. -->
+  <!-- ===== FIN JSON-LD SEO ===== -->
+
+  <script type="module" defer src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== DOMINIO SEO ===== -->
+  <!-- Rellena aquí: <title>, meta description, canonical, Open Graph, Twitter Card.
+       Sitio de servicios presenciales (maquillaje de novias + clases), sin catálogo de producto.
+       Front no toca este bloque. -->
+  <!-- ===== FIN bloque SEO ===== -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ===== 1 · HEADER ===== -->
+  <!-- Rework FUNCIONAL (briefing maestro v2, revisión §5 — reemplaza el grid 3-zonas anterior):
+       logo a la izquierda (ya es el link a home, por eso "INICIO" desaparece de la nav — sería
+       redundante) · nav (Novias/Clases/Sobre mí, negrita vía CSS) · CTA Reservar con ícono
+       WhatsApp + ☰ móvil agrupados a la derecha. Alcance SOLO desktop (brief: "esta
+       reestructuración aplica a desktop"; el panel móvil de abajo NO se tocó — sigue con su
+       ítem Inicio, "ya funciona bien"). `.header-left` queda huérfana en CSS — aviso en
+       inbox/css.md. -->
+  <header class="site-header" id="site-header">
+    <div class="site-header__inner">
+
+      <a class="header-logo" href="index.html" aria-label="Makeup Andrea inicio">
+        <span class="header-logo__wordmark">Makeup Andrea</span>
+      </a>
+
+      <nav class="nav-cluster" aria-label="Navegación principal">
+        <a class="nav-link" href="novias.html">Novias</a>
+        <a class="nav-link" href="clases.html">Clases</a>
+        <a class="nav-link" href="sobre-mi.html">Sobre mí</a>
+      </nav>
+
+      <div class="header-right">
+        <a href="CTA_DESTINO_PENDIENTE" class="btn-editorial btn-editorial--solid header-cta" data-cta-pendiente="CTA_DESTINO">
+          <svg class="header-cta__icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.06-1.33A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.2c-.22.62-1.28 1.2-1.77 1.24-.45.05-1.02.07-1.65-.1-.38-.11-.87-.27-1.5-.53-2.64-1.14-4.36-3.8-4.5-3.98-.13-.18-1.08-1.43-1.08-2.73 0-1.3.68-1.94.93-2.2.24-.27.53-.33.7-.33h.5c.16 0 .38-.06.6.46.22.53.75 1.83.82 1.97.07.13.11.29.02.47-.09.18-.14.29-.27.44-.13.16-.28.35-.4.47-.13.13-.27.27-.12.53.16.27.7 1.15 1.5 1.86 1.04.92 1.91 1.21 2.18 1.35.27.13.42.11.58-.07.16-.18.68-.79.86-1.06.18-.27.36-.22.6-.13.24.09 1.53.72 1.79.85.27.13.44.2.51.31.07.11.07.65-.15 1.27z"/></svg>
+          Reservar
+        </a>
+        <button class="menu-toggle" id="btn-menu" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-panel">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ===== MENÚ MÓVIL: backdrop + panel deslizante ===== -->
+  <!-- Contrato JS: #btn-menu (abre) · #menu-panel · #menu-backdrop · #btn-menu-close (cierra) · clase is-open. -->
+  <div class="menu-backdrop" id="menu-backdrop" hidden></div>
+  <aside class="menu-panel" id="menu-panel" aria-label="Menú de navegación" aria-hidden="true">
+    <div class="menu-top">
+      <span class="header-logo__wordmark">Makeup Andrea</span>
+      <button class="menu-close" id="btn-menu-close" aria-label="Cerrar menú">✕</button>
+    </div>
+    <nav class="menu-primary" aria-label="Navegación principal">
+      <a href="index.html" aria-current="page">Inicio</a>
+      <a href="novias.html">Novias</a>
+      <a href="clases.html">Clases</a>
+      <a href="sobre-mi.html">Sobre mí</a>
+    </nav>
+    <a href="CTA_DESTINO_PENDIENTE" class="btn-editorial btn-editorial--solid menu-cta" data-cta-pendiente="CTA_DESTINO">Reservar</a>
+  </aside>
+
+  <main>
+
+    <!-- ===== 1 · HERO (OSCURO) — briefing maestro v2, revisión §6.1 ===== -->
+    <!-- Corrección de la revisión: el brief original pedía split 55/45 sobre claro, pero la
+         implementación real (que ya existía desde MA-F1: `.hero-media` a sangre + `.hero-scrim`
+         + `.hero-overlay` con el texto encima) es full-bleed oscuro — Paul la vio montada con la
+         foto real y decidió CONSERVARLA en vez de forzar el split. Por eso el hero pasa a
+         `data-bg="dark"` (antes "light" por error, arrastrado de la v2 anterior) y la sección
+         siguiente (`#artista-intro`) pasa a clara para no encadenar dos oscuras (§6.2).
+         H1/itálica de voz = copy REAL/confirmado (§3.2/§3.3). hero-sub (ubicación) se conserva
+         por criterio propio — información real y útil que el brief no prohíbe. CTA secundario
+         apunta a #galeria ("VER TRABAJOS"). -->
+    <section class="hero" id="hero" data-bg="light" aria-labelledby="hero-titulo">
+      <div class="container hero__grid">
+        <div class="hero__panel">
+          <span class="hero-eyebrow">MAKEUP ANDREA</span>
+          <h1 id="hero-titulo">No te maquillo. Te revelo.</h1>
+          <p class="hero-sub">A domicilio. Lima y Madrid.</p>
+          <p class="hero-voz">Elegimos juntas el look que más te representa.</p>
+          <div class="hero-cta">
+            <a href="CTA_DESTINO_PENDIENTE" class="btn-editorial btn-editorial--solid" data-cta-pendiente="CTA_DESTINO">RESERVAR</a>
+            <a href="#galeria" class="btn-editorial btn-editorial--dark">VER TRABAJOS</a>
+          </div>
+        </div>
+        <div class="hero__media">
+          <img src="assets/section-class-hero/hero.webp" alt="[ALT_PENDIENTE]" fetchpriority="high">
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 2a · ARTISTA — bloque editorial (CLARO) — briefing maestro v2, revisión §6.2 ===== -->
+    <!-- Split en 2 sub-secciones (Opción A, NUEVO en esta revisión): antes bloque editorial +
+         carrusel iban juntos en un solo `#artista` oscuro — con el hero ahora también oscuro
+         (ver 6.1) eso hubiera encadenado 3 oscuras seguidas (hero→artista completo) y además
+         el editorial+carrusel ya se leían como "un bloque negro partido a la mitad". Solución:
+         `#artista-intro` (este, claro) + `#artista-carrusel` (el de abajo, oscuro) — contraste
+         claro→oscuro DENTRO de lo que antes era una sola sección, resuelve ambos problemas a
+         la vez. [CREDENCIAL_MATTA] sigue BLOQUEADO (§11) con la misma convención `content-tbd`. -->
+    <section class="artista-intro" id="artista-intro" data-bg="light" aria-labelledby="artista-titulo">
+      <div class="container">
+        <div class="artista__media">
+          <img src="assets/section-class-quien-soy/andrea-first-slide.webp" alt="[ALT_PENDIENTE]">
+        </div>
+        <div class="artista__intro">
+          <span class="eyebrow">CUATRO AÑOS DE OFICIO</span>
+          <h2 id="artista-titulo" class="section-title">No maquillo un rostro. Preparo tu momento.</h2>
+          <p class="artista__texto">Andrea Piñango lleva cuatro años especializándose en técnicas de perfeccionamiento.</p>
+          <!-- [CREDENCIAL_MATTA] BLOQUEADO — pendiente verificar vínculo real con Andrea + grafía "Matta" (2 t). Ver briefing §11. Reactivar cuando se confirme:
+          <p class="artista__texto"><mark class="content-tbd">[CREDENCIAL_MATTA]</mark></p>
+          -->
+          <p class="artista__triada">Cercanía. Técnica. Presencia. Cada look se elige contigo, para tu ocasión — no para una pasarela.</p>
+          <p class="artista__voz">Tu rostro me dice qué necesita. Yo solo lo revelo.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 2b · ARTISTA — carrusel "Quién soy" (OSCURO) — briefing maestro v2 §6.2 ===== -->
+    <!-- Renombrado de `quien-soy` → `artista` en la ronda anterior; ahora vive en su propia
+         sub-sección `#artista-carrusel` (antes compartía `#artista` con el editorial de arriba).
+         `#quien-soy-carrusel` y sus hijos `.carrusel__*` NO cambian de nombre — subcomponente ya
+         genérico, sin acoplarse al nombre de la sección padre (verificado con css/js). -->
+    <section class="artista-carrusel" id="artista-carrusel" data-bg="dark" aria-label="Carrusel: quién soy">
+      <!-- Pieza de mayor complejidad JS del sitio. El 3er slide (Colaboraciones) queda pendiente de una
+           foto real de archivo con figuras del rubro — no generable con IA sin inventar una relación
+           falsa (§13.6). El componente ya está preparado para agregarlo después sin reconstrucción:
+           JS/CSS leen `.carrusel__slide`/`.carrusel__dot` por querySelectorAll (sin conteo fijo), así
+           que un 3er `<li>` + un 3er `.carrusel__dot` es todo lo que hará falta cuando exista la foto.
+           Contrato para JS (documentado también en inbox/js.md):
+           - #carrusel-track: <ul> de <li class="carrusel__slide" data-slide="N">, la activa lleva
+             clase .is-active + aria-hidden="false" (resto aria-hidden="true").
+           - #carrusel-prev / #carrusel-next: flechas, mueven 1 slide con wrap (última→primera y viceversa).
+           - #carrusel-dots > .carrusel__dot[data-slide-target="N"]: click salta directo a N, el activo
+             lleva .is-active + aria-selected="true".
+           - Swipe táctil + flechas de teclado (←/→) cuando el carrusel tiene foco.
+           - El CTA de cierre vive FUERA de la pista (.artista__cta-wrap), visible en ambos slides — no
+             debe ocultarse ni moverse con el cambio de slide. -->
+      <div class="carrusel" id="quien-soy-carrusel" aria-roledescription="carrusel" aria-label="Quién soy">
+        <button class="carrusel__arrow carrusel__arrow--prev" id="carrusel-prev" aria-label="Slide anterior" aria-controls="carrusel-track">‹</button>
+        <ul class="carrusel__track" id="carrusel-track">
+          <li class="carrusel__slide is-active" data-slide="0" aria-hidden="false">
+            <div class="carrusel__media">
+              <img src="assets/section-class-quien-soy/andrea-first-slide.webp" alt="[ALT_PENDIENTE]" loading="eager">
+            </div>
+            <div class="carrusel__content">
+              <h3 class="carrusel__nombre">Andrea Piñango</h3>
+              <p class="carrusel__texto">Maquillaje que empodera tu ocasión especial.</p>
+            </div>
+          </li>
+          <li class="carrusel__slide" data-slide="1" aria-hidden="true">
+            <div class="carrusel__media">
+              <img src="assets/section-class-quien-soy/experiencia-second-slide.webp" alt="[ALT_PENDIENTE]" loading="lazy">
+            </div>
+            <div class="carrusel__content">
+              <h3 class="carrusel__nombre">4 años</h3>
+              <p class="carrusel__texto">Perfeccionando la técnica, un look a la vez.</p>
+            </div>
+          </li>
+        </ul>
+        <button class="carrusel__arrow carrusel__arrow--next" id="carrusel-next" aria-label="Slide siguiente" aria-controls="carrusel-track">›</button>
+        <div class="carrusel__dots" id="carrusel-dots" role="tablist" aria-label="Seleccionar slide">
+          <button class="carrusel__dot is-active" role="tab" aria-selected="true" data-slide-target="0" aria-label="Slide 1: quién es"></button>
+          <button class="carrusel__dot" role="tab" aria-selected="false" data-slide-target="1" aria-label="Slide 2: logros"></button>
+        </div>
+      </div>
+      <div class="container artista__cta-wrap">
+        <a href="sobre-mi.html" class="artista__link">Conoce mi historia completa →</a>
+      </div>
+    </section>
+
+    <!-- ===== 3 · GALERÍA DE TRABAJOS (CLARO) — briefing maestro v2, revisión §6.3 ===== -->
+    <!-- Prueba de oficio, justo después del carrusel. Fotos reales, sin texto superpuesto.
+         Título actualizado al copy de la revisión ("Cada rostro es una obra de arte").
+         Layout: el brief permite grid asimétrico O carrusel ("decisión de implementación válida
+         y preferida") — mantengo el grid simple (no carrusel) por alcance: un carrusel nuevo es
+         una pieza JS entera adicional y el brief limita expresamente el JS de esta ronda a
+         "alcance amplio SOLO en el carrusel [de Quién soy]" (§13) — la asimetría del layout la
+         puede lograr css con grid-template-areas puro, sin JS nuevo. Reportado, no forzado —
+         si Paul prefiere el carrusel real, es tarea aparte. Reutiliza el patrón "marco de papel
+         cálido" (§10.3) vía la clase compartida `.marco-papel` (también en `.galeria-novias__item`
+         de novias.html). 6 imágenes — carpeta `section-class-galeria/` AÚN NO EXISTE, mismo patrón
+         de placeholder-de-ruta que ya usan `novias.html`/`clases.html`. -->
+    <section class="galeria" id="galeria" data-bg="light" aria-labelledby="galeria-titulo">
+      <div class="container">
+        <span class="eyebrow">Trabajos</span>
+        <h2 id="galeria-titulo" class="section-title">Cada rostro es una obra de arte.</h2>
+
+        <div class="galeria-carrusel" id="galeria-carrusel" aria-roledescription="carrusel" aria-label="Galería de trabajos">
+          <button class="carrusel__arrow carrusel__arrow--prev" id="galeria-prev" aria-label="Trabajos anteriores" aria-controls="galeria-track">‹</button>
+
+          <div class="galeria-carrusel__track" id="galeria-track">
+            <!-- Slide 1 · molde NORMAL (grande-izq + 2-der) -->
+            <div class="galeria-slide molde--normal is-active" data-slide="0" aria-hidden="false">
+              <div class="galeria__item marco-papel"><img src="assets/section-class-galeria/galeria-01.webp" alt="[ALT_PENDIENTE]" loading="lazy"></div>
+              <div class="galeria__item marco-papel"><img src="assets/section-class-galeria/galeria-02.webp" alt="[ALT_PENDIENTE]" loading="lazy"></div>
+              <div class="galeria__item marco-papel"><img src="assets/section-class-galeria/galeria-03.webp" alt="[ALT_PENDIENTE]" loading="lazy"></div>
+            </div>
+            <!-- Slide 2 · molde REFLEJO (2-izq + grande-der) -->
+            <div class="galeria-slide molde--reflejo" data-slide="1" aria-hidden="true">
+              <div class="galeria__item marco-papel"><img src="assets/section-class-galeria/galeria-04.webp" alt="[ALT_PENDIENTE]" loading="lazy"></div>
+              <div class="galeria__item marco-papel"><img src="assets/section-class-galeria/galeria-05.webp" alt="[ALT_PENDIENTE]" loading="lazy"></div>
+              <div class="galeria__item marco-papel"><img src="assets/section-class-galeria/galeria-06.webp" alt="[ALT_PENDIENTE]" loading="lazy"></div>
+            </div>
+          </div>
+
+          <button class="carrusel__arrow carrusel__arrow--next" id="galeria-next" aria-label="Trabajos siguientes" aria-controls="galeria-track">›</button>
+
+          <div class="galeria-carrusel__dots" id="galeria-dots" role="tablist" aria-label="Seleccionar grupo de trabajos">
+            <button class="carrusel__dot is-active" role="tab" aria-selected="true" data-slide-target="0" aria-label="Grupo 1"></button>
+            <button class="carrusel__dot" role="tab" aria-selected="false" data-slide-target="1" aria-label="Grupo 2"></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 4 · FORMACIÓN (OSCURO, CONFIRMADO) — briefing maestro v2 §6.4 ===== -->
+    <!-- Franja de título a ancho completo + fila asimétrica: imagen grande izquierda + 2 bloques
+         apilados a la derecha (línea fina entre ambos, CSS). "Ver clase →" ya son botones reales
+         (MA-C7 pto.2, 2026-08-04). NUEVO esta ronda: `.formacion__bloque-desc` — bajada corta por
+         audiencia (revisión §6.4, "camino único y fácil por tarjeta, sin distracciones"). El
+         botón "rectangular simétrico y más grande" es ajuste de CSS sobre la clase existente,
+         sin cambio de markup. -->
+    <section class="formacion" id="formacion" data-bg="dark" aria-labelledby="formacion-titulo">
+      <div class="container">
+        <span class="eyebrow">Formación</span>
+        <h2 id="formacion-titulo" class="section-title">Aprende con Andrea</h2>
+        <p class="formacion__bajada">Desde tu primer look hasta técnica profesional.</p>
+      </div>
+      <div class="formacion__grid">
+        <div class="formacion__media">
+          <img src="assets/section-class-formacion/formacion.webp" alt="[ALT_PENDIENTE]" loading="lazy">
+        </div>
+        <div class="formacion__bloques">
+          <div class="formacion__bloque">
+            <span class="formacion__bloque-label">SIN EXPERIENCIA</span>
+            <h3 class="formacion__bloque-title">Automaquillaje</h3>
+            <p class="formacion__bloque-desc">¿Nunca te has maquillado y te gustaría aprender? Esto es para ti.</p>
+            <a href="clases.html#automaquillaje" class="formacion__bloque-link">Ver clase →</a>
+          </div>
+          <div class="formacion__bloque">
+            <span class="formacion__bloque-label">CURSO AVANZADO</span>
+            <h3 class="formacion__bloque-title">Perfeccionamiento</h3>
+            <p class="formacion__bloque-desc">¿Ya maquillas y quieres perfeccionar tu técnica? Esto es para ti.</p>
+            <a href="clases.html#perfeccionamiento" class="formacion__bloque-link">Ver clase →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 5 · RESEÑAS (CLARO) — briefing maestro v2, revisión §6.5/§15.2 ===== -->
+    <!-- CAMBIO DE CRITERIO respecto a la ronda anterior: ya no son placeholders `content-tbd`
+         (bloqueados, nunca visibles) — Paul pidió explícitamente DATOS DE MUESTRA realistas para
+         la presentación del mockup a Andrea, distinto del bloqueo de [CREDENCIAL_MATTA] (ese sí
+         sigue sin poder mostrarse en ningún formato). Cada bloque de muestra va envuelto en un
+         comentario HTML `DATO DE MUESTRA — VERIFICAR/REEMPLAZAR` bien visible en el código para
+         quien edite después — NINGUNO debe llegar a publicación real sin datos verificados de
+         Andrea (riesgo legal: reseñas/certificaciones falsas prohibidas en España, §6.5). -->
+    <section class="resenas" id="resenas" data-bg="light" aria-labelledby="resenas-titulo">
+      <div class="container">
+        <span class="eyebrow">Reseñas</span>
+        <h2 id="resenas-titulo" class="section-title">Lo que dicen mis clientas</h2>
+
+        <!-- DATO DE MUESTRA — VERIFICAR/REEMPLAZAR: fila de stats con cifras de ejemplo para el
+             mockup (decisión explícita de Paul, §6.5/§15.2). Ninguna cifra debe publicarse sin
+             verificar con Andrea, incluida "Certificada" (misma categoría de riesgo que Matta). -->
+        <div class="resenas__stats">
+          <div class="resenas__stat">
+            <span class="resenas__stat-num">4.6★</span>
+            <span class="resenas__stat-label">Valoración promedio</span>
+          </div>
+          <div class="resenas__stat">
+            <span class="resenas__stat-num">300+</span>
+            <span class="resenas__stat-label">Clientas satisfechas</span>
+          </div>
+          <div class="resenas__stat">
+            <span class="resenas__stat-num">Certificada</span>
+            <span class="resenas__stat-label">Profesional certificada</span>
+          </div>
+          <div class="resenas__stat">
+            <span class="resenas__stat-num">1 semana</span>
+            <span class="resenas__stat-label">Reserva de prueba con anticipación</span>
+          </div>
+        </div>
+        <!-- FIN dato de muestra (stats) -->
+
+        <div class="resenas__grid">
+          <!-- DATO DE MUESTRA — VERIFICAR/REEMPLAZAR: reseña de ejemplo -->
+          <article class="resena-item">
+            <blockquote class="resena-item__texto"><p>"Andrea me hizo sentir hermosa en mi boda sin perder mi esencia. Cada detalle, perfecto."</p></blockquote>
+            <p class="resena-item__autor">Camila R. · Boda</p>
+          </article>
+          <!-- FIN dato de muestra -->
+          <!-- DATO DE MUESTRA — VERIFICAR/REEMPLAZAR: reseña de ejemplo -->
+          <article class="resena-item">
+            <blockquote class="resena-item__texto"><p>"Tomé la clase de automaquillaje y ahora me maquillo en la mitad de tiempo. Súper paciente explicando."</p></blockquote>
+            <p class="resena-item__autor">Valeria M. · Clase de automaquillaje</p>
+          </article>
+          <!-- FIN dato de muestra -->
+          <!-- DATO DE MUESTRA — VERIFICAR/REEMPLAZAR: reseña de ejemplo -->
+          <article class="resena-item">
+            <blockquote class="resena-item__texto"><p>"Contraté el paquete con prueba para mi evento y llegó puntual con todo listo. Recomendadísima."</p></blockquote>
+            <p class="resena-item__autor">Fernanda G. · Evento social</p>
+          </article>
+          <!-- FIN dato de muestra -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 6 · NOVIAS (OSCURO, reencuadrada) — briefing maestro v2 §6.6 ===== -->
+    <!-- Baja desde la posición 2. Contenido ya coincidía con el brief (Servicio/Maquillaje de
+         Novia/bajada/CTA), solo cambia de posición. data-bg vuelve a "dark": con galería+reseñas
+         como nuevos cortes claros, la alternancia queda C-O-C-O-C-O-C-O sin necesitar el parche de
+         MA-C7 pto.3 (que puso esta sección en claro para romper 3 oscuras seguidas). Handoff a css
+         para revertir el fondo de `.novias-promo` a `--bg-dark` — detalle en inbox/css.md.
+         CTA "Ver paquetes →" NO se convierte a botón real pese a la lectura literal del brief §6.6
+         ("CTA real"): css ya decidió explícitamente lo contrario el 2026-08-04 (MA-C7 pto.2, es un
+         CTA singular de cierre de sección, no compite en grilla) — contradicción real entre el
+         brief escrito y la revisión verbal de Paul a css el mismo día. La reporto en vez de forzar
+         un lado; ver detalle en el log de esta sesión. -->
+    <section class="novias-promo" id="novias" data-bg="dark" aria-labelledby="novias-promo-titulo">
+      <div class="novias-promo__grid">
+        <div class="novias-promo__media">
+          <!-- briefing maestro §9: la carpeta trae 2 imágenes (novia.webp/novia1.webp) para una sección
+               especificada con 1 sola — uso novia.webp como principal, novia1.webp queda sin usar hasta
+               que Paul confirme si son variantes a elegir o si hay que mostrar ambas. -->
+          <img src="assets/section-class-novia-promo/novia.webp" alt="[ALT_PENDIENTE]" loading="lazy">
+        </div>
+        <div class="novias-promo__content">
+          <span class="eyebrow">Servicio</span>
+          <h2 id="novias-promo-titulo" class="section-title">Maquillaje de Novia</h2>
+          <p class="novias-promo__texto">Vuelve inolvidable el día más importante de tu vida.</p>
+          <a href="novias.html" class="novias-promo__link">Ver paquetes →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 7 · ENCUENTRA LO QUE NECESITAS (CLARO) — briefing maestro v2 §6.7 ===== -->
+    <!-- Texto+botón sobre imagen ya resuelto en CSS (MA-C7 pto.4, formato póster con degradado) —
+         los 3 hijos (media/título/bajada/link) ya eran hermanos directos, sin wrapper nuevo. -->
+    <section class="servicios" id="encuentra" data-bg="light" aria-labelledby="encuentra-titulo">
+      <div class="container">
+        <h2 id="encuentra-titulo" class="section-title">Encuentra lo que necesitas</h2>
+        <div class="servicios-grid">
+          <article class="servicio-card">
+            <div class="servicio-card__media">
+              <img src="assets/section-class-servicios/novias.webp" alt="[ALT_PENDIENTE]" loading="lazy">
+            </div>
+            <h3 class="servicio-card__title">Novias</h3>
+            <!-- Bajada placeholder — briefing maestro §5.5, se reemplaza en otra ronda -->
+            <p class="servicio-card__desc">Explora la variedad de opciones a escoger.</p>
+            <a href="novias.html" class="servicio-card__link">Ver paquetes →</a>
+          </article>
+          <article class="servicio-card">
+            <div class="servicio-card__media">
+              <img src="assets/section-class-servicios/clases.webp" alt="[ALT_PENDIENTE]" loading="lazy">
+            </div>
+            <h3 class="servicio-card__title">Clases</h3>
+            <p class="servicio-card__desc">¿No sabes dónde empezar? Haz clic aquí.</p>
+            <a href="clases.html" class="servicio-card__link">Ver clases →</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 8 · FAQ — Preguntas frecuentes (CLARO) — NUEVA, briefing maestro v2 §6.8 ===== -->
+    <!-- Acordeón con `<details name="faq">` nativo: agrupa los 6 `<details>` para que solo uno
+         quede abierto a la vez ("una pregunta abierta a la vez") SIN JavaScript — el brief mismo
+         autoriza "lista si el JS se quiere mínimo" y el reparto de agentes (§13) limita el JS de
+         esta ronda al carrusel; esto cumple el requisito funcional con cero JS nuevo.
+         Respuestas tomadas literal de las pistas que el propio brief da entre paréntesis en 6.8 —
+         ninguna inventada. La duración del servicio no se precisa en horas porque el brief no da
+         un número para los paquetes de novia (solo para las clases, 3h) — no se inventa una cifra.
+         ALTERNANCIA: esta sección y #encuentra quedan las dos claras seguidas — inevitable con
+         #cierre fijo en oscuro (rediseño confirmado en 6.9) y #encuentra fijo en claro
+         (confirmada en 6.7): insertar una sección entre dos de distinto fondo siempre genera una
+         adyacencia igual a uno de los dos lados. Reportado en vez de forzado, con sugerencia a css
+         de diferenciarlas con --bg-light-alt o un borde superior — ver inbox/css.md. -->
+    <section class="faq" id="faq" data-bg="dark" aria-labelledby="faq-titulo">
+      <div class="container faq__grid">
+        <div class="faq__col">
+          <span class="eyebrow">Preguntas frecuentes</span>
+          <h2 id="faq-titulo" class="section-title">Antes de reservar</h2>
+          <div class="faq__list">
+            <details class="faq__item" name="faq">
+              <summary class="faq__question">¿A qué zonas vas a domicilio?</summary>
+              <p class="faq__answer">Lima, Perú y Madrid, España. La movilidad no está incluida en el precio del servicio.</p>
+            </details>
+            <details class="faq__item" name="faq">
+              <summary class="faq__question">¿Cuánto dura el servicio?</summary>
+              <p class="faq__answer">Depende del servicio elegido: cada paquete de novia tiene su propio tiempo, y las clases duran 3 horas.</p>
+            </details>
+            <details class="faq__item" name="faq">
+              <summary class="faq__question">¿Cómo reservo y cómo pago?</summary>
+              <p class="faq__answer">Me escribes por WhatsApp y te confirmo disponibilidad. Reservas tu fecha con un adelanto de 50 soles vía Yape; al enviarme la captura del pago, recibes por correo los datos verificados de tu cita.</p>
+            </details>
+            <details class="faq__item" name="faq">
+              <summary class="faq__question">¿Puedo cambiar la fecha?</summary>
+              <p class="faq__answer">Sí. El adelanto no se reembolsa, pero puedes mover tu fecha sin problema.</p>
+            </details>
+            <details class="faq__item" name="faq">
+              <summary class="faq__question">¿Llevas todo el material?</summary>
+              <p class="faq__answer">Sí, llevo todos los productos y herramientas necesarias.</p>
+            </details>
+            <details class="faq__item" name="faq">
+              <summary class="faq__question">¿Hacen prueba previa?</summary>
+              <p class="faq__answer">Sí, para novias — se reserva con una semana de anticipación.</p>
+            </details>
+          </div>
+        </div>
+
+        <aside class="faq__cta">
+          <h2 class="faq__cta-titulo">Destaca tu belleza</h2>
+          <p class="faq__cta-sub">Reserva por WhatsApp. Sin pago online, sin complicaciones.</p>
+          <a href="CTA_DESTINO_PENDIENTE" class="btn-editorial faq__cta-btn" data-cta-pendiente="CTA_DESTINO">
+            <svg class="header-cta__icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.06-1.33A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.2c-.22.62-1.28 1.2-1.77 1.24-.45.05-1.02.07-1.65-.1-.38-.11-.87-.27-1.5-.53-2.64-1.14-4.36-3.8-4.5-3.98-.13-.18-1.08-1.43-1.08-2.73 0-1.3.68-1.94.93-2.2.24-.27.53-.33.7-.33h.5c.16 0 .38-.06.6.46.22.53.75 1.83.82 1.97.07.13.11.29.02.47-.09.18-.14.29-.27.44-.13.16-.28.35-.4.47-.13.13-.27.27-.12.53.16.27.7 1.15 1.5 1.86 1.04.92 1.91 1.21 2.18 1.35.27.13.42.11.58-.07.16-.18.68-.79.86-1.06.18-.27.36-.22.6-.13.24.09 1.53.72 1.79.85.27.13.44.2.51.31.07.11.07.65-.15 1.27z"/></svg>
+            RESERVAR
+          </a>
+          <p class="faq__cta-micro">Lima, Perú · Madrid, España · WhatsApp 920 595 147</p>
+        </aside>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== 10 · FOOTER ===== -->
+  <footer class="site-footer">
+    <div class="site-footer__main">
+      <div class="container site-footer__grid">
+
+        <!-- Columna 1 — Marca -->
+        <div class="footer-col footer-col--brand">
+          <div class="footer-col__brand-logo">
+            <span class="footer-col__brand-name">Makeup Andrea</span>
+          </div>
+          <p class="footer-col__desc">
+            Maquillaje de novias y clases personalizadas. Lima y Madrid.
+          </p>
+          <ul class="footer-social" aria-label="Síguenos en redes sociales">
+            <li>
+              <a href="https://www.instagram.com/makeup.andrea.ps/" aria-label="Instagram">
+                <svg class="footer-social__icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                  <rect x="3" y="3" width="18" height="18" rx="5"/>
+                  <circle cx="12" cy="12" r="4.2"/>
+                  <circle cx="17.3" cy="6.7" r="0.9" fill="currentColor" stroke="none"/>
+                </svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Columna 2 — Navegar -->
+        <nav class="footer-col" aria-label="Navegar">
+          <h2 class="footer-col__title">Navegar</h2>
+          <ul class="footer-col__links">
+            <li><a href="novias.html">Novias</a></li>
+            <li><a href="clases.html">Clases</a></li>
+            <li><a href="sobre-mi.html">Sobre mí</a></li>
+          </ul>
+        </nav>
+
+        <!-- Columna 3 — Contacto -->
+        <div class="footer-col footer-col--contact">
+          <h2 class="footer-col__title">Contacto</h2>
+          <a class="footer-col__contact-email" href="mailto:estefip97@gmail.com">estefip97@gmail.com</a>
+          <p class="footer-col__contact-hours">WhatsApp 920 595 147</p>
+          <p class="footer-col__contact-hours">Lima, Perú · Madrid, España</p>
+        </div>
+
+        <!-- Columna — Cómo reservas (briefing maestro v2 §5: trust elements REALES del negocio,
+             no de e-commerce — reservas van por WhatsApp+Yape, nunca pago con tarjeta online).
+             "Adelanto no reembolsable, transferible a un cambio de fecha": reformulado respecto
+             al texto suelto del brief ("Adelanto reembolsable como cambio de fecha") para que no
+             contradiga la letra real de #condiciones en novias.html/clases.html (el adelanto NO
+             se devuelve en dinero, solo se puede usar para mover la fecha). -->
+        <div class="footer-col footer-col--trust">
+          <h2 class="footer-col__title">Cómo reservas</h2>
+          <ul class="footer-col__links footer-col__links--plain">
+            <li>Reserva por WhatsApp, sin pago online</li>
+            <li>Adelanto no reembolsable, transferible a un cambio de fecha</li>
+            <li>Atención personal directa</li>
+          </ul>
+        </div>
+
+        <!-- Columna 4 — Legal -->
+        <nav class="footer-col" aria-label="Legal">
+          <h2 class="footer-col__title">Legal</h2>
+          <ul class="footer-col__links">
+            <li><a href="LEGAL_PENDIENTE" data-legal-pendiente="LEGAL_ANDREA">Aviso legal</a></li>
+            <li><a href="LEGAL_PENDIENTE" data-legal-pendiente="LEGAL_ANDREA">Privacidad</a></li>
+          </ul>
+        </nav>
+
+      </div>
+    </div>
+
+    <div class="site-footer__bottom">
+      <div class="container">
+        <span class="site-footer__copy">© <span id="footer-year">2026</span> Makeup Andrea. Todos los derechos reservados.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== DOMINIO SEO: JSON-LD ===== -->
+  <!-- Front no toca este bloque. -->
+  <!-- ===== FIN JSON-LD SEO ===== -->
+
+  <script type="module" defer src="main.js"></script>
+</body>
+</html>

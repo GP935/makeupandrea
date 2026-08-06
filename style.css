@@ -1,0 +1,1021 @@
+/* ==========================================================================
+   MAKEUP ANDREA — sitio independiente (servicios presenciales)
+   Sistema visual "Rosewood" (briefing 2026-08-01) — reemplaza por completo la
+   paleta roja/B&N de "Controlled Presence" heredada de AP Beauty. Se reutiliza
+   la LÓGICA de andreaapbeauty (breakpoints, aspect-ratios, grid, spacing),
+   nunca sus valores de color. Playfair Display (titulares) + Montserrat
+   (cuerpo, PLACEHOLDER — ver nota junto a --font-body). Mobile-first.
+   Regla: nunca dos secciones de fondo oscuro consecutivas (el footer, que
+   siempre es oscuro por diseño en todo este ecosistema, queda exento).
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Design tokens — Sakura (briefing maestro v2 completo, 2026-08-05, MA-F7/MA-C8)
+   Reemplaza por completo "Plata Cálida" (MA-C6). Sakura como relación de color
+   (corteza→flor profunda→flor abierta→pétalo→cielo pálido), nunca ilustración.
+   -------------------------------------------------------------------------- */
+:root {
+  /* Tokens de color oficiales — paleta sakura (briefing §2). El acento ya NO es
+     un solo token: se parte en dos según el fondo sobre el que actúa (regla
+     60/30/10, §2.1) — --accent-deep sobre CLARO, --accent-bright sobre OSCURO.
+     --blush es SOLO atmósfera (líneas de firma, hover de fondo) — nunca botones. */
+  --bg-light:      #F4F0EF;   /* Blush White — fondos claros, nunca blanco puro */
+  --bg-dark:       #1B1719;   /* Warm Charcoal — fondos oscuros, también alias de texto principal, ver --text-ink */
+  --accent-deep:   #6B2737;   /* Rosewood — acción sobre fondo CLARO */
+  --accent-bright: #B76E79;   /* Dusty Rose — acción sobre fondo OSCURO (rosewood puro se pierde sobre charcoal) */
+  --cta-vivid: #C64B63;
+  --cta-vivid-hover: #A83A50;
+  --blush:         #EAD9DA;   /* atmósfera únicamente — lavados de color, hover de fondo. NUNCA relleno de acción */
+  --text-muted:    #8B8180;   /* eyebrows, etiquetas, microtexto */
+
+  /* Derivados — variantes de hover/relleno que el sistema necesita. Recalculados
+     en MA-C8 para la paleta sakura (antes eran derivados de Plata Cálida). */
+  --text-ink:           var(--bg-dark);   /* alias semántico: texto principal sobre fondo claro */
+  --accent-deep-hover:  #56212B;          /* rosewood oscurecido, :hover sobre relleno accent-deep (mismo valor que MA-C6, accent-deep no cambió) */
+  --accent-bright-hover:#9B5D67;          /* dusty rose oscurecido, :hover sobre relleno accent-bright */
+  --bg-light-alt:       #EFE6E3;          /* relleno de tarjetas sobre fondo claro (paquete-bloque, selector-card…) — tinte cálido hacia --blush */
+  --border-light:       #E0D8D5;          /* líneas/bordes sutiles sobre fondo claro */
+
+  /* Tipografía */
+  --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  /* PLACEHOLDER — pendiente de cierre ("más humanista que Montserrat", briefing 2026-08-01).
+     Variable única a propósito: cambiar la tipografía de cuerpo definitiva es
+     tocar solo esta línea. No afinar kerning/line-height del body hasta cerrarla. */
+  --font-body:    'Montserrat', system-ui, -apple-system, sans-serif;
+
+  /* Ritmo vertical + grid maestro (lógica heredada de andreaapbeauty, sin cambio) */
+  --section-pad-y: clamp(40px, 4.5vw, 64px);
+  --container-max: 1600px;
+  --gutter: clamp(16px, 3vw, 40px);
+
+  /* Radios + sombras — reducidos a esquinas rectas/casi rectas (briefing §10.5:
+     "nada de radius-card:14px/radius-pill:50px en botones/cards"). radius-pill
+     deja de ser una píldora real: los badges que lo usaban (selector-card__level)
+     pasan a esquina casi recta, mismo lenguaje editorial que el resto del sitio. */
+  --radius-card: 3px;
+  --radius-pill: 3px;
+  --radius-soft: 3px;
+  --shadow-card: 0 8px 24px rgba(0,0,0,0.06);
+  --shadow-hover: 0 12px 32px rgba(0,0,0,0.10);
+}
+
+/* --------------------------------------------------------------------------
+   Reset
+   -------------------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; max-width: 100%; }
+/* overflow-x: clip (no `hidden`): no rompe el `position: sticky` del header */
+html, body { margin: 0; padding: 0; overflow-x: clip; }
+body { font-family: var(--font-body); color: var(--text-ink); background: var(--bg-light); line-height: 1.55; }
+img { display: block; max-width: 100%; height: auto; }
+
+.container { width: 100%; max-width: var(--container-max); margin-inline: auto; padding-inline: var(--gutter); }
+section { padding-block: var(--section-pad-y); }
+
+/* Estándares de acabado §10.1/§10.5 — aplican a las 4 páginas por ser reglas globales */
+h1, h2, h3 { text-wrap: balance; }
+::selection { background: var(--accent-deep); color: #fff; }
+:focus-visible { outline-color: var(--accent-deep); }
+
+/* Hook de reveals al scroll (§10.4) — CSS provee la mecánica, JS decide cuándo
+   añadir/quitar .is-visible vía IntersectionObserver (una vez, sin repetir).
+   Contrato para js: añadir clase "reveal" al montar el elemento observado (o
+   dejarla ya en el HTML si front la agrega) + alternar "is-visible" al entrar
+   en viewport. Sin JS, el elemento se ve igual que siempre (no depende de JS
+   para ser visible — solo se anima si JS está activo). */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity .5s ease-out, transform .5s ease-out; }
+.reveal.is-visible { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* --------------------------------------------------------------------------
+   Botonería editorial (único sistema — sitio sin e-commerce)
+   -------------------------------------------------------------------------- */
+.btn-editorial {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 15px 36px;
+  font-family: var(--font-body);
+  font-size: 13px; font-weight: 600; letter-spacing: 1.8px; text-transform: uppercase;
+  border-radius: var(--radius-soft);
+  cursor: pointer; text-decoration: none; transition: all .2s ease;
+}
+/* Base = accent-deep (fondo CLARO: header, panel móvil). Sobre secciones OSCURAS
+   (hero-overlay, cierre) el CTA cambia a accent-bright + texto oscuro — rosewood
+   puro se pierde contra warm charcoal, ver overrides junto a cada sección (§2.1). */
+.btn-editorial--solid { background: var(--accent-deep); color: #fff; border: none; }
+.btn-editorial--solid:hover { background: var(--accent-deep-hover); }
+.btn-editorial--ghost { background: transparent; color: #fff; border: 1.5px solid #fff; }
+.btn-editorial--ghost:hover { background: #fff; color: var(--text-ink); }
+.btn-editorial--dark { background: transparent; color: var(--text-ink); border: 1.5px solid var(--text-ink); }
+.btn-editorial--dark:hover { background: var(--text-ink); color: #fff; }
+
+/* Eyebrow / título de sección */
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 12px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 14px;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: 34px; font-weight: 700; line-height: 1.15; letter-spacing: -0.5px;
+  color: var(--text-ink); margin: 0 0 12px;
+}
+@media (max-width: 768px) { .section-title { font-size: 26px; } }
+
+/* Marcador de contenido pendiente (dato real de Paul/Andrea) */
+mark.content-tbd { background: #FBE9E4; color: var(--accent-deep-hover); padding: 1px 5px; border-radius: 3px; font-weight: 600; font-style: normal; }
+
+/* --------------------------------------------------------------------------
+   1 · Header — 3 zonas, logo centrado (wordmark de texto, sin archivo de logo)
+   -------------------------------------------------------------------------- */
+.site-header { position: sticky; top: 0; z-index: 1000; background: var(--bg-light); border-bottom: 1px solid var(--border-light); }
+
+/* Compensa el header sticky al saltar a estas anclas. #artista-intro/#artista-carrusel
+   reemplazan a #artista (split en 2 sub-secciones, revisión MA-F8/§6.2); #faq es
+   sección nueva de la misma revisión. */
+#novias, #formacion, #artista-intro, #artista-carrusel, #encuentra, #galeria, #resenas, #faq { scroll-margin-top: 100px; }
+
+/* Header FUNCIONAL (revisión MA-F8/§5, reemplaza el grid 3-zonas con logo centrado):
+   logo a la izquierda con margin-right:auto (empuja nav+CTA agrupados al borde derecho,
+   el gap del propio flex los mantiene juntos entre sí). .header-left ya no existe en
+   el HTML (huérfana, retirada). */
+.site-header__inner {
+  display: flex; align-items: center;
+  gap: clamp(20px, 2.4vw, 40px);
+  padding: clamp(14px, 1.6vw, 22px) var(--gutter);
+  background: var(--bg-light);
+}
+.header-right { display: flex; align-items: center; gap: clamp(18px, 2vw, 32px); }
+.header-logo { display: block; text-decoration: none; margin-right: auto; }
+.header-logo__wordmark {
+  font-family: var(--font-display); font-weight: 700; font-style: italic;
+  font-size: clamp(1.15rem, 1.8vw, 1.5rem); color: var(--text-ink); white-space: nowrap;
+}
+
+.nav-cluster { display: flex; gap: clamp(16px, 1.6vw, 28px); }
+.nav-link {
+  /* Negrita (revisión §5: "señal clara de clicable, ve directo") */
+  font: 700 .82rem/1 var(--font-body); letter-spacing: .08em; text-transform: uppercase;
+  color: var(--text-ink); text-decoration: none; transition: color .2s;
+}
+.nav-link:hover { color: var(--accent-deep); }   /* ÚNICO acento del header, solo en hover */
+/* Página activa: filete de acento bajo el texto, NO color permanente (uso moderado del acento) */
+.nav-link--active { border-bottom: 2px solid var(--accent-deep); padding-bottom: 4px; }
+
+/* Más ancho (revisión §5: "RESERVAR más ancho, padding generoso") — debe seguir
+   destacando pese a la nav agrupada junto a él (contraste negro/rosewood + separación
+   del gap del header-right). */
+.header-cta.btn-editorial { padding: 13px 32px; font-size: 12px; letter-spacing: 1.6px; }
+/* Ícono secundario — no debe dominar sobre el texto RESERVAR (reutilizado a 18px en .cierre__cta) */
+.header-cta__icon { flex-shrink: 0; opacity: .92; }
+
+/* padding:10px + icono 24px = ~44px de área táctil total (§10.6) */
+.menu-toggle { display: none; background: none; border: 0; color: var(--text-ink); cursor: pointer; padding: 10px; }
+
+@media (max-width: 900px) {
+  .nav-cluster, .header-right .header-cta { display: none; }
+  .menu-toggle { display: inline-flex; }
+}
+
+/* --------------------------------------------------------------------------
+   2 · Menú móvil — panel deslizante desde la derecha + backdrop (JS .is-open)
+   -------------------------------------------------------------------------- */
+.menu-backdrop {
+  position: fixed; inset: 0; z-index: 1090;
+  background: rgba(27, 23, 25, .5);
+  opacity: 0; visibility: hidden; transition: opacity .3s ease, visibility .3s ease;
+}
+.menu-backdrop[hidden] { display: none; }
+.menu-backdrop.is-open { opacity: 1; visibility: visible; }
+.menu-panel {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 1100;
+  width: min(86vw, 380px);
+  background: var(--bg-light);
+  display: flex; flex-direction: column;
+  padding: clamp(20px, 4vw, 32px);
+  transform: translateX(100%); transition: transform .35s cubic-bezier(.4, 0, .2, 1);
+  overflow-y: auto;
+}
+.menu-panel.is-open { transform: translateX(0); }
+.menu-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: clamp(24px, 5vw, 40px); }
+.menu-close {
+  width: 44px; height: 44px; border-radius: 50%; border: 0; cursor: pointer;
+  background: var(--bg-dark); color: #fff; font-size: 16px; line-height: 1;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.menu-primary { display: flex; flex-direction: column; }
+.menu-primary a {
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: var(--font-display); font-size: 1.5rem; font-weight: 700;
+  color: var(--text-ink); text-decoration: none;
+  padding: clamp(12px, 2vw, 16px) 0; border-bottom: 1px solid var(--bg-light-alt);
+}
+.menu-primary a::after { content: "›"; color: var(--text-muted); font-weight: 400; }
+.menu-primary a[aria-current="page"] { color: var(--accent-deep); }
+.menu-cta.btn-editorial { margin-top: clamp(24px, 5vw, 40px); width: 100%; }
+
+/* --------------------------------------------------------------------------
+   3 · Hero (home)
+   -------------------------------------------------------------------------- */
+.hero { background: var(--bg-light); padding-block: 0; overflow: hidden; }
+.hero__grid { display: grid; grid-template-columns: 1fr 1fr; align-items: stretch; gap: 0; min-height: 82vh; max-height: 780px; max-width: none; padding-inline: 0; }
+.hero__media { margin-right: 0; }
+.hero__panel { display: flex; flex-direction: column; justify-content: center; padding-block: clamp(40px, 6vw, 96px); padding-right: clamp(24px, 4vw, 64px); padding-left: var(--gutter); }
+.hero__media { position: relative; overflow: hidden; background: var(--bg-dark); }
+.hero__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+.hero-eyebrow { display: inline-block; font-family: var(--font-body); font-size: 13px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 18px; }
+.hero h1 { font-family: var(--font-display); font-size: clamp(2.6rem, 5.5vw, 4.2rem); font-weight: 900; line-height: 1.02; letter-spacing: -0.5px; color: var(--text-ink); margin: 0 0 18px; }
+.hero-sub { font-family: var(--font-body); font-size: 19px; font-weight: 400; line-height: 1.5; color: rgba(27,23,25,.75); margin: 0 0 12px; }
+.hero-voz { font-family: var(--font-display); font-style: italic; font-size: clamp(1.05rem, 1.6vw, 1.25rem); line-height: 1.5; color: var(--text-ink); margin: 0 0 28px; padding-bottom: 14px; border-bottom: 1.5px solid var(--accent-deep); display: inline-block; }
+.hero-cta { display: flex; gap: 14px; flex-wrap: wrap; }
+/* CTA primario: sobre fondo claro usa accent-deep (rosewood), como el resto de secciones claras */
+.hero .btn-editorial--solid { background: var(--accent-deep); color: #fff; }
+.hero .btn-editorial--solid:hover { background: var(--accent-deep-hover); color: #fff; }
+
+@media (max-width: 768px) {
+  .hero__grid { grid-template-columns: 1fr; min-height: 0; max-height: none; }
+  .hero__media { order: -1; aspect-ratio: 16/13; max-height: 42vh; }   /* retrato ARRIBA en móvil */
+  .hero-voz { font-size: 1.15rem; }
+  .hero-sub { font-size: 1.05rem; }
+  /* BUG corregido: el shorthand `padding: X 0` dejaba el panel sin margen
+     horizontal — h1/CTA tocaban el borde de la pantalla. `.hero__grid` tiene
+     `padding-inline:0` (full-bleed) a propósito, así que en móvil el panel
+     necesita su propio `--gutter` a los lados, igual que el resto de secciones. */
+  .hero__panel { padding: clamp(28px, 7vw, 40px) var(--gutter); }
+  .hero-cta { flex-direction: column; }
+  .hero-cta .btn-editorial { width: 100%; }
+}
+
+/* --------------------------------------------------------------------------
+   Novias — franja promo (home, OSCURA). Split asimétrico imagen~60%/texto~40%
+   (1.5fr/1fr) — mismo mecanismo que .hero-novias__grid, proporción distinta.
+
+   REVERTIDA a oscura (briefing maestro v2 completo, MA-F7/MA-C8, 2026-08-05):
+   MA-C7 pto.3 (2026-08-04) la había pasado a clara como parche para romper la
+   racha de "3 oscuras seguidas" (novias→formación→quien-soy). Con la
+   reestructuración completa del home (galería y reseñas como nuevos cortes
+   claros) la alternancia queda C-O-C-O-C-O-C-O nativa — el parche ya no hace
+   falta, `data-bg="dark"` del HTML ya reflejaba el estado objetivo. Estilos
+   de texto/media reescritos al patrón de sección oscura (mismo lenguaje que
+   .formacion/.artista: eyebrow/texto en blanco translúcido, link blanco con
+   hover accent-bright).
+
+   Contradicción reportada, no forzada (ver handoff de front en inbox/css.md):
+   el brief §6.6 pide "Ver paquetes" como CTA real (botón). Se mantiene como
+   link de texto — mismo criterio ya razonado en MA-C7 pto.2 con Paul en vivo:
+   es un CTA singular de cierre de sección (como .artista__link/.credencial__link),
+   no compite en grilla como .formacion__bloque-link/.servicio-card__link. Nada
+   estructural cambió en esta ronda que invalide ese razonamiento — se mantiene
+   sin forzar el brief escrito por sobre la revisión verbal ya confirmada.
+   -------------------------------------------------------------------------- */
+.novias-promo { padding-block: 0; overflow: hidden; background: var(--bg-dark); }
+.novias-promo__grid {
+  display: grid; grid-template-columns: 1.5fr 1fr; align-items: stretch;
+  min-height: clamp(360px, 40vw, 520px);
+}
+.novias-promo__media { position: relative; overflow: hidden; background: rgba(255,255,255,.06); }
+.novias-promo__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.novias-promo__content {
+  display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+  max-width: 420px;
+  padding-block: clamp(32px, 4vw, 56px);
+  padding-left: clamp(24px, 3vw, 48px);
+  padding-right: max(var(--gutter), calc(50vw - var(--container-max) / 2));
+}
+.novias-promo .eyebrow { color: rgba(255,255,255,.55); }
+.novias-promo .section-title { color: #fff; }
+.novias-promo__texto { font: 400 1rem/1.6 var(--font-body); color: rgba(255,255,255,.78); margin: 0 0 20px; max-width: 38ch; }
+.novias-promo__link {
+  display: inline-block; font: 600 .82rem/1 var(--font-body); letter-spacing: .06em; text-transform: uppercase;
+  color: #fff; text-decoration: none; border-bottom: 1px solid #fff; padding-bottom: 4px;
+  transition: color .2s, border-color .2s;
+}
+.novias-promo__link:hover { color: var(--accent-bright); border-color: var(--accent-bright); }
+@media (max-width: 768px) {
+  .novias-promo__grid { grid-template-columns: 1fr; min-height: 0; }
+  .novias-promo__media { min-height: clamp(280px, 80vw, 380px); }
+  .novias-promo__content { max-width: none; padding-inline: var(--gutter); padding-block: clamp(28px, 6vw, 40px); }
+}
+
+/* --------------------------------------------------------------------------
+   Formación (home, oscura) — franja de título ancho completo (en .container)
+   + fila asimétrica: imagen grande izq + 2 bloques apilados der, línea fina
+   entre ambos.
+
+   NOTA DE ALCANCE ACTUALIZADA (MA-C8, 2026-08-05): la nota anterior (MA-C7
+   pto.3) advertía que #formacion/#quien-soy quedaban como 2 oscuras
+   consecutivas incluso tras pasar #novias a claro. Ya no aplica — la
+   reestructuración completa del home (galería tras .artista, reseñas antes de
+   esta sección otra vez oscura) intercala cortes claros entre todas las
+   secciones oscuras de forma nativa. #novias vuelve a oscuro sin reabrir el
+   problema.
+   -------------------------------------------------------------------------- */
+.formacion { background: var(--bg-dark); }
+.formacion .eyebrow { color: rgba(255,255,255,.55); }
+.formacion .section-title { color: #fff; }
+.formacion__bajada { font: 400 1.05rem/1.6 var(--font-body); color: rgba(255,255,255,.78); margin: 0; max-width: 60ch; }
+.formacion__grid {
+  display: grid; grid-template-columns: 1.3fr 1fr; gap: clamp(24px, 3vw, 48px); align-items: stretch;
+  margin-top: clamp(28px, 3vw, 40px);
+  max-width: var(--container-max); margin-inline: auto; padding-inline: var(--gutter);
+}
+.formacion__media { position: relative; aspect-ratio: 4/3; border-radius: var(--radius-card); overflow: hidden; background: rgba(255,255,255,.06); }
+.formacion__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.formacion__bloques { display: flex; flex-direction: column; }
+.formacion__bloque { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 8px; padding-block: clamp(16px, 2.4vw, 28px); }
+.formacion__bloque + .formacion__bloque { border-top: 1px solid rgba(255,255,255,.15); }
+.formacion__bloque-label { font: 600 .72rem/1 var(--font-body); letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.55); }
+.formacion__bloque-title { font-family: var(--font-display); font-size: clamp(1.3rem, 2vw, 1.7rem); color: #fff; margin: 0 0 4px; }
+/* Bajada corta por audiencia (revisión MA-F8/§6.4: "camino único y fácil por
+   tarjeta") — entre el título y el botón, hereda el gap:8px de .formacion__bloque. */
+.formacion__bloque-desc { font: 400 .9rem/1.5 var(--font-body); color: rgba(255,255,255,.7); margin: 0; max-width: 42ch; }
+/* Botón real, no link subrayado (revisión Paul 2026-08-04, pto.2): "VER CLASE →"
+   en negrita subrayada no se leía como acción. Comparte tratamiento con
+   .servicio-card__link (mismo problema en #encuentra) — borde blanco/relleno
+   acento al hover, igual que ya usa el sistema para CTAs secundarios sobre
+   fondo oscuro (mismo lenguaje que .btn-editorial--ghost). Agrandado y
+   simetrizado (revisión MA-F8/§6.4: "botón rectangular simétrico y más grande",
+   antes muy pequeño para leerse como acción principal de la tarjeta). */
+.formacion__bloque-link,
+.servicio-card__link {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; align-self: flex-start;
+  font: 600 .8rem/1 var(--font-body); letter-spacing: .07em; text-transform: uppercase;
+  color: #fff; text-decoration: none;
+  border: 1.5px solid #fff; border-radius: var(--radius-soft);
+  padding: 14px 28px; min-width: 168px;
+  transition: background .2s, border-color .2s, color .2s;
+}
+.formacion__bloque-link:hover,
+.servicio-card__link:hover { background: var(--accent-bright); border-color: var(--accent-bright); color: var(--bg-dark); }
+@media (max-width: 768px) {
+  .formacion__grid { grid-template-columns: 1fr; }
+  .formacion__media { aspect-ratio: 4/3; }
+  .formacion__bloque-link { width: 100%; min-width: 0; padding: 16px 28px; }
+  .servicio-card__link { align-self: stretch; width: auto; min-width: 0; padding: 16px 28px; }
+}
+
+/* --------------------------------------------------------------------------
+   4 · Servicios / "Dos caminos" (home) — 2 tarjetas grandes. Mismo grid que
+   .selector-grid (sección 12-G): mismo gap y mismo breakpoint 2→1 (768px),
+   reutilizando el patrón en vez de inventar uno nuevo (briefing pto.4).
+
+   Rediseño a póster (revisión Paul 2026-08-04, pto.4): antes imagen arriba +
+   caja de texto separada debajo — sin jerarquía, CTA invisible. Ahora título +
+   bajada + botón montados SOBRE la imagen (esquina inferior-izq) con degradado
+   en la base para legibilidad, referencia de producto adjunta. `.servicio-card`
+   pasa a `aspect-ratio` fijo con la imagen absoluta de fondo (`.servicio-card__media`)
+   y el texto en flujo normal empujado abajo por `justify-content:flex-end` —
+   no necesita wrapper nuevo en el HTML, los 3 hijos (media/título/bajada/link)
+   ya eran hermanos directos. El borde permanente que resolvía "se ven como 1
+   sola tarjeta en móvil" (MA-C4 pto.4) ya no hace falta: el formato póster con
+   imagen+degradado da límite visual propio a cada tarjeta sin necesitar borde.
+   -------------------------------------------------------------------------- */
+.servicios-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(20px, 2.4vw, 32px); align-items: stretch; }
+.servicio-card {
+  position: relative; display: flex; flex-direction: column; justify-content: flex-end;
+  aspect-ratio: 3/4;
+  text-decoration: none; color: #fff;
+  border-radius: var(--radius-card); overflow: hidden;
+  transition: transform .2s, box-shadow .2s;
+}
+.servicio-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+.servicio-card__media { position: absolute; inset: 0; z-index: 0; overflow: hidden; background: var(--bg-light-alt); }
+.servicio-card__media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .3s ease; }
+.servicio-card:hover .servicio-card__media img { transform: scale(1.03); }
+/* Degradado en la base de la imagen — legibilidad del texto montado encima */
+.servicio-card__media::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 35%, rgba(27,23,25,.82) 100%);
+}
+.servicio-card__title {
+  position: relative; z-index: 2;
+  font-family: var(--font-display); font-size: clamp(1.7rem, 2.6vw, 2.2rem); font-weight: 700;
+  color: #fff; margin: 0; padding: 0 22px;
+}
+.servicio-card__desc {
+  position: relative; z-index: 2;
+  font: 400 .92rem/1.5 var(--font-body); color: rgba(255,255,255,.82);
+  margin: 6px 0 0; padding: 0 22px; max-width: 30ch;
+}
+.servicio-card__link { position: relative; z-index: 2; margin: 16px 22px 22px; }
+@media (max-width: 768px) { .servicios-grid { grid-template-columns: 1fr; } }
+
+/* --------------------------------------------------------------------------
+   5 · Artista — SPLIT en 2 sub-secciones (revisión MA-F8/§6.2, reemplaza el
+   `.artista` único de MA-C8). El editorial+carrusel juntos en oscuro se leían
+   como "un bloque negro partido a la mitad" — y con el hero ahora también
+   oscuro (§6.1) hubiera encadenado 3 oscuras seguidas. Solución (Opción A):
+
+   - `.artista-intro` (CLARA) — bloque editorial: eyebrow/h2/texto/tríada/voz.
+     Mismas clases `.artista__intro/__texto/__triada/__voz` de MA-C8, solo
+     cambia el fondo del contenedor que las envuelve → texto reescrito de
+     blanco translúcido a tinta oscura, acento de la voz de accent-bright a
+     accent-deep (la línea de firma adapta al fondo, mismo criterio de §2.1
+     aplicado a cualquier acento, no solo a botones).
+   - `.artista-carrusel` (OSCURA) — el carrusel + `.artista__cta-wrap`/`__link`,
+     sin cambios respecto a MA-C8. `#quien-soy-carrusel`/`.carrusel__*` NO se
+     renombran (contrato de front).
+
+   Esto resuelve a la vez el "bloque partido" Y evita encadenar con el hero:
+   hero(oscuro)→artista-intro(claro)→artista-carrusel(oscuro)→galería(claro)...
+   -------------------------------------------------------------------------- */
+.artista-intro { background: var(--bg-light); }
+.artista-intro .container { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(40px, 6vw, 96px); align-items: center; }
+.artista-intro .eyebrow { color: var(--text-muted); }
+.artista-intro .section-title { color: var(--text-ink); margin: 0 0 clamp(16px, 2vw, 22px); }
+.artista__intro { max-width: none; }   /* antes: max-width: 640px — quitaba ancho y dejaba hueco */
+.artista__media { position: relative; aspect-ratio: 4/5; overflow: hidden; background: var(--bg-light-alt); }
+.artista__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.artista__texto { font: 400 1.05rem/1.65 var(--font-body); color: rgba(27,23,25,.75); margin: 0 0 14px; max-width: 60ch; }
+.artista__triada { font: 600 .95rem/1.6 var(--font-body); letter-spacing: .02em; color: var(--text-ink); margin: 0 0 18px; }
+/* Itálica de voz — mismo lenguaje que .hero-voz, remate con filete de acento (§2.3).
+   Sobre fondo CLARO usa accent-deep (antes accent-bright cuando vivía en oscuro). */
+.artista__voz { font-family: var(--font-display); font-style: italic; font-size: clamp(1.05rem, 1.6vw, 1.25rem); line-height: 1.5; color: var(--text-ink); margin: 0; padding-bottom: 14px; border-bottom: 1.5px solid var(--accent-deep); display: inline-block; }
+@media (max-width: 768px) {
+  .artista-intro .container { grid-template-columns: 1fr; gap: clamp(28px,5vw,40px); }
+  .artista-intro .artista__intro { order: -1; }
+}
+
+.artista-carrusel { background: var(--bg-dark); }
+
+.carrusel {
+  position: relative;
+  width: 100vw; margin-inline: calc(50% - 50vw);
+  /* Sin margin-top: el padding-top de la sección (regla global `section`) ya da el
+     respiro — la sección ahora empieza directo en el carrusel (antes seguía al
+     bloque editorial dentro de la misma sección, por eso necesitaba su propio margen). */
+}
+.carrusel__track { list-style: none; margin: 0; padding: 0; }
+.carrusel__slide { display: none; }
+.carrusel__slide.is-active {
+  display: grid; grid-template-columns: 1fr 1fr; align-items: stretch;
+  min-height: clamp(360px, 42vw, 520px);
+}
+.carrusel__media { position: relative; overflow: hidden; background: rgba(255,255,255,.06); }
+.carrusel__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.carrusel__content {
+  display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+  max-width: 460px;
+  padding-block: clamp(28px, 4vw, 48px);
+  padding-left: clamp(24px, 3vw, 48px);
+  padding-right: max(var(--gutter), calc(50vw - var(--container-max) / 2));
+}
+.carrusel__nombre { font-family: var(--font-display); font-size: clamp(1.5rem, 2.4vw, 2rem); color: #fff; margin: 0 0 10px; }
+.carrusel__texto { font: 400 1.05rem/1.6 var(--font-body); color: rgba(255,255,255,.78); margin: 0; max-width: 40ch; }
+
+/* Flechas — sobre el borde del carrusel (pedido explícito del briefing, coincide
+   con el borde de la imagen porque ocupa la primera columna del grid) */
+.carrusel__arrow {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 5;
+  width: 44px; height: 44px; border-radius: 50%; border: 0; cursor: pointer;
+  background: var(--bg-dark); color: #fff; font-size: 22px; line-height: 1;
+  display: inline-flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow-hover); transition: background .2s;
+}
+.carrusel__arrow--prev { left: clamp(12px, 2vw, 28px); }
+.carrusel__arrow--next { right: clamp(12px, 2vw, 28px); }
+.carrusel__arrow:hover { background: var(--accent-bright); }
+
+.carrusel__dots { display: flex; justify-content: center; gap: 10px; margin-top: clamp(16px, 2vw, 24px); }
+.carrusel__dot { width: 9px; height: 9px; border-radius: 50%; border: 0; padding: 0; cursor: pointer; background: rgba(255,255,255,.3); transition: background .2s, transform .2s; }
+.carrusel__dot.is-active { background: var(--accent-bright); transform: scale(1.2); }
+
+.artista__cta-wrap { margin-top: clamp(24px, 3vw, 36px); }
+.artista__link {
+  display: inline-block; font: 600 .82rem/1 var(--font-body); letter-spacing: .06em; text-transform: uppercase;
+  color: #fff; text-decoration: none; border-bottom: 1px solid #fff; padding-bottom: 4px;
+  transition: color .2s, border-color .2s;
+}
+.artista__link:hover { color: var(--accent-bright); border-color: var(--accent-bright); }
+
+@media (max-width: 768px) {
+  .carrusel__slide.is-active { grid-template-columns: 1fr; min-height: 0; }
+  .carrusel__media { position: relative; min-height: clamp(280px, 80vw, 380px); }
+  .carrusel__content { max-width: none; padding-inline: var(--gutter); padding-block: clamp(24px, 6vw, 36px); }
+  /* 44px, no 38px: mínimo de target táctil del propio estándar del sitio (§10.6) —
+     compartida con .galeria-carrusel, sube el tamaño en ambos carruseles a la vez */
+  .carrusel__arrow { width: 44px; height: 44px; font-size: 19px; }
+}
+
+/* --------------------------------------------------------------------------
+   6 · Galería de trabajos (home, CLARA) — NUEVA (briefing maestro v2 completo,
+   MA-F7/§6.3). Prueba de oficio, fotos reales sin texto superpuesto. Grid de
+   6 imágenes con aspect-ratio fijo (contenedor, no la <img>). Usa .marco-papel
+   (definida abajo, compartida con .galeria-novias__item de novias.html).
+   -------------------------------------------------------------------------- */
+/* Carrusel de galería — pista show/hide + 2 moldes asimétricos que se reflejan */
+.galeria-carrusel { position: relative; margin-top: clamp(28px, 3vw, 40px); }
+.galeria-carrusel__track { position: relative; }
+
+.galeria-slide { display: none; grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; gap: clamp(10px, 1.4vw, 16px); aspect-ratio: 3 / 2; }
+.galeria-slide.is-active { display: grid; }
+
+/* Molde NORMAL: grande a la izquierda (2 filas), 2 chicas apiladas a la derecha */
+.molde--normal .galeria__item:nth-child(1) { grid-column: 1; grid-row: 1 / 3; }
+.molde--normal .galeria__item:nth-child(2) { grid-column: 2; grid-row: 1 / 2; }
+.molde--normal .galeria__item:nth-child(3) { grid-column: 2; grid-row: 2 / 3; }
+
+/* Molde REFLEJO: 2 chicas a la izquierda, grande a la derecha (2 filas) */
+.molde--reflejo { grid-template-columns: 1fr 2fr; }   /* columnas invertidas */
+.molde--reflejo .galeria__item:nth-child(1) { grid-column: 2; grid-row: 1 / 3; }
+.molde--reflejo .galeria__item:nth-child(2) { grid-column: 1; grid-row: 1 / 2; }
+.molde--reflejo .galeria__item:nth-child(3) { grid-column: 1; grid-row: 2 / 3; }
+
+.galeria__item { position: relative; overflow: hidden; background: var(--bg-light-alt); min-height: 0; }
+.galeria__item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Flechas y dots: reutilizan .carrusel__arrow / .carrusel__dot ya existentes.
+   Posicionar las flechas de esta galería (el track no es el mismo que quien-soy). */
+.galeria-carrusel .carrusel__arrow--prev { position: absolute; left: -8px; top: 50%; transform: translateY(-50%); z-index: 2; }
+.galeria-carrusel .carrusel__arrow--next { position: absolute; right: -8px; top: 50%; transform: translateY(-50%); z-index: 2; }
+.galeria-carrusel__dots { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }
+.galeria-carrusel__dots .carrusel__dot { background: rgba(27,23,25,.25); }
+.galeria-carrusel__dots .carrusel__dot.is-active { background: var(--accent-deep); }
+
+@media (max-width: 900px) {
+  .galeria-slide { grid-template-columns: 1fr; grid-template-rows: none; aspect-ratio: auto; gap: clamp(10px, 2vw, 16px); }
+  .molde--normal .galeria__item, .molde--reflejo .galeria__item { grid-column: 1 !important; grid-row: auto !important; }
+  .galeria__item { aspect-ratio: 4/5; }
+  .galeria-carrusel .carrusel__arrow--prev { left: 2px; }
+  .galeria-carrusel .carrusel__arrow--next { right: 2px; }
+}
+
+/* Marco de papel fotográfico cálido (§10.3) — SOLO en galerías de foto pura,
+   sin texto encima (a diferencia de .servicio-card, que es un póster con
+   overlay). Borde blush fino, sombra casi nula. Compartida entre .galeria__item
+   (home, nueva) y .galeria-novias__item (novias.html, ya existía) — front
+   confirma que aplicó la misma clase a ambas (§10.3 no la restringe a una sola
+   página). border-radius reutiliza --radius-soft (ya reducido a esquina casi
+   recta en MA-C8, coherente con "esquinas rectas" del propio §10.3/§10.5). */
+.marco-papel { border: 1px solid var(--blush); box-shadow: 0 2px 6px rgba(27,23,25,.05); border-radius: var(--radius-soft); }
+
+/* --------------------------------------------------------------------------
+   6.5 · Reseñas (home, CLARA) — NUEVA (briefing maestro v2 completo, MA-F7/§6.5).
+   Solo reseñas reales — riesgo legal RGPD/consumo, contenido con content-tbd
+   hasta tener datos verdaderos (nunca estrellas/cifras inventadas). 3 tarjetas
+   simples: comilla decorativa + cita + autor/ocasión, sin foto ni rating.
+   -------------------------------------------------------------------------- */
+/* Fila de stats (revisión MA-F8/§6.5) — entre el h2 y las tarjetas. Cifra grande
+   Playfair + etiqueta chica, mismo lenguaje que .credencial-item (sobre-mi) pero
+   en tinta oscura (fondo claro) y con hairline superior en vez de por-item.
+   Datos de muestra (ver comentario HTML) — `tabular-nums` en las cifras. */
+.resenas__stats {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(20px, 3vw, 32px);
+  margin: clamp(28px, 3vw, 40px) 0 clamp(32px, 3.5vw, 44px);
+  padding-top: clamp(20px, 2.4vw, 28px);
+  border-top: 1px solid var(--border-light);
+}
+.resenas__stat { display: flex; flex-direction: column; gap: 6px; text-align: center; }
+.resenas__stat-num { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.35rem, 2.4vw, 1.9rem); color: var(--text-ink); font-variant-numeric: tabular-nums; }
+.resenas__stat-label { font: 600 .7rem/1.4 var(--font-body); letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
+@media (max-width: 600px) { .resenas__stats { grid-template-columns: repeat(2, 1fr); } }
+
+.resenas__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(24px, 3vw, 40px); }
+.resena-item { display: flex; flex-direction: column; gap: 14px; padding-top: clamp(16px, 2vw, 22px); border-top: 1px solid var(--border-light); }
+.resena-item__texto { margin: 0; }
+.resena-item__texto p { font-family: var(--font-display); font-style: italic; font-size: clamp(1.05rem, 1.6vw, 1.2rem); line-height: 1.5; color: var(--text-ink); margin: 0; }
+.resena-item__autor { font: 600 .78rem/1 var(--font-body); letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); margin: 0; }
+@media (max-width: 768px) { .resenas__grid { grid-template-columns: 1fr; } }
+
+/* --------------------------------------------------------------------------
+   6.8 · FAQ (home, CLARA) — NUEVA (revisión MA-F8/§6.8). Acordeón nativo
+   `<details name="faq">`, cero JS (el atributo `name` agrupa los 6 `<details>`
+   para exclusividad — cierra los demás al abrir uno, soporte nativo moderno).
+
+   ALTERNANCIA (contradicción reportada por front, no resuelta con un fix único
+   posible — ver su nota en `sesion_2026-08-05_front.md`): entre #encuentra
+   (clara, confirmada) y #cierre (oscura, confirmada) cualquier sección nueva
+   deja una adyacencia del mismo color con uno de los dos vecinos — es un
+   problema matemático, no de criterio. Resolución elegida: `--bg-light-alt`
+   como fondo de #faq (en vez de `--bg-light` liso) — diferencia visualmente
+   las 2 claras contiguas sin inventar una 3ª variante de color ni tocar
+   #encuentra/#cierre (CONFIRMADAS, no se tocan sin autorización nueva).
+   -------------------------------------------------------------------------- */
+.faq { background: var(--bg-dark); }
+.faq__grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: clamp(40px, 6vw, 88px); align-items: start; }
+.faq__list { display: flex; flex-direction: column; margin-top: clamp(24px, 3vw, 32px); }
+/* CTA (columna derecha) — antes era la sección .cierre, ahora vive aquí sobre fondo claro */
+.faq__cta { align-self: center; text-align: center; }
+.faq__cta-titulo { font-family: var(--font-display); font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 700; color: #fff; margin: 0 0 12px; }
+.faq__cta-sub { font: 400 .95rem/1.5 var(--font-body); color: rgba(255,255,255,.7); margin: 0 0 24px; }
+.faq__cta-btn.btn-editorial { padding: 20px 48px; font-size: 15px; letter-spacing: 2px; background: var(--cta-vivid); color: #fff; border: none; display: inline-flex; align-items: center; justify-content: center; gap: 10px; }
+.faq__cta-btn.btn-editorial:hover { background: var(--cta-vivid-hover); color: #fff; }
+.faq__cta-micro { font: 400 .8rem/1.5 var(--font-body); color: rgba(255,255,255,.55); margin: 20px 0 0; }
+@media (max-width: 860px) {
+  .faq__grid { grid-template-columns: 1fr; gap: clamp(32px,5vw,48px); }
+  .faq__cta { position: static; }
+}
+.faq__item { border-bottom: 1px solid rgba(255,255,255,.14); }
+.faq__item:first-child { border-top: 1px solid rgba(255,255,255,.14); }
+.faq__question {
+  display: flex; align-items: center; justify-content: flex-start; gap: 14px; text-align: left;
+  padding: clamp(16px, 2vw, 22px) 0;
+  font: 600 1rem/1.4 var(--font-body); color: #fff;
+  cursor: pointer; list-style: none;
+}
+.faq__question::-webkit-details-marker { display: none; }
+.faq__question::before { content: "+"; flex: none; font: 400 1.3rem/1 var(--font-body); color: var(--cta-vivid); width: 16px; text-align: center; }
+.faq__item[open] .faq__question::before { content: "−"; }
+.faq__answer { margin: 0 0 clamp(18px, 2vw, 24px); font: 400 .95rem/1.6 var(--font-body); color: rgba(255,255,255,.72); max-width: 62ch; }
+@media (max-width: 600px) {
+  /* El padding-right de 32px es respiro editorial en desktop (columna ancha, el
+     ícono +/− vive a la izquierda) — en móvil, con el ancho ya acotado por
+     --gutter, ese mismo padding le resta ~10% del ancho disponible al texto de
+     la respuesta sin corresponder a ningún elemento visual de ese lado. Se quita
+     para que la respuesta use el ancho completo de la columna en pantallas chicas. */
+  .faq__answer { padding-right: 0; }
+}
+
+/* --------------------------------------------------------------------------
+   8 · Sobre mí — retrato + bio (split editorial, mismo patrón que hero-novias)
+   -------------------------------------------------------------------------- */
+.sobre-mi-hero { padding-block: 0; overflow: hidden; }
+.sobre-mi-hero__grid {
+  display: grid; grid-template-columns: 1fr 1fr; align-items: stretch;
+  min-height: clamp(480px, 52vw, 680px);
+}
+.sobre-mi-hero__media { position: relative; overflow: hidden; background: var(--bg-light-alt); }
+.sobre-mi-hero__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 25%; display: block; }
+.sobre-mi-hero__content {
+  display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+  max-width: 480px;
+  padding-block: clamp(40px, 5vw, 72px);
+  padding-left: clamp(24px, 3vw, 48px);
+  padding-right: max(var(--gutter), calc(50vw - var(--container-max) / 2));
+}
+.sobre-mi-hero__content h1 { font-family: var(--font-display); font-size: clamp(2rem, 3.6vw, 3.2rem); line-height: 1.08; color: var(--text-ink); margin: 0 0 clamp(14px, 1.6vw, 20px); }
+.sobre-mi-hero__bio { font: 400 1.02rem/1.7 var(--font-body); color: rgba(27,23,25,.72); margin: 0; max-width: 46ch; }
+@media (max-width: 768px) {
+  .sobre-mi-hero__grid { grid-template-columns: 1fr; min-height: 0; }
+  .sobre-mi-hero__media { min-height: clamp(360px, 90vw, 460px); }
+  .sobre-mi-hero__content { max-width: none; padding-inline: var(--gutter); padding-block: clamp(32px, 8vw, 48px); }
+}
+
+/* --------------------------------------------------------------------------
+   9 · Credenciales (sobre-mi, oscura) — datos destacados, no párrafo
+   -------------------------------------------------------------------------- */
+.credenciales { background: var(--bg-dark); }
+.credenciales .section-title { color: #fff; }
+.credenciales-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 3vw, 40px); }
+.credencial-item { display: flex; flex-direction: column; gap: 6px; padding-top: clamp(16px, 2vw, 24px); border-top: 1px solid rgba(255,255,255,.2); }
+.credencial-item__num { font-family: var(--font-display); font-size: clamp(1.6rem, 2.6vw, 2.2rem); font-weight: 700; color: #fff; }
+.credencial-item__label { font: 400 .85rem/1.5 var(--font-body); color: rgba(255,255,255,.65); }
+@media (max-width: 600px) { .credenciales-grid { grid-template-columns: 1fr; } }
+
+/* --------------------------------------------------------------------------
+   10 · Cierre sobre-mi (clara) — CTA doble
+   -------------------------------------------------------------------------- */
+.sobre-mi-cierre { text-align: center; }
+.sobre-mi-cierre .container { max-width: 640px; display: flex; flex-direction: column; align-items: center; }
+.sobre-mi-cierre h2 { font-family: var(--font-display); font-size: clamp(1.8rem, 3.2vw, 2.6rem); font-weight: 700; color: var(--text-ink); margin: 0 0 clamp(20px, 2.4vw, 28px); }
+.sobre-mi-cierre__cta { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+/* .btn-editorial--ghost global es blanco (fondos oscuros); aquí el fondo es claro */
+.sobre-mi-cierre__cta .btn-editorial--ghost { color: var(--text-ink); border-color: var(--text-ink); }
+.sobre-mi-cierre__cta .btn-editorial--ghost:hover { background: var(--text-ink); color: #fff; }
+
+/* --------------------------------------------------------------------------
+   11 · Footer — 5 columnas (Marca / Navegar / Contacto / Cómo reservas / Legal).
+   Columna "Cómo reservas" nueva (revisión MA-F8/§5: trust elements reales del
+   negocio — reserva por WhatsApp+Yape, nunca pago con tarjeta online, a
+   diferencia del footer de e-commerce que este proyecto heredaba de AP Beauty).
+   -------------------------------------------------------------------------- */
+.site-footer { padding: 0; }
+.site-footer__main { background: var(--bg-dark); padding: 64px 0; }
+.site-footer__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px 20px; }
+.site-footer__grid > * { min-width: 0; }
+.footer-col__brand-logo { display: flex; align-items: center; margin-bottom: 16px; }
+.footer-col__brand-name { font-family: var(--font-display); font-weight: 700; font-style: italic; font-size: 20px; color: #fff; }
+.footer-col__desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; }
+.footer-social { display: flex; gap: 16px; list-style: none; padding: 0; margin: 0; }
+.footer-social a { color: var(--text-muted); transition: color .15s; display: inline-flex; }
+.footer-social a:hover { color: #fff; }
+.footer-social__icon { width: 20px; height: 20px; display: block; transition: opacity .15s; }
+.footer-social a:hover .footer-social__icon { opacity: 0.7; }
+.footer-col__title { font-family: var(--font-body); font-size: 12px; font-weight: 600; color: #fff; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 20px; }
+.footer-col__links { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+.footer-col__links a { font-size: 14px; color: var(--text-muted); text-decoration: none; transition: color .15s; }
+.footer-col__links a:hover { color: #fff; }
+/* Trust elements — <li> de texto plano, sin <a> (nada que enlazar, es información).
+   No hereda el color de `.footer-col__links a` porque no hay `a` que targetear. */
+.footer-col__links--plain li { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
+.footer-col__contact-email { font-size: 14px; color: rgba(255,255,255,.8); text-decoration: underline; display: block; overflow-wrap: anywhere; margin-bottom: 8px; }
+.footer-col__contact-email:hover { color: #fff; }
+.footer-col__contact-hours { font-size: 14px; color: var(--text-muted); margin-bottom: 8px; }
+
+.site-footer__bottom { background: var(--bg-dark); border-top: 1px solid rgba(255,255,255,.1); padding: 20px 0; }
+.site-footer__bottom .container { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
+.site-footer__copy { font-size: 12px; color: rgba(255,255,255,.35); letter-spacing: .3px; }
+
+/* Móvil/tablet (<1024px): marca arriba a ancho completo; Navegar a la izquierda a toda
+   la altura; Contacto, Cómo reservas y Legal apilados a la derecha */
+@media (max-width: 1023px) {
+  .site-footer__grid {
+    grid-template-areas:
+      "brand brand"
+      "navegar contacto"
+      "navegar trust"
+      "navegar legal";
+  }
+  .footer-col--brand { grid-area: brand; }
+  .site-footer__grid nav.footer-col[aria-label="Navegar"] { grid-area: navegar; }
+  .footer-col--contact { grid-area: contacto; }
+  .footer-col--trust { grid-area: trust; }
+  .site-footer__grid nav.footer-col[aria-label="Legal"] { grid-area: legal; }
+}
+@media (min-width: 600px) { .site-footer__grid { gap: 40px; } }
+@media (min-width: 768px) { .site-footer__bottom .container { flex-direction: row; justify-content: space-between; text-align: left; } }
+@media (min-width: 1024px) { .site-footer__grid { grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr; } }
+
+/* --------------------------------------------------------------------------
+   12 · NOVIAS + CLASES (migrado de andreaapbeauty/style.css sección 17, AB-C13
+   → MA-C2). Repaletizado a Rosewood en esta sesión (briefing 2026-08-01).
+   -------------------------------------------------------------------------- */
+
+/* Compensa el header sticky (mismo criterio que #servicios) */
+#hero-novias, #credencial, #condiciones, #paquetes, #incluye, #galeria-novias, #reserva-novias,
+#hero-clases, #selector, #automaquillaje, #perfeccionamiento, #condiciones-clases, #reserva-clases {
+  scroll-margin-top: 100px;
+}
+
+/* A · Hero (novias/clases) — split editorial */
+.hero-novias, .hero-clases { padding-block: 0; overflow: hidden; }
+.hero-novias__grid, .hero-clases__grid {
+  display: grid; grid-template-columns: 1fr 1fr; align-items: stretch;
+  min-height: clamp(480px, 52vw, 680px);
+}
+.hero-novias__media, .hero-clases__media { position: relative; overflow: hidden; background: var(--bg-light-alt); }
+.hero-novias__media img, .hero-clases__media img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;
+}
+.hero-novias__content, .hero-clases__content {
+  display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+  max-width: 460px;
+  padding-block: clamp(40px, 5vw, 72px);
+  padding-left: clamp(24px, 3vw, 48px);
+  padding-right: max(var(--gutter), calc(50vw - var(--container-max) / 2));
+}
+.hero-novias__content h1, .hero-clases__content h1 {
+  font-family: var(--font-display); font-size: clamp(2rem, 3.6vw, 3.2rem); line-height: 1.08;
+  color: var(--text-ink); margin: 0 0 clamp(14px, 1.6vw, 20px);
+}
+.hero-novias__sub, .hero-clases__sub {
+  font: 400 clamp(1rem, 1.1vw, 1.1rem)/1.6 var(--font-body); color: rgba(27,23,25,.72);
+  margin: 0 0 clamp(24px, 2.8vw, 32px); max-width: 40ch;
+}
+.hero-novias__cta { display: flex; gap: 14px; flex-wrap: wrap; }
+/* .btn-editorial--ghost global es blanco (fondo oscuro); aquí el fondo es claro */
+.hero-novias__cta .btn-editorial--ghost { color: var(--text-ink); border-color: var(--text-ink); }
+.hero-novias__cta .btn-editorial--ghost:hover { background: var(--text-ink); color: #fff; }
+@media (max-width: 768px) {
+  .hero-novias__grid, .hero-clases__grid { grid-template-columns: 1fr; min-height: 0; }
+  .hero-novias__media, .hero-clases__media { min-height: clamp(360px, 90vw, 460px); }
+  .hero-novias__content, .hero-clases__content {
+    max-width: none; padding-inline: var(--gutter); padding-block: clamp(32px, 8vw, 48px);
+  }
+}
+
+/* B · Credencial (claro) */
+.credencial .container { max-width: 70ch; }
+.credencial__texto { font: 400 1.05rem/1.7 var(--font-body); color: rgba(27,23,25,.72); margin: 0 0 20px; }
+.credencial__link {
+  display: inline-block; font: 600 .82rem/1 var(--font-body); letter-spacing: .06em; text-transform: uppercase;
+  color: var(--text-ink); text-decoration: none; border-bottom: 1px solid var(--text-ink); padding-bottom: 4px;
+  transition: color .2s, border-color .2s;
+}
+.credencial__link:hover { color: var(--accent-deep); border-color: var(--accent-deep); }
+
+/* C · Condiciones — "Antes de agendar" (oscuro, novias + clases comparten .condiciones-list) */
+.condiciones, .condiciones-clases { background: var(--bg-dark); }
+.condiciones .section-title, .condiciones-clases .section-title { color: #fff; }
+.condiciones-list {
+  list-style: none; counter-reset: cond; margin: 0; padding: 0; max-width: 72ch;
+  display: flex; flex-direction: column; gap: clamp(16px, 2vw, 24px);
+}
+.condiciones-list li {
+  counter-increment: cond; position: relative; padding-left: 40px;
+  font: 400 1rem/1.6 var(--font-body); color: rgba(255,255,255,.78);
+}
+.condiciones-list li::before {
+  content: counter(cond); position: absolute; left: 0; top: 0;
+  width: 26px; height: 26px; border-radius: 50%; border: 1px solid rgba(255,255,255,.3);
+  display: flex; align-items: center; justify-content: center;
+  font: 600 .78rem/1 var(--font-body); color: #fff;
+}
+.condiciones-list li strong { color: #fff; }
+
+/* D · Paquetes (claro) — díptico real (briefing maestro §7): 2 .paquete-bloque
+   (no 4 tarjetas), cada uno con una franja interna .paquete-bloque__precios de
+   2 columnas (Sin prueba / Con prueba) que NUNCA colapsa (cabe en 320px — no
+   se le pone media query de 1 columna). Grid externo 2→1 en 768px (breakpoint
+   estándar del proyecto). Precio en clamp(). Aspect-ratio de imagen fijo, igual
+   en todos los breakpoints (sin override en el media query). */
+.paquetes-diptico { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 3vw, 40px); align-items: stretch; }
+.paquete-bloque {
+  display: flex; flex-direction: column;
+  background: var(--bg-light-alt); border-radius: var(--radius-card); overflow: hidden;
+}
+.paquete-bloque__media { position: relative; aspect-ratio: 16/10; background: var(--bg-light-alt); }
+.paquete-bloque__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.paquete-bloque__nombre { font-family: var(--font-display); font-size: clamp(1.3rem, 2vw, 1.6rem); color: var(--text-ink); margin: clamp(16px, 2vw, 22px) clamp(16px, 2vw, 22px) 4px; }
+.paquete-bloque__precios {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+  background: var(--border-light);   /* hairline entre las 2 columnas de precio */
+  margin-top: auto;
+}
+.paquete-precio {
+  display: flex; flex-direction: column; gap: 8px;
+  background: var(--bg-light-alt);
+  padding: clamp(14px, 1.8vw, 20px) clamp(14px, 1.8vw, 20px) clamp(18px, 2.2vw, 24px);
+}
+.paquete-precio__label { font: 600 .7rem/1 var(--font-body); letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); }
+.paquete-precio__valor { font-family: var(--font-display); font-size: clamp(1.15rem, 3.4vw, 1.5rem); font-weight: 700; color: var(--text-ink); margin: 0; font-variant-numeric: tabular-nums; }
+.paquete-precio__nota { font: italic 400 .74rem/1.4 var(--font-body); color: var(--text-muted); margin: 0; }
+.paquete-precio .btn-editorial { margin-top: auto; width: 100%; padding: 11px 12px; font-size: 11px; letter-spacing: 1.2px; }
+.paquete-precio .btn-editorial--solid { background: var(--text-ink); }
+.paquete-precio .btn-editorial--solid:hover { background: var(--accent-deep); }
+@media (max-width: 768px) { .paquetes-diptico { grid-template-columns: 1fr; } }
+
+/* E · Incluye (oscuro, 2 col). Íconos genéricos CSS-only vía mask (gota/lápiz/ojo/
+   paleta/sol/maletín, outline, orden 1:1 con los 6 <li> del HTML) — sin depender
+   de ninguna librería externa ni tocar el markup. Bloque de logos/marcas ya vive
+   en su propio <div> hermano (.incluye-col--marcas): al ser opcional en el DOM,
+   :has() reparte el ancho completo a la columna de servicio si llega a quitarse. */
+.incluye { background: var(--bg-dark); }
+.incluye-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: clamp(32px, 4vw, 64px); align-items: start; }
+.incluye-grid:not(:has(.incluye-col--marcas)) { grid-template-columns: 1fr; }
+.incluye .section-title { color: #fff; }
+.incluye-servicio-list {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px;
+}
+.incluye-servicio-list li {
+  display: flex; align-items: flex-start; gap: 12px;
+  font: 400 1rem/1.5 var(--font-body); color: rgba(255,255,255,.82);
+}
+.incluye-servicio-list li::before {
+  content: ""; flex: none; width: 22px; height: 22px; margin-top: 1px;
+  background-color: rgba(255,255,255,.85);
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-position: center; mask-position: center;
+  -webkit-mask-size: contain; mask-size: contain;
+}
+/* 1 · gota — piel perfecta */
+.incluye-servicio-list li:nth-child(1)::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2C12 2 5 11 5 15.5C5 19.09 8.13 22 12 22C15.87 22 19 19.09 19 15.5C19 11 12 2 12 2Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2C12 2 5 11 5 15.5C5 19.09 8.13 22 12 22C15.87 22 19 19.09 19 15.5C19 11 12 2 12 2Z'/%3E%3C/svg%3E");
+}
+/* 2 · lápiz — diseño de cejas */
+.incluye-servicio-list li:nth-child(2)::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3Z'/%3E%3C/svg%3E");
+}
+/* 3 · ojo — pestañas punto por punto */
+.incluye-servicio-list li:nth-child(3)::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 12S5 5 12 5s11 7 11 7-4 7-11 7-11-7-11-7Z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 12S5 5 12 5s11 7 11 7-4 7-11 7-11-7-11-7Z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E");
+}
+/* 4 · paleta — diseño de labios */
+.incluye-servicio-list li:nth-child(4)::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12c0 3.31 2.69 5 5 5h1c1.1 0 2 .9 2 2 0 .74-.4 1.38-1 1.72.62.18 1.28.28 2 .28 5.52 0 10-4.48 10-10S17.52 2 12 2Z'/%3E%3Ccircle cx='7.5' cy='10.5' r='1.1' fill='black' stroke='none'/%3E%3Ccircle cx='11' cy='7' r='1.1' fill='black' stroke='none'/%3E%3Ccircle cx='15' cy='8.5' r='1.1' fill='black' stroke='none'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12c0 3.31 2.69 5 5 5h1c1.1 0 2 .9 2 2 0 .74-.4 1.38-1 1.72.62.18 1.28.28 2 .28 5.52 0 10-4.48 10-10S17.52 2 12 2Z'/%3E%3Ccircle cx='7.5' cy='10.5' r='1.1' fill='black' stroke='none'/%3E%3Ccircle cx='11' cy='7' r='1.1' fill='black' stroke='none'/%3E%3Ccircle cx='15' cy='8.5' r='1.1' fill='black' stroke='none'/%3E%3C/svg%3E");
+}
+/* 5 · sol — fijador larga duración y efecto glow */
+.incluye-servicio-list li:nth-child(5)::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4.5'/%3E%3Cpath d='M12 2v2M12 20v2M4 12H2M22 12h-2M5.6 5.6 4.2 4.2M19.8 19.8l-1.4-1.4M18.4 5.6l1.4-1.4M4.2 19.8l1.4-1.4'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4.5'/%3E%3Cpath d='M12 2v2M12 20v2M4 12H2M22 12h-2M5.6 5.6 4.2 4.2M19.8 19.8l-1.4-1.4M18.4 5.6l1.4-1.4M4.2 19.8l1.4-1.4'/%3E%3C/svg%3E");
+}
+/* 6 · maletín — kit de retoque */
+.incluye-servicio-list li:nth-child(6)::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='7' width='20' height='13' rx='2'/%3E%3Cpath d='M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M2 13h20'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='7' width='20' height='13' rx='2'/%3E%3Cpath d='M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M2 13h20'/%3E%3C/svg%3E");
+}
+.incluye-col--marcas { border-left: 1px solid rgba(255,255,255,.15); padding-left: clamp(24px, 3vw, 40px); }
+/* Legible, no "gris casi invisible" (briefing pto.4) */
+.incluye-marcas-label { font: 600 .72rem/1 var(--font-body); letter-spacing: .18em; text-transform: uppercase; color: rgba(255,255,255,.68); margin: 0 0 12px; }
+.incluye-marcas-list { font: 400 .95rem/1.7 var(--font-body); color: rgba(255,255,255,.8); margin: 0; }
+/* Disclaimer bajo la lista de marcas (briefing maestro §7/§9) — hereda el
+   estilo de mark.content-tbd ya definido, solo se ajusta el espaciado del párrafo */
+.incluye-marcas-disclaimer { font: 400 .78rem/1.5 var(--font-body); margin: 12px 0 0; }
+@media (max-width: 768px) {
+  .incluye-grid, .incluye-grid:not(:has(.incluye-col--marcas)) { grid-template-columns: 1fr; gap: 32px; }
+  .incluye-servicio-list { grid-template-columns: 1fr; }
+  .incluye-col--marcas { border-left: none; padding-left: 0; border-top: 1px solid rgba(255,255,255,.15); padding-top: 24px; }
+}
+
+/* F · Galería de trabajos — novias (claro) — aspect-ratio fijado en el contenedor */
+.galeria-novias__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(10px, 1.4vw, 16px); }
+.galeria-novias__item { position: relative; aspect-ratio: 4/5; border-radius: var(--radius-soft); overflow: hidden; background: var(--bg-light-alt); }
+.galeria-novias__item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+@media (max-width: 900px) { .galeria-novias__grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 600px) { .galeria-novias__grid { grid-template-columns: repeat(2, 1fr); } }
+
+/* G · Selector "¿Cuál es para ti?" (claro) — mismo precio/duración en las 2 clases:
+   diferenciación visual fuerte obligatoria (badge oscuro vs. acento) para no confundirlas.
+   Breakpoint 2→1 en 768px — mismo valor que usan "Dos caminos" y el díptico. */
+.selector-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(20px, 2.4vw, 32px); align-items: stretch; }
+.selector-card {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
+  background: var(--bg-light-alt); border-radius: var(--radius-card);
+  padding: clamp(28px, 3vw, 40px); text-decoration: none;
+  border: 2px solid transparent; transition: border-color .2s, transform .2s, box-shadow .2s;
+}
+.selector-card:hover { border-color: var(--text-ink); transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+.selector-card__level {
+  display: inline-block; font: 700 .7rem/1 var(--font-body); letter-spacing: .14em; text-transform: uppercase;
+  color: #fff; background: var(--text-ink); padding: 6px 12px; border-radius: var(--radius-pill);
+}
+.selector-card__title { font-family: var(--font-display); font-size: clamp(1.4rem, 2vw, 1.8rem); color: var(--text-ink); margin: 0; }
+.selector-card__desc { font: 400 .95rem/1.6 var(--font-body); color: rgba(27,23,25,.72); margin: 0; }
+.selector-grid a:last-child .selector-card__level { background: var(--accent-deep); }
+@media (max-width: 768px) { .selector-grid { grid-template-columns: 1fr; } }
+
+/* H · Automaquillaje (oscuro) + Perfeccionamiento (claro) — split media/contenido.
+   Precio en clamp() (mismo criterio que el díptico de paquetes, consistencia). */
+.automaquillaje-grid, .perfeccionamiento-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: clamp(32px, 4vw, 64px); align-items: start; }
+.automaquillaje-media, .perfeccionamiento-media { position: relative; aspect-ratio: 3/4; border-radius: var(--radius-card); overflow: hidden; background: var(--bg-light-alt); }
+.automaquillaje-media img, .perfeccionamiento-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.automaquillaje-content h2, .perfeccionamiento-content h2 {
+  font-family: var(--font-display); font-size: clamp(1.8rem, 2.8vw, 2.4rem); line-height: 1.12; margin: 0 0 clamp(10px, 1.4vw, 16px);
+}
+.automaquillaje-price, .perfeccionamiento-price { font-family: var(--font-display); font-size: clamp(1.15rem, 3vw, 1.4rem); font-weight: 700; margin: 0 0 clamp(18px, 2vw, 24px); font-variant-numeric: tabular-nums; }
+.automaquillaje-ficha, .perfeccionamiento-ficha { list-style: none; margin: 0 0 clamp(20px, 2.4vw, 28px); padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.automaquillaje-ficha li, .perfeccionamiento-ficha li { font-size: .92rem; line-height: 1.5; padding-left: 16px; position: relative; }
+.automaquillaje-ficha li::before, .perfeccionamiento-ficha li::before { content: "—"; position: absolute; left: 0; }
+.perfeccionamiento-ficha li::before { color: var(--text-muted); }
+.automaquillaje-subtitle, .perfeccionamiento-subtitle { font: 600 .78rem/1 var(--font-body); letter-spacing: .1em; text-transform: uppercase; margin: 0 0 clamp(14px, 1.6vw, 18px); }
+.automaquillaje-temario { margin: 0 0 clamp(24px, 3vw, 32px); padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+.automaquillaje-temario li { font-size: .9rem; line-height: 1.5; }
+
+/* Automaquillaje = fondo oscuro, texto invertido a claro */
+.automaquillaje { background: var(--bg-dark); }
+.automaquillaje .eyebrow { color: rgba(255,255,255,.6); }
+.automaquillaje-content h2 { color: #fff; }
+.automaquillaje-price { color: #fff; }
+.automaquillaje-ficha li { color: rgba(255,255,255,.8); }
+.automaquillaje-ficha li::before { color: rgba(255,255,255,.4); }
+.automaquillaje-subtitle { color: rgba(255,255,255,.55); }
+.automaquillaje-temario li { color: rgba(255,255,255,.85); }
+/* CTA "RESERVAR CLASE" sobre fondo oscuro — mismo criterio que .hero-overlay/.cierre (§2.1) */
+.automaquillaje .btn-editorial--solid { background: var(--accent-bright); color: var(--bg-dark); }
+.automaquillaje .btn-editorial--solid:hover { background: var(--accent-bright-hover); color: var(--bg-dark); }
+
+/* Perfeccionamiento = fondo claro (default); temario de 14 ítems en columnas, libertad de
+   reparto. Breakpoints estandarizados al set del proyecto: 3→2 en ≤1024px, 2→1 en ≤768px. */
+.perfeccionamiento-price { color: var(--text-ink); }
+.perfeccionamiento-temario { list-style: none; margin: 0 0 clamp(24px, 3vw, 32px); padding: 0; column-count: 3; column-gap: clamp(20px, 2.4vw, 32px); }
+.perfeccionamiento-temario li { font-size: .9rem; line-height: 1.5; color: rgba(27,23,25,.72); padding: 7px 0; border-bottom: 1px solid var(--border-light); break-inside: avoid; }
+@media (max-width: 1024px) { .perfeccionamiento-temario { column-count: 2; } }
+@media (max-width: 768px) { .perfeccionamiento-temario { column-count: 1; } }
+@media (max-width: 768px) {
+  .automaquillaje-grid, .perfeccionamiento-grid { grid-template-columns: 1fr; }
+}
+
+/* I · Reserva final — CTA (novias oscuro, clases claro) */
+.reserva-novias, .reserva-clases { text-align: center; }
+.reserva-novias { background: var(--bg-dark); }
+.reserva-novias .container, .reserva-clases .container { max-width: 640px; display: flex; flex-direction: column; align-items: center; }
+.reserva-novias h2, .reserva-clases h2 {
+  font-family: var(--font-display); font-size: clamp(1.8rem, 3.2vw, 2.6rem); font-weight: 700;
+  margin: 0 0 clamp(20px, 2.4vw, 28px);
+}
+.reserva-novias h2 { color: #fff; }
+.reserva-clases h2 { color: var(--text-ink); }
+/* CTA "RESERVAR FECHA" sobre fondo oscuro — mismo criterio que .hero-overlay/.cierre/.automaquillaje (§2.1) */
+.reserva-novias .btn-editorial--solid { background: var(--accent-bright); color: var(--bg-dark); }
+.reserva-novias .btn-editorial--solid:hover { background: var(--accent-bright-hover); color: var(--bg-dark); }
+.reserva-novias__micro, .reserva-clases__micro { font: 400 .85rem/1.5 var(--font-body); margin: clamp(18px, 2vw, 24px) 0 0; }
+.reserva-novias__micro { color: rgba(255,255,255,.6); }
+.reserva-clases__micro { color: var(--text-muted); }
+
+/* --------------------------------------------------------------------------
+   13 · Unificación de foto (§10.3) — tinte sutil charcoal (10%, dentro del
+   rango 8-15% del brief) sobre los contenedores de foto que ya son
+   position:relative/overflow:hidden con la <img> como fondo. Excluye
+   .hero-media (tiene su propio scrim bespoke, ya >10%) y .servicio-card__media
+   (ya lleva degradado propio fuerte para legibilidad del texto encima — un
+   tinte adicional lo oscurecería de más).
+   -------------------------------------------------------------------------- */
+.novias-promo__media::after,
+.formacion__media::after,
+.carrusel__media::after,
+.hero-novias__media::after,
+.hero-clases__media::after,
+.sobre-mi-hero__media::after,
+.paquete-bloque__media::after,
+.automaquillaje-media::after,
+.perfeccionamiento-media::after,
+.galeria__item::after,
+.galeria-novias__item::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: rgba(27, 23, 25, .1);
+}
+
+/* --------------------------------------------------------------------------
+   Accesibilidad
+   -------------------------------------------------------------------------- */
+:focus-visible { outline: 2px solid var(--text-ink); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
