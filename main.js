@@ -196,8 +196,69 @@ function initFooterYear() {
   if (el) el.textContent = new Date().getFullYear();
 }
 
+// 5 · Header adaptativo — fondo transparente (css, MA-C18): blanco sobre secciones
+// oscuras, negro sobre claras, según lo que haya detrás del header en cada momento
+// del scroll. No usa mix-blend-mode (probado en Chrome: no invierte contra contenido
+// real de la página, solo contra ancestros propios — limitación conocida con
+// position:fixed/stacking contexts separados). En su lugar: en cada scroll, ubica con
+// elementFromPoint qué <section>/<footer> hay justo debajo del header, lee su
+// background-color real (resuelve variables CSS a rgb) y calcula luminancia relativa
+// para decidir el estado — no depende de que cada página tenga data-bg completo (varias
+// no lo tienen, ej. sobre-mi.html en su hero).
+function initAdaptiveHeader() {
+  const header = document.querySelector('.site-header');
+  if (!header) return;
+
+  function relativeLuminance(r, g, b) {
+    const toLinear = (c) => { c /= 255; return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+    return 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
+  }
+
+  // No todas las secciones definen su propio background (ej. .sobre-mi-hero es
+  // transparente a propósito, deja ver el fondo de <body>) — camina hacia arriba
+  // hasta encontrar el primer color NO transparente (alpha>0). Sin esto,
+  // rgba(0,0,0,0) se leía como negro sólido y el header se quedaba blanco sobre
+  // secciones claras que no pintan su propio fondo (bug real, encontrado con
+  // clic real en sobre-mi.html, no solo por lectura de código).
+  function effectiveBackground(el) {
+    let node = el;
+    while (node) {
+      const m = getComputedStyle(node).backgroundColor.match(/[\d.]+/g);
+      if (m && m.length >= 3 && (m.length < 4 || Number(m[3]) > 0)) {
+        return m.slice(0, 3).map(Number);
+      }
+      node = node.parentElement;
+    }
+    return [255, 255, 255]; // fallback final, no debería alcanzarse (<body> siempre pinta --bg-light)
+  }
+
+  function update() {
+    const probeY = Math.max(1, Math.round(header.offsetHeight / 2));
+    const probeX = Math.round(window.innerWidth / 2);
+    const prevPointerEvents = header.style.pointerEvents;
+    header.style.pointerEvents = 'none'; // para que elementFromPoint "vea a través" del header fijo
+    const el = document.elementFromPoint(probeX, probeY);
+    header.style.pointerEvents = prevPointerEvents;
+    if (!el) return;
+    const [r, g, b] = effectiveBackground(el);
+    header.classList.toggle('site-header--on-light', relativeLuminance(r, g, b) > 0.5);
+  }
+
+  let ticking = false;
+  function onScrollOrResize() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => { update(); ticking = false; });
+  }
+
+  window.addEventListener('scroll', onScrollOrResize, { passive: true });
+  window.addEventListener('resize', onScrollOrResize);
+  update();
+}
+
 initMobileMenu();
 initQuienSoyCarrusel();
 initGaleriaCarrusel();
 initScrollReveals();
 initFooterYear();
+initAdaptiveHeader();

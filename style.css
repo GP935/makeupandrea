@@ -10,31 +10,47 @@
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   Design tokens — Sakura (briefing maestro v2 completo, 2026-08-05, MA-F7/MA-C8)
-   Reemplaza por completo "Plata Cálida" (MA-C6). Sakura como relación de color
-   (corteza→flor profunda→flor abierta→pétalo→cielo pálido), nunca ilustración.
+   Design tokens — Tinta editorial (REPINTADO 2026-08-07, MA-C12, brief
+   web/negocios/makeupandrea/BRIEF_REPINTADO_TINTA.md). Reemplaza por completo
+   "Sakura" (MA-F7/MA-C8). Negro tinta casi puro + blanco papel frío, contraste
+   alto, precisión de imprenta — con un único acento cálido (rosewood, "el
+   sello") que es lo que separa el sitio de AP Beauty (brief §0). Es repintado:
+   cambian valores de color, estructura/layout/copy/JS no se tocan (brief §1).
    -------------------------------------------------------------------------- */
 :root {
-  /* Tokens de color oficiales — paleta sakura (briefing §2). El acento ya NO es
-     un solo token: se parte en dos según el fondo sobre el que actúa (regla
-     60/30/10, §2.1) — --accent-deep sobre CLARO, --accent-bright sobre OSCURO.
-     --blush es SOLO atmósfera (líneas de firma, hover de fondo) — nunca botones. */
-  --bg-light:      #F4F0EF;   /* Blush White — fondos claros, nunca blanco puro */
-  --bg-dark:       #1B1719;   /* Warm Charcoal — fondos oscuros, también alias de texto principal, ver --text-ink */
-  --accent-deep:   #6B2737;   /* Rosewood — acción sobre fondo CLARO */
-  --accent-bright: #B76E79;   /* Dusty Rose — acción sobre fondo OSCURO (rosewood puro se pierde sobre charcoal) */
-  --cta-vivid: #C64B63;
-  --cta-vivid-hover: #A83A50;
-  --blush:         #EAD9DA;   /* atmósfera únicamente — lavados de color, hover de fondo. NUNCA relleno de acción */
-  --text-muted:    #8B8180;   /* eyebrows, etiquetas, microtexto */
+  /* Tokens de color oficiales — paleta tinta (brief §2). El acento sigue
+     partido en dos según el fondo (regla 60/30/10, §2.1) — --accent-deep sobre
+     CLARO, --accent-bright sobre OSCURO. --blush RETIRADO por completo (era
+     "atmósfera cálida" — el sistema tinta es B/N + un único acento, sin
+     lavados de color secundarios; brief §0 lo pide explícitamente). */
+  --bg-light:      #F7F7F5;   /* Blanco papel FRÍO — fondos claros, nunca blanco puro #fff */
+  --bg-dark:       #0A0A0A;   /* Negro tinta casi puro — fondos oscuros, también alias de texto principal, ver --text-ink */
+  --accent-deep:   #6B2737;   /* Rosewood — "el sello", ÚNICO acento del sitio. SE CONSERVA sin cambios (brief §0/§2: es lo que separa el sitio de AP Beauty — no tocar por "consistencia fría") */
+  --accent-bright: #8E3A4C;   /* Rosewood sobre fondo OSCURO — un punto más luminoso que accent-deep para leerse contra el negro, pero más oscuro que el dusty rose sakura anterior (ya no hace falta "empolvarlo": el negro pleno le da rango de sobra) */
+  --ink-mid:       #3A3A3C;   /* gris tinta medio — jerarquía intermedia entre negro pleno y blanco papel, nuevo en este sistema (brief §2.1, "ahora SÍ se puede jerarquizar fuerte") */
+  --paper-line:    #DADAD7;   /* líneas de marco/registro sobre papel frío — reemplaza --blush como borde de .marco-papel/.galeria-novias__item (brief §3A, "marcos de registro") */
+  --text-muted:    #7A7A78;   /* eyebrows, etiquetas, microtexto — gris FRÍO (antes cálido) */
+  --silver:        #C8C8C6;   /* titulares sobre --bg-dark (hero layout B) — plata, nunca blanco puro (evita dureza tipo AP Beauty) */
+  --silver-dim:    #9A9A98;   /* plata apagado — texto secundario/itálica de voz sobre --bg-dark */
+  --star-gold:     #B8912F;   /* estrellas de rating en .resena-item__estrellas (MA-C26) — convención universal de rating, no compite como "acento de marca" (regla 60/30/10 sigue siendo solo rosewood) */
 
-  /* Derivados — variantes de hover/relleno que el sistema necesita. Recalculados
-     en MA-C8 para la paleta sakura (antes eran derivados de Plata Cálida). */
+  /* Rosa eléctrico "glowing" (MA-C27, petición directa de Paul) — SOLO para los
+     2 CTA de conversión más importantes del sitio (hero + cierre de FAQ), un
+     tratamiento deliberadamente fuera del sistema rosewood/60-30-10 para que
+     esos 2 botones destaquen por diseño, no un reemplazo del acento de marca. */
+  --cta-glow:       #FF2E7A;
+  --cta-glow-hover: #E01E64;
+
+  /* Derivados — recalculados para la paleta tinta (antes derivados de sakura,
+     MA-C8). accent-deep no cambió de valor → su hover tampoco (mismo cálculo
+     que MA-C6/MA-C8). accent-bright-hover SÍ se recalcula sobre el nuevo valor
+     más oscuro. bg-light-alt/border-light pasan de tinte cálido (hacia
+     --blush, retirado) a gris neutro frío, coherente con --paper-line. */
   --text-ink:           var(--bg-dark);   /* alias semántico: texto principal sobre fondo claro */
-  --accent-deep-hover:  #56212B;          /* rosewood oscurecido, :hover sobre relleno accent-deep (mismo valor que MA-C6, accent-deep no cambió) */
-  --accent-bright-hover:#9B5D67;          /* dusty rose oscurecido, :hover sobre relleno accent-bright */
-  --bg-light-alt:       #EFE6E3;          /* relleno de tarjetas sobre fondo claro (paquete-bloque, selector-card…) — tinte cálido hacia --blush */
-  --border-light:       #E0D8D5;          /* líneas/bordes sutiles sobre fondo claro */
+  --accent-deep-hover:  #56212B;          /* rosewood oscurecido, :hover sobre relleno accent-deep (accent-deep no cambió de valor → el hover se mantiene igual) */
+  --accent-bright-hover:#722E3D;          /* rosewood-oscuro aún más oscurecido, :hover sobre relleno accent-bright (recalculado sobre el nuevo #8E3A4C, mismo % de oscurecimiento que accent-deep→accent-deep-hover) */
+  --bg-light-alt:       #EBEBE9;          /* relleno de tarjetas sobre fondo claro (paquete-bloque, selector-card…) — gris neutro frío, ya no tinte cálido hacia --blush (retirado) */
+  --border-light:       #DADAD7;          /* líneas/bordes sutiles sobre fondo claro — mismo valor que --paper-line (misma familia "línea sobre papel frío"); token separado por sitio de uso, no por color */
 
   /* Tipografía */
   --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
@@ -47,6 +63,12 @@
   --section-pad-y: clamp(40px, 4.5vw, 64px);
   --container-max: 1600px;
   --gutter: clamp(16px, 3vw, 40px);
+
+  /* Banda donde flota el header sobre las fotos de hero (MA-C20/C22) — se SUMA
+     al alto del contenedor (MA-C23), no se resta del alto de la foto: la foto
+     conserva su tamaño completo, el header gana su espacio propio arriba. */
+  --header-gap: clamp(90px, 10vw, 140px);
+
 
   /* Radios + sombras — reducidos a esquinas rectas/casi rectas (briefing §10.5:
      "nada de radius-card:14px/radius-pill:50px en botones/cards"). radius-pill
@@ -123,18 +145,46 @@ h1, h2, h3 { text-wrap: balance; }
 }
 @media (max-width: 768px) { .section-title { font-size: 26px; } }
 
-/* Marcador de contenido pendiente (dato real de Paul/Andrea) */
-mark.content-tbd { background: #FBE9E4; color: var(--accent-deep-hover); padding: 1px 5px; border-radius: 3px; font-weight: 600; font-style: normal; }
+/* Marcador de contenido pendiente (dato real de Paul/Andrea). Repintado MA-C12:
+   antes #FBE9E4 hardcodeado (tinte blush, residuo cálido de sakura — prohibido
+   por brief §4). Sigue visible en producción (CREDENCIAL_MATTA/DISCLAIMER_MARCAS/
+   CONTACTO en 4 páginas, no es un marcador puramente interno), así que se migra
+   a --paper-line en vez de dejarse como estaba: gris frío, coherente con el
+   sistema nuevo, mismo criterio de "línea/marca sobre papel" que .marco-papel. */
+mark.content-tbd { background: var(--paper-line); color: var(--accent-deep-hover); padding: 1px 5px; border-radius: 3px; font-weight: 600; font-style: normal; }
 
 /* --------------------------------------------------------------------------
-   1 · Header — 3 zonas, logo centrado (wordmark de texto, sin archivo de logo)
-   -------------------------------------------------------------------------- */
-.site-header { position: sticky; top: 0; z-index: 1000; background: var(--bg-light); border-bottom: 1px solid var(--border-light); }
+   1 · Header — flotante y transparente sobre el contenido (petición directa
+   de Paul, MA-C18). Pasa de sticky (empujaba el contenido, fondo negro sólido)
+   a fixed (flota sobre cada sección al hacer scroll, sin ocupar espacio en el
+   flujo). Probado primero con mix-blend-mode:difference (100% CSS, sin JS) —
+   descartado: verificado en Chrome que NO invierte contra el contenido real
+   de la página con position:fixed (solo blende contra ancestros propios del
+   header, que están vacíos/transparentes — limitación real del navegador,
+   no un error de sintaxis). Resuelto con JS (`initAdaptiveHeader()` en
+   main.js): en cada scroll detecta qué sección hay debajo del header y
+   togglea `.site-header--on-light` — este archivo solo define los 2 estados
+   de color, blanco por defecto (secciones oscuras) y negro con la clase
+   (secciones claras), con transición suave entre ambos.
+   "Transparente" sin ningún tratamiento se leía como que el header directamente
+   no existía (feedback directo de Paul) — sin fondo sólido, `backdrop-filter`
+   da presencia de barra ("vidrio esmerilado": el contenido de abajo sigue
+   viéndose, pero desenfocado) sin reintroducir un color fijo que rompa la
+   inversión blanco/negro del texto según la sección. */
+.site-header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: transparent;
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
 
 /* Compensa el header sticky al saltar a estas anclas. #artista-intro/#artista-carrusel
    reemplazan a #artista (split en 2 sub-secciones, revisión MA-F8/§6.2); #faq es
    sección nueva de la misma revisión. */
 #novias, #formacion, #artista-intro, #artista-carrusel, #encuentra, #galeria, #resenas, #faq { scroll-margin-top: 100px; }
+/* #site-footer (MA-F13, nuevo link "Contactos" del nav) — presente en las 4 páginas,
+   mismo valor que el resto de anclas por consistencia. */
+#site-footer { scroll-margin-top: 100px; }
 
 /* Header FUNCIONAL (revisión MA-F8/§5, reemplaza el grid 3-zonas con logo centrado):
    logo a la izquierda con margin-right:auto (empuja nav+CTA agrupados al borde derecho,
@@ -144,37 +194,53 @@ mark.content-tbd { background: #FBE9E4; color: var(--accent-deep-hover); padding
   display: flex; align-items: center;
   gap: clamp(20px, 2.4vw, 40px);
   padding: clamp(14px, 1.6vw, 22px) var(--gutter);
-  background: var(--bg-light);
+  background: transparent;
 }
 .header-right { display: flex; align-items: center; gap: clamp(18px, 2vw, 32px); }
 .header-logo { display: block; text-decoration: none; margin-right: auto; }
 .header-logo__wordmark {
   font-family: var(--font-display); font-weight: 700; font-style: italic;
-  font-size: clamp(1.15rem, 1.8vw, 1.5rem); color: var(--text-ink); white-space: nowrap;
+  font-size: clamp(1.15rem, 1.8vw, 1.5rem); color: #fff; white-space: nowrap;
+  transition: color .25s ease;
 }
+.site-header--on-light .header-logo__wordmark { color: var(--text-ink); }
 
-.nav-cluster { display: flex; gap: clamp(16px, 1.6vw, 28px); }
+/* Ocupa ~50% del ancho del header, de derecha a izquierda (petición directa de
+   Paul, MA-C16) — flex-basis fijo en vez de ancho automático/compacto, con
+   flex-shrink:0 para que no ceda espacio si el header se aprieta. Como
+   .header-logo tiene margin-right:auto (empuja todo el resto a la derecha),
+   fijar el 50% aquí deja el cluster ocupando la mitad derecha real del header,
+   justo antes de .header-right (hoy solo el botón de menú, área mínima). */
+.nav-cluster { display: flex; flex: 0 0 50%; flex-shrink: 0; justify-content: space-between; gap: clamp(16px, 2vw, 32px); }
 .nav-link {
-  /* Negrita (revisión §5: "señal clara de clicable, ve directo") */
-  font: 700 .82rem/1 var(--font-body); letter-spacing: .08em; text-transform: uppercase;
-  color: var(--text-ink); text-decoration: none; transition: color .2s;
+  /* Negrita (revisión §5: "señal clara de clicable, ve directo") + más grande
+     (MA-C16, "hacerlos más grande" — antes .82rem) para llenar con criterio
+     el 50% de ancho nuevo, no solo repartir el espacio con gaps enormes. */
+  font: 700 1rem/1 var(--font-body); letter-spacing: .07em; text-transform: uppercase;
+  color: #fff; text-decoration: none; transition: color .25s ease;
 }
-.nav-link:hover { color: var(--accent-deep); }   /* ÚNICO acento del header, solo en hover */
-/* Página activa: filete de acento bajo el texto, NO color permanente (uso moderado del acento) */
-.nav-link--active { border-bottom: 2px solid var(--accent-deep); padding-bottom: 4px; }
+.site-header--on-light .nav-link { color: var(--text-ink); }
+/* Acento en hover/activo — vuelve a usar la regla 60/30/10 del resto del
+   sitio ahora que el estado es real (clase JS), no un blend impredecible:
+   accent-bright sobre el header oscuro por defecto, accent-deep cuando
+   `.site-header--on-light` indica que hay una sección clara detrás. */
+.nav-link:hover { color: var(--accent-bright); }
+.site-header--on-light .nav-link:hover { color: var(--accent-deep); }
+.nav-link--active { border-bottom: 2px solid var(--accent-bright); padding-bottom: 4px; }
+.site-header--on-light .nav-link--active { border-bottom-color: var(--accent-deep); }
 
-/* Más ancho (revisión §5: "RESERVAR más ancho, padding generoso") — debe seguir
-   destacando pese a la nav agrupada junto a él (contraste negro/rosewood + separación
-   del gap del header-right). */
-.header-cta.btn-editorial { padding: 13px 32px; font-size: 12px; letter-spacing: 1.6px; }
-/* Ícono secundario — no debe dominar sobre el texto RESERVAR (reutilizado a 18px en .cierre__cta) */
+/* .header-cta__icon sigue viva — reutilizada por .hero__cta-btn y .cierre__cta,
+   no es huérfana pese a que el botón del header (.header-cta) ya no existe en
+   el HTML (MA-F13, retirado de las 4 páginas; limpieza de su CSS en MA-C17). */
 .header-cta__icon { flex-shrink: 0; opacity: .92; }
 
-/* padding:10px + icono 24px = ~44px de área táctil total (§10.6) */
-.menu-toggle { display: none; background: none; border: 0; color: var(--text-ink); cursor: pointer; padding: 10px; }
+/* padding:10px + icono 24px = ~44px de área táctil total (§10.6). El ícono es
+   un SVG stroke="currentColor" en el HTML, sigue el color del botón. */
+.menu-toggle { display: none; background: none; border: 0; color: #fff; cursor: pointer; padding: 10px; transition: color .25s ease; }
+.site-header--on-light .menu-toggle { color: var(--text-ink); }
 
 @media (max-width: 900px) {
-  .nav-cluster, .header-right .header-cta { display: none; }
+  .nav-cluster { display: none; }
   .menu-toggle { display: inline-flex; }
 }
 
@@ -183,7 +249,7 @@ mark.content-tbd { background: #FBE9E4; color: var(--accent-deep-hover); padding
    -------------------------------------------------------------------------- */
 .menu-backdrop {
   position: fixed; inset: 0; z-index: 1090;
-  background: rgba(27, 23, 25, .5);
+  background: rgba(10, 10, 10, .5);
   opacity: 0; visibility: hidden; transition: opacity .3s ease, visibility .3s ease;
 }
 .menu-backdrop[hidden] { display: none; }
@@ -216,35 +282,124 @@ mark.content-tbd { background: #FBE9E4; color: var(--accent-deep-hover); padding
 .menu-cta.btn-editorial { margin-top: clamp(24px, 5vw, 40px); width: 100%; }
 
 /* --------------------------------------------------------------------------
-   3 · Hero (home)
-   -------------------------------------------------------------------------- */
-.hero { background: var(--bg-light); padding-block: 0; overflow: hidden; }
-.hero__grid { display: grid; grid-template-columns: 1fr 1fr; align-items: stretch; gap: 0; min-height: 82vh; max-height: 780px; max-width: none; padding-inline: 0; }
-.hero__media { margin-right: 0; }
-.hero__panel { display: flex; flex-direction: column; justify-content: center; padding-block: clamp(40px, 6vw, 96px); padding-right: clamp(24px, 4vw, 64px); padding-left: var(--gutter); }
-.hero__media { position: relative; overflow: hidden; background: var(--bg-dark); }
-.hero__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; }
-.hero-eyebrow { display: inline-block; font-family: var(--font-body); font-size: 13px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 18px; }
-.hero h1 { font-family: var(--font-display); font-size: clamp(2.6rem, 5.5vw, 4.2rem); font-weight: 900; line-height: 1.02; letter-spacing: -0.5px; color: var(--text-ink); margin: 0 0 18px; }
-.hero-sub { font-family: var(--font-body); font-size: 19px; font-weight: 400; line-height: 1.5; color: rgba(27,23,25,.75); margin: 0 0 12px; }
-.hero-voz { font-family: var(--font-display); font-style: italic; font-size: clamp(1.05rem, 1.6vw, 1.25rem); line-height: 1.5; color: var(--text-ink); margin: 0 0 28px; padding-bottom: 14px; border-bottom: 1.5px solid var(--accent-deep); display: inline-block; }
-.hero-cta { display: flex; gap: 14px; flex-wrap: wrap; }
-/* CTA primario: sobre fondo claro usa accent-deep (rosewood), como el resto de secciones claras */
-.hero .btn-editorial--solid { background: var(--accent-deep); color: #fff; }
-.hero .btn-editorial--solid:hover { background: var(--accent-deep-hover); color: #fff; }
+   3 · Hero (home) — layout B, apilado, AL RAS del viewport (petición directa
+   de Paul: debe apreciarse completo nada más cargar la página, sin scroll).
+   Alto = 100% del viewport + var(--header-gap) (MA-C23: el gap para el header
+   se SUMA, no se resta — antes `.hero__media` perdía ese espacio de su propio
+   alto, "robándole altura" a la foto; ahora el contenedor crece esa misma
+   medida y la foto conserva su tamaño íntegro debajo del gap). Acotado entre
+   un mínimo (no queda ilegible en pantallas muy bajas) y un máximo (no se
+   estira de más en monitores muy altos), ambos también +var(--header-gap)
+   por el mismo motivo. La foto es el FONDO real de la sección (absolute,
+   cover) — no dicta el alto vía aspect-ratio. */
+.hero {
+  position: relative;
+  background: var(--bg-dark);
+  height: calc(100vh + var(--header-gap));
+  height: calc(100dvh + var(--header-gap));
+  min-height: calc(560px + var(--header-gap));
+  max-height: calc(920px + var(--header-gap));
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
+  overflow: hidden;
+}
+/* Sin degradado/scrim (retirado a petición directa de Paul, MA-C17 — el
+   degradado de MA-C15 tapaba con --bg-dark sólido el ~55% inferior de la
+   foto, se veía como un corte/costura en vez de una foto completa). La foto
+   es el único elemento de fondo de la sección, sin overlay de color encima.
+   object-position horizontal en 66% (MA-C18) — Andrea quedó reencuadrada en
+   la foto actual a ~4/6 del ancho hacia la derecha; en desktop el contenedor
+   del hero es siempre más ancho (proporción) que la foto (16:10ish vs. el
+   ratio real ~1.68:1 de este archivo), así que object-fit:cover no recorta
+   horizontal —muestra el ancho completo de la imagen 1:1 con el de la
+   sección— pero se deja el valor explícito para no perder el encuadre si
+   algún viewport angosto/alto llega a recortar horizontalmente.
+   `top:var(--header-gap)` (MA-C20, petición directa de Paul: el header flotante
+   no debe tocar la foto directamente) — la foto arranca más abajo, dejando ver
+   el `background:var(--bg-dark)` de `.hero` como banda sólida donde flota el
+   header. Con el alto de `.hero` ya agrandado en esa misma medida (MA-C23), la
+   foto sigue midiendo exactamente lo que medía antes de tener este espacio. */
+.hero__media { position: absolute; top: var(--header-gap); left: 0; right: 0; bottom: 0; }
+.hero__media picture { display: block; width: 100%; height: 100%; }
+.hero__media img { width: 100%; height: 100%; object-fit: cover; object-position: 66% 20%; display: block; }
+/* Bloque de texto centrado en el ALTO del div (MA-C20: `justify-content:center`
+   arriba, en vez del anclaje al pie de MA-C15) y a ~2/8 (25%) del ANCHO desde
+   la izquierda (MA-C20, reemplaza el arranque casi pegado al borde de MA-C18).
+   `margin-left:25%` empuja el punto de arranque del bloque sin consumir su
+   propio ancho (a diferencia de un padding, que sí lo haría) — max-width
+   recalculado a 32% para que el borde derecho del bloque (25%+32%=57%) siga
+   quedando antes de donde arranca el cabello de Andrea (~58-66% del ancho,
+   ver nota de object-position arriba) — mismo margen de seguridad que antes,
+   solo que ahora medido desde el nuevo punto de partida. */
+.hero__content {
+  display: flex; flex-direction: column; align-items: flex-start; text-align: left;
+  max-width: 32%;
+  margin-left: 25%;
+  padding: clamp(20px, 3vw, 32px) var(--gutter) clamp(28px, 5vw, 48px) 0;
+  position: relative; z-index: 1;
+}
+.hero-eyebrow { display: inline-block; font-family: var(--font-body); font-size: 13px; font-weight: 600; letter-spacing: 4px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; }
+/* Título reducido de clamp(3rem,8vw,6rem) — proporcional a la sección más baja,
+   sigue dominando la composición sin forzar overflow en viewports bajos. */
+.hero h1 { font-family: var(--font-display); font-size: clamp(2.2rem, 5.5vw, 4rem); font-weight: 800; line-height: 1.04; letter-spacing: -1px; color: var(--silver); margin: 0 0 22px; }
+.hero__sello { font-style: italic; color: var(--accent-bright); }
+.hero__cta-btn.btn-editorial { display: inline-flex; align-items: center; gap: 10px; padding: 18px 48px; font-size: 15px; letter-spacing: 2px; border: none; }
+/* Rosa eléctrico "glowing" + ondas pulsantes (MA-C27, petición directa de Paul,
+   compartido con .faq__cta-btn) — glow vía box-shadow difuso, ondas vía 2
+   pseudo-elementos con anillo que escala y se desvanece en loop, desfasados
+   entre sí (::after arranca a mitad de ciclo) para que nunca se vea vacío.
+   100% CSS, no necesita JS: es un efecto ambiental que llama la atención hacia
+   el botón, no una animación disparada por el clic (eso sí sería JS — ripple
+   Material-style con coordenadas del puntero — pero no es lo que se pidió). */
+.hero__cta-btn.btn-editorial,
+.faq__cta-btn.btn-editorial {
+  position: relative;
+  background: var(--cta-glow);
+  color: var(--bg-dark);
+  box-shadow: 0 0 20px 2px rgba(255,46,122,.55), 0 0 44px 10px rgba(255,46,122,.3);
+}
+.hero__cta-btn.btn-editorial:hover,
+.faq__cta-btn.btn-editorial:hover {
+  background: var(--cta-glow-hover);
+  color: var(--bg-dark);
+}
+.hero__cta-btn.btn-editorial::before, .hero__cta-btn.btn-editorial::after,
+.faq__cta-btn.btn-editorial::before, .faq__cta-btn.btn-editorial::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit;
+  border: 2px solid var(--cta-glow);
+  animation: cta-pulse-ring 2.4s ease-out infinite;
+  pointer-events: none;
+}
+.hero__cta-btn.btn-editorial::after, .faq__cta-btn.btn-editorial::after { animation-delay: 1.2s; }
+/* Palpitación reducida (MA-C28, feedback directo de Paul: "reduce un poco la
+   intensidad") — escala máxima de 1.9→1.45 y opacidad de arranque de .6→.4,
+   anillo más sutil sin perder el efecto. */
+@keyframes cta-pulse-ring {
+  0%   { transform: scale(1);    opacity: .4; }
+  100% { transform: scale(1.45); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero__cta-btn.btn-editorial::before, .hero__cta-btn.btn-editorial::after,
+  .faq__cta-btn.btn-editorial::before, .faq__cta-btn.btn-editorial::after {
+    animation: none; display: none;
+  }
+}
+.hero-voz { font-family: var(--font-display); font-style: italic; font-size: clamp(.95rem, 1.4vw, 1.15rem); line-height: 1.5; color: var(--silver-dim); margin: 18px 0 0; }
 
 @media (max-width: 768px) {
-  .hero__grid { grid-template-columns: 1fr; min-height: 0; max-height: none; }
-  .hero__media { order: -1; aspect-ratio: 16/13; max-height: 42vh; }   /* retrato ARRIBA en móvil */
-  .hero-voz { font-size: 1.15rem; }
-  .hero-sub { font-size: 1.05rem; }
-  /* BUG corregido: el shorthand `padding: X 0` dejaba el panel sin margen
-     horizontal — h1/CTA tocaban el borde de la pantalla. `.hero__grid` tiene
-     `padding-inline:0` (full-bleed) a propósito, así que en móvil el panel
-     necesita su propio `--gutter` a los lados, igual que el resto de secciones. */
-  .hero__panel { padding: clamp(28px, 7vw, 40px) var(--gutter); }
-  .hero-cta { flex-direction: column; }
-  .hero-cta .btn-editorial { width: 100%; }
+  /* Móvil vuelve a centrado HORIZONTAL (no pedido, la petición fue explícita
+     "versión de PC") — usa hero-movil.webp, encuadre vertical distinto sin la
+     misma relación 4/6 de la foto de escritorio, y el ancho de viewport ya no
+     deja margen real para un bloque angosto a la izquierda.
+     Vertical: NO centrado (MA-C24, petición directa de Paul) — el centrado en
+     el alto del div (MA-C20) era para desktop; en móvil el bloque va anclado
+     abajo, respetando el padding-bottom que ya tiene `.hero__content`
+     (`clamp(28px,5vw,48px)`, mismo criterio "al ras" original de MA-C15). */
+  .hero { min-height: calc(440px + var(--header-gap)); max-height: calc(640px + var(--header-gap)); align-items: center; justify-content: flex-end; }
+  .hero__media img { object-position: center 20%; }
+  .hero__content { align-items: center; text-align: center; max-width: none; margin-left: 0; }
+  .hero h1 { font-size: clamp(1.9rem, 9vw, 2.8rem); }
+  .hero-voz { display: none; }   /* la sección es baja en móvil — la voz cede espacio al mensaje principal + CTA, que son lo prioritario "al ras" */
+  .hero__cta-btn.btn-editorial { width: 100%; justify-content: center; }
 }
 
 /* --------------------------------------------------------------------------
@@ -291,7 +446,14 @@ mark.content-tbd { background: #FBE9E4; color: var(--accent-deep-hover); padding
   color: #fff; text-decoration: none; border-bottom: 1px solid #fff; padding-bottom: 4px;
   transition: color .2s, border-color .2s;
 }
-.novias-promo__link:hover { color: var(--accent-bright); border-color: var(--accent-bright); }
+/* REPINTADO MA-C12: antes el hover teñía TEXTO+borde de accent-bright — con
+   el dusty rose sakura (más claro) leía bien sobre el charcoal cálido, pero
+   el nuevo accent-bright (#8E3A4C, más oscuro) da ~2.7:1 de contraste como
+   color de TEXTO sobre negro tinta casi puro (#0A0A0A) — ilegible. Se deja
+   el texto en blanco (base) y el acento se reserva para el filete/borde,
+   coherente con brief §2.3 ("la línea en rosa se reserva para momentos de
+   firma escasos", no el texto corrido). */
+.novias-promo__link:hover { border-color: var(--accent-bright); }
 @media (max-width: 768px) {
   .novias-promo__grid { grid-template-columns: 1fr; min-height: 0; }
   .novias-promo__media { min-height: clamp(280px, 80vw, 380px); }
@@ -346,8 +508,13 @@ mark.content-tbd { background: #FBE9E4; color: var(--accent-deep-hover); padding
   padding: 14px 28px; min-width: 168px;
   transition: background .2s, border-color .2s, color .2s;
 }
+/* REPINTADO MA-C12: color de texto en hover pasa de --bg-dark a #fff. El
+   accent-bright nuevo (#8E3A4C) es más oscuro que el dusty rose sakura
+   anterior — texto oscuro encima da ~2.8:1 de contraste (falla WCAG),
+   texto blanco da ~7.3:1. Verificado con cálculo de luminancia relativa
+   antes de aplicar, no es un cambio cosmético al azar. */
 .formacion__bloque-link:hover,
-.servicio-card__link:hover { background: var(--accent-bright); border-color: var(--accent-bright); color: var(--bg-dark); }
+.servicio-card__link:hover { background: var(--accent-bright); border-color: var(--accent-bright); color: #fff; }
 @media (max-width: 768px) {
   .formacion__grid { grid-template-columns: 1fr; }
   .formacion__media { aspect-ratio: 4/3; }
@@ -386,7 +553,7 @@ mark.content-tbd { background: #FBE9E4; color: var(--accent-deep-hover); padding
 /* Degradado en la base de la imagen — legibilidad del texto montado encima */
 .servicio-card__media::after {
   content: ""; position: absolute; inset: 0;
-  background: linear-gradient(180deg, transparent 35%, rgba(27,23,25,.82) 100%);
+  background: linear-gradient(180deg, transparent 35%, rgba(10,10,10,.82) 100%);
 }
 .servicio-card__title {
   position: relative; z-index: 2;
@@ -427,7 +594,7 @@ mark.content-tbd { background: #FBE9E4; color: var(--accent-deep-hover); padding
 .artista__intro { max-width: none; }   /* antes: max-width: 640px — quitaba ancho y dejaba hueco */
 .artista__media { position: relative; aspect-ratio: 4/5; overflow: hidden; background: var(--bg-light-alt); }
 .artista__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.artista__texto { font: 400 1.05rem/1.65 var(--font-body); color: rgba(27,23,25,.75); margin: 0 0 14px; max-width: 60ch; }
+.artista__texto { font: 400 1.05rem/1.65 var(--font-body); color: var(--ink-mid); margin: 0 0 14px; max-width: 60ch; }
 .artista__triada { font: 600 .95rem/1.6 var(--font-body); letter-spacing: .02em; color: var(--text-ink); margin: 0 0 18px; }
 /* Itálica de voz — mismo lenguaje que .hero-voz, remate con filete de acento (§2.3).
    Sobre fondo CLARO usa accent-deep (antes accent-bright cuando vivía en oscuro). */
@@ -479,7 +646,13 @@ mark.content-tbd { background: #FBE9E4; color: var(--accent-deep-hover); padding
 
 .carrusel__dots { display: flex; justify-content: center; gap: 10px; margin-top: clamp(16px, 2vw, 24px); }
 .carrusel__dot { width: 9px; height: 9px; border-radius: 50%; border: 0; padding: 0; cursor: pointer; background: rgba(255,255,255,.3); transition: background .2s, transform .2s; }
-.carrusel__dot.is-active { background: var(--accent-bright); transform: scale(1.2); }
+/* REPINTADO MA-C12: ring de 1px añadido — el accent-bright activo por sí solo
+   da ~2.7:1 de contraste de luminancia contra #0A0A0A (el dusty rose sakura
+   anterior daba ~4.8:1 contra el charcoal cálido). El ring blanco translúcido
+   define el borde del dot sin depender solo del contraste de color puro.
+   Pedido explícito del brief/inbox: verificar legibilidad de .carrusel__dot
+   sobre el negro tinta nuevo. */
+.carrusel__dot.is-active { background: var(--accent-bright); transform: scale(1.2); box-shadow: 0 0 0 1px rgba(255,255,255,.4); }
 
 .artista__cta-wrap { margin-top: clamp(24px, 3vw, 36px); }
 .artista__link {
@@ -487,7 +660,9 @@ mark.content-tbd { background: #FBE9E4; color: var(--accent-deep-hover); padding
   color: #fff; text-decoration: none; border-bottom: 1px solid #fff; padding-bottom: 4px;
   transition: color .2s, border-color .2s;
 }
-.artista__link:hover { color: var(--accent-bright); border-color: var(--accent-bright); }
+/* REPINTADO MA-C12: mismo fix de contraste que .novias-promo__link:hover —
+   ver comentario ahí. Solo el borde toma accent-bright, el texto queda blanco. */
+.artista__link:hover { border-color: var(--accent-bright); }
 
 @media (max-width: 768px) {
   .carrusel__slide.is-active { grid-template-columns: 1fr; min-height: 0; }
@@ -530,7 +705,7 @@ mark.content-tbd { background: #FBE9E4; color: var(--accent-deep-hover); padding
 .galeria-carrusel .carrusel__arrow--prev { position: absolute; left: -8px; top: 50%; transform: translateY(-50%); z-index: 2; }
 .galeria-carrusel .carrusel__arrow--next { position: absolute; right: -8px; top: 50%; transform: translateY(-50%); z-index: 2; }
 .galeria-carrusel__dots { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }
-.galeria-carrusel__dots .carrusel__dot { background: rgba(27,23,25,.25); }
+.galeria-carrusel__dots .carrusel__dot { background: rgba(10,10,10,.25); }
 .galeria-carrusel__dots .carrusel__dot.is-active { background: var(--accent-deep); }
 
 @media (max-width: 900px) {
@@ -541,14 +716,16 @@ mark.content-tbd { background: #FBE9E4; color: var(--accent-deep-hover); padding
   .galeria-carrusel .carrusel__arrow--next { right: 2px; }
 }
 
-/* Marco de papel fotográfico cálido (§10.3) — SOLO en galerías de foto pura,
-   sin texto encima (a diferencia de .servicio-card, que es un póster con
-   overlay). Borde blush fino, sombra casi nula. Compartida entre .galeria__item
-   (home, nueva) y .galeria-novias__item (novias.html, ya existía) — front
-   confirma que aplicó la misma clase a ambas (§10.3 no la restringe a una sola
-   página). border-radius reutiliza --radius-soft (ya reducido a esquina casi
-   recta en MA-C8, coherente con "esquinas rectas" del propio §10.3/§10.5). */
-.marco-papel { border: 1px solid var(--blush); box-shadow: 0 2px 6px rgba(27,23,25,.05); border-radius: var(--radius-soft); }
+/* Marco de registro (REPINTADO MA-C12, brief §3A — reemplaza el "marco de papel
+   cálido" de §10.3/sakura). Concepto nuevo: placa de imprenta / passe-partout
+   de lámina de galería, no álbum cálido. Línea fina --paper-line (frío, ya no
+   --blush, retirado), esquinas EXACTAS (brief: "como la placa de una imprenta",
+   pide radius 0 explícito — no reutiliza --radius-soft porque ese token sigue
+   en 3px para el resto del sitio, botones/badges/cards NO piden esquina recta
+   absoluta, solo este marco). Sombra casi nula, mismo criterio que antes.
+   Compartida entre .galeria__item (home) y .galeria-novias__item (novias.html)
+   — mismo mecanismo, front confirmó que aplicó la clase a ambas. */
+.marco-papel { border: 1px solid var(--paper-line); box-shadow: 0 2px 6px rgba(10,10,10,.05); border-radius: 0; }
 
 /* --------------------------------------------------------------------------
    6.5 · Reseñas (home, CLARA) — NUEVA (briefing maestro v2 completo, MA-F7/§6.5).
@@ -573,39 +750,104 @@ mark.content-tbd { background: #FBE9E4; color: var(--accent-deep-hover); padding
 
 .resenas__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(24px, 3vw, 40px); }
 .resena-item { display: flex; flex-direction: column; gap: 14px; padding-top: clamp(16px, 2vw, 22px); border-top: 1px solid var(--border-light); }
+/* Estrellas de rating (MA-C26, handoff de front MA-F14) — glifos ★ literales,
+   dorado vía --star-gold (nuevo, no compite con la regla 60/30/10 del acento
+   de marca: es convención de rating, no un acento decorativo). letter-spacing
+   leve para separar los 5 glifos sin que se vean pegados en Playfair/system. */
+.resena-item__estrellas { font-size: 1rem; letter-spacing: .12em; color: var(--star-gold); line-height: 1; }
 .resena-item__texto { margin: 0; }
 .resena-item__texto p { font-family: var(--font-display); font-style: italic; font-size: clamp(1.05rem, 1.6vw, 1.2rem); line-height: 1.5; color: var(--text-ink); margin: 0; }
 .resena-item__autor { font: 600 .78rem/1 var(--font-body); letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); margin: 0; }
-@media (max-width: 768px) { .resenas__grid { grid-template-columns: 1fr; } }
+/* Imagen de resultado (MA-C26) — mismo gap:14px del flex column que ya
+   separaba estrellas/texto/autor, hereda la cadencia sin necesitar margin
+   propio. Proporción fija + cover para que las 3 columnas del desktop no se
+   desalineen entre sí por fotos de proporciones distintas (pedido de front:
+   "que la imagen no rompa la altura/alineación entre columnas"). */
+.resena-item__imagen { aspect-ratio: 4/3; overflow: hidden; border-radius: var(--radius-soft); }
+.resena-item__imagen img { width: 100%; height: 100%; object-fit: cover; display: block; }
+@media (max-width: 768px) {
+  .resenas__grid { grid-template-columns: 1fr; }
+  /* Carrusel swipe sin JS (MA-C26, sugerencia de front adoptada tal cual):
+     scroll-snap nativo compacta las 3 reseñas a 1 visible por vez, swipe del
+     navegador sin necesitar dots/flechas ni cruzar a JS — Paul solo pidió
+     swipe, no controles visibles. Scrollbar oculta para que se lea como
+     carrusel, no como una lista horizontal con scrollbar de escritorio. */
+  .resenas__grid {
+    display: flex; gap: 0; overflow-x: auto; scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  }
+  .resenas__grid::-webkit-scrollbar { display: none; }
+  .resena-item { flex: 0 0 100%; scroll-snap-align: center; padding-inline: var(--gutter); }
+}
 
 /* --------------------------------------------------------------------------
-   6.8 · FAQ (home, CLARA) — NUEVA (revisión MA-F8/§6.8). Acordeón nativo
-   `<details name="faq">`, cero JS (el atributo `name` agrupa los 6 `<details>`
-   para exclusividad — cierra los demás al abrir uno, soporte nativo moderno).
+   6.9 · Cierre — CTA final, sección propia (MA-C29, sobre MA-F15: separado
+   de #faq a petición directa de Paul tras 3 rondas de CSS que no bastaban
+   porque el CTA y las preguntas compartían la misma sección/grid). Oscura.
 
-   ALTERNANCIA (contradicción reportada por front, no resuelta con un fix único
-   posible — ver su nota en `sesion_2026-08-05_front.md`): entre #encuentra
-   (clara, confirmada) y #cierre (oscura, confirmada) cualquier sección nueva
-   deja una adyacencia del mismo color con uno de los dos vecinos — es un
-   problema matemático, no de criterio. Resolución elegida: `--bg-light-alt`
-   como fondo de #faq (en vez de `--bg-light` liso) — diferencia visualmente
-   las 2 claras contiguas sin inventar una 3ª variante de color ni tocar
-   #encuentra/#cierre (CONFIRMADAS, no se tocan sin autorización nueva).
-   -------------------------------------------------------------------------- */
-.faq { background: var(--bg-dark); }
-.faq__grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: clamp(40px, 6vw, 88px); align-items: start; }
-.faq__list { display: flex; flex-direction: column; margin-top: clamp(24px, 3vw, 32px); }
-/* CTA (columna derecha) — antes era la sección .cierre, ahora vive aquí sobre fondo claro */
-.faq__cta { align-self: center; text-align: center; }
+   ALTERNANCIA — excepción deliberada (MA-C30, petición directa de Paul):
+   `#cierre` y `#faq` quedan las 2 oscuras, rompiendo a propósito la regla de
+   "nunca 2 oscuras seguidas" que rige el resto del sitio. Razón textual de
+   Paul: es el final de la página, no tiene sentido cerrar en blanco. Esto es
+   intencional y confirmado, no un descuido — si alguien revisa este archivo
+   preguntándose por qué #faq es oscura justo después de #cierre, la respuesta
+   es esta nota, no un bug pendiente de arreglar.
+
+   Tamaño (petición directa de Paul: "un buen tamaño similar al que ocupa
+   #resenas", MA-C29 + "un 30% más", MA-C30 + "en PC está exagerado, reducí
+   un 30% sin afectar móvil", MA-C31) — medido con clic real: #resenas
+   ≈771-897px de alto según el viewport de referencia. `.cierre` no tiene
+   contenido propio para llenar ese alto por sí solo (título+sub+botón+
+   microtexto es mucho más corto que 3 reseñas con estrellas+foto), así que
+   en vez de inflar el padding del contenido a lo loco, se le da `min-height`
+   a la SECCIÓN + flex centrado — mismo patrón que ya usa `.hero-novias__grid`
+   (`clamp(480px,52vw,680px)`) para heroes split. Historial de esta sola
+   regla: MA-C29 `clamp(560px,58vw,820px)` → MA-C30 ×1.3 `clamp(728px,75vw,
+   1066px)` → MA-C31 ×0.7 sobre ESE valor (no vuelve al de MA-C29, es un
+   ajuste fino sobre lo último) `clamp(510px,52.5vw,746px)`. El móvil vive en
+   su propia regla dentro del `@media` de abajo — no se toca acá, por eso este
+   cambio no le afecta. */
+.cierre { background: var(--bg-dark); display: flex; align-items: center; justify-content: center; min-height: clamp(510px, 52.5vw, 746px); }
+.faq__cta { text-align: center; padding-block: clamp(24px, 4vw, 40px); }
 .faq__cta-titulo { font-family: var(--font-display); font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 700; color: #fff; margin: 0 0 12px; }
 .faq__cta-sub { font: 400 .95rem/1.5 var(--font-body); color: rgba(255,255,255,.7); margin: 0 0 24px; }
-.faq__cta-btn.btn-editorial { padding: 20px 48px; font-size: 15px; letter-spacing: 2px; background: var(--cta-vivid); color: #fff; border: none; display: inline-flex; align-items: center; justify-content: center; gap: 10px; }
-.faq__cta-btn.btn-editorial:hover { background: var(--cta-vivid-hover); color: #fff; }
+/* REPINTADO MA-C12: --cta-vivid/--cta-vivid-hover retirados de :root — eran un
+   3er color de acento (#C64B63) no documentado en ningún brief/token table,
+   que violaba "único acento" (§2.1 sakura y §2.1 tinta por igual), migrado
+   entonces a --accent-bright. MA-C27 (petición directa de Paul) lo reemplaza
+   de nuevo, esta vez a propósito y con conocimiento del precedente: rosa
+   eléctrico "glowing" (--cta-glow, ver bloque compartido con .hero__cta-btn
+   más arriba en el archivo) — tratamiento deliberado para EL CTA de
+   conversión más importante del sitio, no un tercer acento sin documentar
+   como el que se retiró en MA-C12. Padding agrandado (antes 20px 48px) para
+   que el botón en sí también se vea más grande/llamativo, no solo la sección. */
+.faq__cta-btn.btn-editorial { padding: 24px 56px; font-size: 15px; letter-spacing: 2px; border: none; display: inline-flex; align-items: center; justify-content: center; gap: 10px; }
 .faq__cta-micro { font: 400 .8rem/1.5 var(--font-body); color: rgba(255,255,255,.55); margin: 20px 0 0; }
 @media (max-width: 860px) {
-  .faq__grid { grid-template-columns: 1fr; gap: clamp(32px,5vw,48px); }
-  .faq__cta { position: static; }
+  /* min-height reducido en proporción — el de desktop sería excesivo en una
+     pantalla angosta. Ya NO hace falta el order:-1/position:static/divisor
+     de MA-C25 ni el padding-top/bottom manual de MA-C28: eran parches para
+     cuando el CTA vivía dentro de la misma sección que las preguntas
+     (`.faq__grid` colapsando a 1 columna) — ahora es una sección propia, el
+     DOM ya está en el orden correcto y `min-height` resuelve el espacio real
+     sin necesitar ningún truco de reordenamiento. */
+  /* Escalado ×1.3 igual que el desktop (MA-C30). */
+  .cierre { min-height: clamp(546px, 110vw, 806px); }
 }
+
+/* --------------------------------------------------------------------------
+   6.8 · FAQ (home, OSCURA otra vez) — NUEVA (revisión MA-F8/§6.8). Acordeón
+   nativo `<details name="faq">`, cero JS (el atributo `name` agrupa los 6
+   `<details>` para exclusividad — cierra los demás al abrir uno).
+   Pasó de oscura (original) a clara (MA-C29/MA-F15) y vuelve a oscura
+   (MA-C30, petición directa de Paul) — excepción deliberada a la regla de
+   alternancia justo al final de la página, ver nota completa junto a
+   `.cierre` más arriba. Bordes/texto/ícono del acordeón vuelven de los
+   tokens de tinta oscura (versión clara de MA-C29) a blanco/rgba(255,255,255,X)
+   — mismos valores que tenía el diseño original antes de MA-C29, no
+   inventados de nuevo. */
+.faq { background: var(--bg-dark); }
+.faq__list { display: flex; flex-direction: column; margin-top: clamp(24px, 3vw, 32px); }
 .faq__item { border-bottom: 1px solid rgba(255,255,255,.14); }
 .faq__item:first-child { border-top: 1px solid rgba(255,255,255,.14); }
 .faq__question {
@@ -615,7 +857,8 @@ mark.content-tbd { background: #FBE9E4; color: var(--accent-deep-hover); padding
   cursor: pointer; list-style: none;
 }
 .faq__question::-webkit-details-marker { display: none; }
-.faq__question::before { content: "+"; flex: none; font: 400 1.3rem/1 var(--font-body); color: var(--cta-vivid); width: 16px; text-align: center; }
+/* accent-bright (no accent-deep): #faq vuelve a fondo oscuro, regla 60/30/10. */
+.faq__question::before { content: "+"; flex: none; font: 400 1.3rem/1 var(--font-body); color: var(--accent-bright); width: 16px; text-align: center; }
 .faq__item[open] .faq__question::before { content: "−"; }
 .faq__answer { margin: 0 0 clamp(18px, 2vw, 24px); font: 400 .95rem/1.6 var(--font-body); color: rgba(255,255,255,.72); max-width: 62ch; }
 @media (max-width: 600px) {
@@ -631,12 +874,20 @@ mark.content-tbd { background: #FBE9E4; color: var(--accent-deep-hover); padding
    8 · Sobre mí — retrato + bio (split editorial, mismo patrón que hero-novias)
    -------------------------------------------------------------------------- */
 .sobre-mi-hero { padding-block: 0; overflow: hidden; }
+/* min-height +var(--header-gap) (MA-C23): el gap del header se SUMA al alto de
+   la fila, no se resta de la foto — con align-items:stretch ambas columnas
+   crecen esa misma medida, la foto conserva su tamaño íntegro debajo del gap
+   (antes perdía esa franja de su propio alto). */
 .sobre-mi-hero__grid {
   display: grid; grid-template-columns: 1fr 1fr; align-items: stretch;
-  min-height: clamp(480px, 52vw, 680px);
+  min-height: calc(clamp(480px, 52vw, 680px) + var(--header-gap));
 }
 .sobre-mi-hero__media { position: relative; overflow: hidden; background: var(--bg-light-alt); }
-.sobre-mi-hero__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 25%; display: block; }
+/* Mismo criterio que .hero__media de index.html (MA-C20/C22): la foto no toca
+   el header flotante directamente — arranca más abajo, dejando ver el propio
+   background:var(--bg-light-alt) de este panel como banda donde flota el
+   header, en vez de la imagen empezando justo en el borde. */
+.sobre-mi-hero__media img { position: absolute; top: var(--header-gap); left: 0; right: 0; bottom: 0; object-fit: cover; object-position: center 25%; display: block; }
 .sobre-mi-hero__content {
   display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
   max-width: 480px;
@@ -645,10 +896,10 @@ mark.content-tbd { background: #FBE9E4; color: var(--accent-deep-hover); padding
   padding-right: max(var(--gutter), calc(50vw - var(--container-max) / 2));
 }
 .sobre-mi-hero__content h1 { font-family: var(--font-display); font-size: clamp(2rem, 3.6vw, 3.2rem); line-height: 1.08; color: var(--text-ink); margin: 0 0 clamp(14px, 1.6vw, 20px); }
-.sobre-mi-hero__bio { font: 400 1.02rem/1.7 var(--font-body); color: rgba(27,23,25,.72); margin: 0; max-width: 46ch; }
+.sobre-mi-hero__bio { font: 400 1.02rem/1.7 var(--font-body); color: var(--ink-mid); margin: 0; max-width: 46ch; }
 @media (max-width: 768px) {
   .sobre-mi-hero__grid { grid-template-columns: 1fr; min-height: 0; }
-  .sobre-mi-hero__media { min-height: clamp(360px, 90vw, 460px); }
+  .sobre-mi-hero__media { min-height: calc(clamp(360px, 90vw, 460px) + var(--header-gap)); }
   .sobre-mi-hero__content { max-width: none; padding-inline: var(--gutter); padding-block: clamp(32px, 8vw, 48px); }
 }
 
@@ -740,13 +991,19 @@ mark.content-tbd { background: #FBE9E4; color: var(--accent-deep-hover); padding
 
 /* A · Hero (novias/clases) — split editorial */
 .hero-novias, .hero-clases { padding-block: 0; overflow: hidden; }
+/* min-height +var(--header-gap) (MA-C23): mismo criterio que .sobre-mi-hero__grid
+   — el gap se SUMA al alto de la fila, la foto conserva su tamaño íntegro. */
 .hero-novias__grid, .hero-clases__grid {
   display: grid; grid-template-columns: 1fr 1fr; align-items: stretch;
-  min-height: clamp(480px, 52vw, 680px);
+  min-height: calc(clamp(480px, 52vw, 680px) + var(--header-gap));
 }
 .hero-novias__media, .hero-clases__media { position: relative; overflow: hidden; background: var(--bg-light-alt); }
+/* Mismo criterio que .hero__media de index.html (MA-C20/C22): la foto no toca
+   el header flotante directamente — arranca más abajo, dejando ver el propio
+   background:var(--bg-light-alt) de este panel como banda donde flota el
+   header, en vez de la imagen empezando justo en el borde. */
 .hero-novias__media img, .hero-clases__media img {
-  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;
+  position: absolute; top: var(--header-gap); left: 0; right: 0; bottom: 0; object-fit: cover; object-position: center; display: block;
 }
 .hero-novias__content, .hero-clases__content {
   display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
@@ -760,7 +1017,7 @@ mark.content-tbd { background: #FBE9E4; color: var(--accent-deep-hover); padding
   color: var(--text-ink); margin: 0 0 clamp(14px, 1.6vw, 20px);
 }
 .hero-novias__sub, .hero-clases__sub {
-  font: 400 clamp(1rem, 1.1vw, 1.1rem)/1.6 var(--font-body); color: rgba(27,23,25,.72);
+  font: 400 clamp(1rem, 1.1vw, 1.1rem)/1.6 var(--font-body); color: var(--ink-mid);
   margin: 0 0 clamp(24px, 2.8vw, 32px); max-width: 40ch;
 }
 .hero-novias__cta { display: flex; gap: 14px; flex-wrap: wrap; }
@@ -769,7 +1026,7 @@ mark.content-tbd { background: #FBE9E4; color: var(--accent-deep-hover); padding
 .hero-novias__cta .btn-editorial--ghost:hover { background: var(--text-ink); color: #fff; }
 @media (max-width: 768px) {
   .hero-novias__grid, .hero-clases__grid { grid-template-columns: 1fr; min-height: 0; }
-  .hero-novias__media, .hero-clases__media { min-height: clamp(360px, 90vw, 460px); }
+  .hero-novias__media, .hero-clases__media { min-height: calc(clamp(360px, 90vw, 460px) + var(--header-gap)); }
   .hero-novias__content, .hero-clases__content {
     max-width: none; padding-inline: var(--gutter); padding-block: clamp(32px, 8vw, 48px);
   }
@@ -777,7 +1034,7 @@ mark.content-tbd { background: #FBE9E4; color: var(--accent-deep-hover); padding
 
 /* B · Credencial (claro) */
 .credencial .container { max-width: 70ch; }
-.credencial__texto { font: 400 1.05rem/1.7 var(--font-body); color: rgba(27,23,25,.72); margin: 0 0 20px; }
+.credencial__texto { font: 400 1.05rem/1.7 var(--font-body); color: var(--ink-mid); margin: 0 0 20px; }
 .credencial__link {
   display: inline-block; font: 600 .82rem/1 var(--font-body); letter-spacing: .06em; text-transform: uppercase;
   color: var(--text-ink); text-decoration: none; border-bottom: 1px solid var(--text-ink); padding-bottom: 4px;
@@ -926,7 +1183,7 @@ mark.content-tbd { background: #FBE9E4; color: var(--accent-deep-hover); padding
   color: #fff; background: var(--text-ink); padding: 6px 12px; border-radius: var(--radius-pill);
 }
 .selector-card__title { font-family: var(--font-display); font-size: clamp(1.4rem, 2vw, 1.8rem); color: var(--text-ink); margin: 0; }
-.selector-card__desc { font: 400 .95rem/1.6 var(--font-body); color: rgba(27,23,25,.72); margin: 0; }
+.selector-card__desc { font: 400 .95rem/1.6 var(--font-body); color: var(--ink-mid); margin: 0; }
 .selector-grid a:last-child .selector-card__level { background: var(--accent-deep); }
 @media (max-width: 768px) { .selector-grid { grid-template-columns: 1fr; } }
 
@@ -956,15 +1213,18 @@ mark.content-tbd { background: #FBE9E4; color: var(--accent-deep-hover); padding
 .automaquillaje-ficha li::before { color: rgba(255,255,255,.4); }
 .automaquillaje-subtitle { color: rgba(255,255,255,.55); }
 .automaquillaje-temario li { color: rgba(255,255,255,.85); }
-/* CTA "RESERVAR CLASE" sobre fondo oscuro — mismo criterio que .hero-overlay/.cierre (§2.1) */
-.automaquillaje .btn-editorial--solid { background: var(--accent-bright); color: var(--bg-dark); }
-.automaquillaje .btn-editorial--solid:hover { background: var(--accent-bright-hover); color: var(--bg-dark); }
+/* CTA "RESERVAR CLASE" sobre fondo oscuro — mismo criterio que .hero-overlay/.cierre (§2.1).
+   REPINTADO MA-C12: color de texto de --bg-dark a #fff (mismo motivo de contraste
+   que .formacion__bloque-link:hover, ver comentario ahí — accent-bright ahora
+   más oscuro, texto oscuro encima ya no es legible). */
+.automaquillaje .btn-editorial--solid { background: var(--accent-bright); color: #fff; }
+.automaquillaje .btn-editorial--solid:hover { background: var(--accent-bright-hover); color: #fff; }
 
 /* Perfeccionamiento = fondo claro (default); temario de 14 ítems en columnas, libertad de
    reparto. Breakpoints estandarizados al set del proyecto: 3→2 en ≤1024px, 2→1 en ≤768px. */
 .perfeccionamiento-price { color: var(--text-ink); }
 .perfeccionamiento-temario { list-style: none; margin: 0 0 clamp(24px, 3vw, 32px); padding: 0; column-count: 3; column-gap: clamp(20px, 2.4vw, 32px); }
-.perfeccionamiento-temario li { font-size: .9rem; line-height: 1.5; color: rgba(27,23,25,.72); padding: 7px 0; border-bottom: 1px solid var(--border-light); break-inside: avoid; }
+.perfeccionamiento-temario li { font-size: .9rem; line-height: 1.5; color: var(--ink-mid); padding: 7px 0; border-bottom: 1px solid var(--border-light); break-inside: avoid; }
 @media (max-width: 1024px) { .perfeccionamiento-temario { column-count: 2; } }
 @media (max-width: 768px) { .perfeccionamiento-temario { column-count: 1; } }
 @media (max-width: 768px) {
@@ -981,9 +1241,10 @@ mark.content-tbd { background: #FBE9E4; color: var(--accent-deep-hover); padding
 }
 .reserva-novias h2 { color: #fff; }
 .reserva-clases h2 { color: var(--text-ink); }
-/* CTA "RESERVAR FECHA" sobre fondo oscuro — mismo criterio que .hero-overlay/.cierre/.automaquillaje (§2.1) */
-.reserva-novias .btn-editorial--solid { background: var(--accent-bright); color: var(--bg-dark); }
-.reserva-novias .btn-editorial--solid:hover { background: var(--accent-bright-hover); color: var(--bg-dark); }
+/* CTA "RESERVAR FECHA" sobre fondo oscuro — mismo criterio que .hero-overlay/.cierre/.automaquillaje (§2.1).
+   REPINTADO MA-C12: mismo fix de contraste que .automaquillaje .btn-editorial--solid, ver comentario ahí. */
+.reserva-novias .btn-editorial--solid { background: var(--accent-bright); color: #fff; }
+.reserva-novias .btn-editorial--solid:hover { background: var(--accent-bright-hover); color: #fff; }
 .reserva-novias__micro, .reserva-clases__micro { font: 400 .85rem/1.5 var(--font-body); margin: clamp(18px, 2vw, 24px) 0 0; }
 .reserva-novias__micro { color: rgba(255,255,255,.6); }
 .reserva-clases__micro { color: var(--text-muted); }
@@ -1008,7 +1269,7 @@ mark.content-tbd { background: #FBE9E4; color: var(--accent-deep-hover); padding
 .galeria__item::after,
 .galeria-novias__item::after {
   content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: rgba(27, 23, 25, .1);
+  background: rgba(10, 10, 10, .1);
 }
 
 /* --------------------------------------------------------------------------

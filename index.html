@@ -36,13 +36,10 @@
         <a class="nav-link" href="novias.html">Novias</a>
         <a class="nav-link" href="clases.html">Clases</a>
         <a class="nav-link" href="sobre-mi.html">Sobre mí</a>
+        <a class="nav-link" href="#site-footer">Contactos</a>
       </nav>
 
       <div class="header-right">
-        <a href="CTA_DESTINO_PENDIENTE" class="btn-editorial btn-editorial--solid header-cta" data-cta-pendiente="CTA_DESTINO">
-          <svg class="header-cta__icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.06-1.33A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.2c-.22.62-1.28 1.2-1.77 1.24-.45.05-1.02.07-1.65-.1-.38-.11-.87-.27-1.5-.53-2.64-1.14-4.36-3.8-4.5-3.98-.13-.18-1.08-1.43-1.08-2.73 0-1.3.68-1.94.93-2.2.24-.27.53-.33.7-.33h.5c.16 0 .38-.06.6.46.22.53.75 1.83.82 1.97.07.13.11.29.02.47-.09.18-.14.29-.27.44-.13.16-.28.35-.4.47-.13.13-.27.27-.12.53.16.27.7 1.15 1.5 1.86 1.04.92 1.91 1.21 2.18 1.35.27.13.42.11.58-.07.16-.18.68-.79.86-1.06.18-.27.36-.22.6-.13.24.09 1.53.72 1.79.85.27.13.44.2.51.31.07.11.07.65-.15 1.27z"/></svg>
-          Reservar
-        </a>
         <button class="menu-toggle" id="btn-menu" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-panel">
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
@@ -64,37 +61,36 @@
       <a href="novias.html">Novias</a>
       <a href="clases.html">Clases</a>
       <a href="sobre-mi.html">Sobre mí</a>
+      <a href="#site-footer">Contactos</a>
     </nav>
     <a href="CTA_DESTINO_PENDIENTE" class="btn-editorial btn-editorial--solid menu-cta" data-cta-pendiente="CTA_DESTINO">Reservar</a>
   </aside>
 
   <main>
 
-    <!-- ===== 1 · HERO (OSCURO) — briefing maestro v2, revisión §6.1 ===== -->
-    <!-- Corrección de la revisión: el brief original pedía split 55/45 sobre claro, pero la
-         implementación real (que ya existía desde MA-F1: `.hero-media` a sangre + `.hero-scrim`
-         + `.hero-overlay` con el texto encima) es full-bleed oscuro — Paul la vio montada con la
-         foto real y decidió CONSERVARLA en vez de forzar el split. Por eso el hero pasa a
-         `data-bg="dark"` (antes "light" por error, arrastrado de la v2 anterior) y la sección
-         siguiente (`#artista-intro`) pasa a clara para no encadenar dos oscuras (§6.2).
-         H1/itálica de voz = copy REAL/confirmado (§3.2/§3.3). hero-sub (ubicación) se conserva
-         por criterio propio — información real y útil que el brief no prohíbe. CTA secundario
-         apunta a #galeria ("VER TRABAJOS"). -->
-    <section class="hero" id="hero" data-bg="light" aria-labelledby="hero-titulo">
-      <div class="container hero__grid">
-        <div class="hero__panel">
-          <span class="hero-eyebrow">MAKEUP ANDREA</span>
-          <h1 id="hero-titulo">No te maquillo. Te revelo.</h1>
-          <p class="hero-sub">A domicilio. Lima y Madrid.</p>
-          <p class="hero-voz">Elegimos juntas el look que más te representa.</p>
-          <div class="hero-cta">
-            <a href="CTA_DESTINO_PENDIENTE" class="btn-editorial btn-editorial--solid" data-cta-pendiente="CTA_DESTINO">RESERVAR</a>
-            <a href="#galeria" class="btn-editorial btn-editorial--dark">VER TRABAJOS</a>
-          </div>
-        </div>
-        <div class="hero__media">
-          <img src="assets/section-class-hero/hero.webp" alt="[ALT_PENDIENTE]" fetchpriority="high">
-        </div>
+    <!-- ===== 1 · HERO layout B (OSCURO) — DIFF hero+picture responsive, reemplaza el split MA-F9/MA-C10 ===== -->
+    <!-- Apilado centrado: foto arriba (art-direction `<picture>`, 9:16 móvil / 16:10 desktop) fundida
+         al negro tinta con degradado, mensaje único + 1 solo CTA debajo (fuera hero-sub y el CTA
+         secundario "VER TRABAJOS" del split anterior). "Te revelo" acentuado en rosewood
+         (`.hero__sello`). `data-bg="dark"` se mantiene — `#artista-intro` sigue clara justo después,
+         alternancia ya correcta sin tocarla. `hero-movil.webp` es ruta placeholder hasta que exista
+         la foto vertical real; mientras tanto el navegador cae al `<img>` de `hero.webp` si el
+         `<source>` no resuelve. -->
+    <section class="hero" id="hero" data-bg="dark" aria-labelledby="hero-titulo">
+      <div class="hero__media">
+        <picture>
+          <source media="(max-width: 768px)" srcset="assets/section-class-hero/hero-movil.webp">
+          <img src="assets/section-class-hero/hero.webp" alt="[ALT_PENDIENTE — Andrea sobre fondo negro, rim light]" fetchpriority="high">
+        </picture>
+      </div>
+      <div class="hero__content">
+        <span class="hero-eyebrow">MAKEUP ANDREA</span>
+        <h1 id="hero-titulo">No te maquillo.<br><em class="hero__sello">Te revelo.</em></h1>
+        <a href="CTA_DESTINO_PENDIENTE" class="btn-editorial hero__cta-btn" data-cta-pendiente="CTA_DESTINO">
+          <svg class="header-cta__icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.06-1.33A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.2c-.22.62-1.28 1.2-1.77 1.24-.45.05-1.02.07-1.65-.1-.38-.11-.87-.27-1.5-.53-2.64-1.14-4.36-3.8-4.5-3.98-.13-.18-1.08-1.43-1.08-2.73 0-1.3.68-1.94.93-2.2.24-.27.53-.33.7-.33h.5c.16 0 .38-.06.6.46.22.53.75 1.83.82 1.97.07.13.11.29.02.47-.09.18-.14.29-.27.44-.13.16-.28.35-.4.47-.13.13-.27.27-.12.53.16.27.7 1.15 1.5 1.86 1.04.92 1.91 1.21 2.18 1.35.27.13.42.11.58-.07.16-.18.68-.79.86-1.06.18-.27.36-.22.6-.13.24.09 1.53.72 1.79.85.27.13.44.2.51.31.07.11.07.65-.15 1.27z"/></svg>
+          RESERVAR
+        </a>
+        <p class="hero-voz">Elegimos juntas el look que más te representa.</p>
       </div>
     </section>
 
@@ -130,11 +126,12 @@
          `#quien-soy-carrusel` y sus hijos `.carrusel__*` NO cambian de nombre — subcomponente ya
          genérico, sin acoplarse al nombre de la sección padre (verificado con css/js). -->
     <section class="artista-carrusel" id="artista-carrusel" data-bg="dark" aria-label="Carrusel: quién soy">
-      <!-- Pieza de mayor complejidad JS del sitio. El 3er slide (Colaboraciones) queda pendiente de una
-           foto real de archivo con figuras del rubro — no generable con IA sin inventar una relación
-           falsa (§13.6). El componente ya está preparado para agregarlo después sin reconstrucción:
-           JS/CSS leen `.carrusel__slide`/`.carrusel__dot` por querySelectorAll (sin conteo fijo), así
-           que un 3er `<li>` + un 3er `.carrusel__dot` es todo lo que hará falta cuando exista la foto.
+      <!-- Pieza de mayor complejidad JS del sitio. 3 slides (2026-08-09: se agregó el 3ro,
+           "Formación internacional" — reemplaza el placeholder "Colaboraciones" que se planteaba
+           originalmente, descartado por depender de una foto de archivo con figuras del rubro que
+           nunca llegó; el 3er slide real que sí se montó es la credencial de formación de Andrea).
+           JS/CSS leen `.carrusel__slide`/`.carrusel__dot` por querySelectorAll (sin conteo fijo),
+           así que agregar/quitar slides no requiere tocar main.js ni las reglas CSS del carrusel.
            Contrato para JS (documentado también en inbox/js.md):
            - #carrusel-track: <ul> de <li class="carrusel__slide" data-slide="N">, la activa lleva
              clase .is-active + aria-hidden="false" (resto aria-hidden="true").
@@ -161,8 +158,17 @@
               <img src="assets/section-class-quien-soy/experiencia-second-slide.webp" alt="[ALT_PENDIENTE]" loading="lazy">
             </div>
             <div class="carrusel__content">
-              <h3 class="carrusel__nombre">4 años</h3>
+              <h3 class="carrusel__nombre">7 años</h3>
               <p class="carrusel__texto">Perfeccionando la técnica, un look a la vez.</p>
+            </div>
+          </li>
+          <li class="carrusel__slide" data-slide="2" aria-hidden="true">
+            <div class="carrusel__media">
+              <img src="assets/section-class-quien-soy/formacion-third-slide.webp" alt="[ALT_PENDIENTE]" loading="lazy">
+            </div>
+            <div class="carrusel__content">
+              <h3 class="carrusel__nombre">Formación internacional</h3>
+              <p class="carrusel__texto">Formada con Christian Matta y referentes de España, EE.UU. y México.</p>
             </div>
           </li>
         </ul>
@@ -170,6 +176,7 @@
         <div class="carrusel__dots" id="carrusel-dots" role="tablist" aria-label="Seleccionar slide">
           <button class="carrusel__dot is-active" role="tab" aria-selected="true" data-slide-target="0" aria-label="Slide 1: quién es"></button>
           <button class="carrusel__dot" role="tab" aria-selected="false" data-slide-target="1" aria-label="Slide 2: logros"></button>
+          <button class="carrusel__dot" role="tab" aria-selected="false" data-slide-target="2" aria-label="Slide 3: formación"></button>
         </div>
       </div>
       <div class="container artista__cta-wrap">
@@ -293,22 +300,36 @@
         <!-- FIN dato de muestra (stats) -->
 
         <div class="resenas__grid">
-          <!-- DATO DE MUESTRA — VERIFICAR/REEMPLAZAR: reseña de ejemplo -->
+          <!-- DATO DE MUESTRA — VERIFICAR/REEMPLAZAR: reseña de ejemplo. Estrellas incluidas en la
+               misma categoría de riesgo legal que el texto/autor (§6.5) — 5/5 fijo por ahora,
+               reemplazar por la puntuación real de cada reseña junto con el resto de los datos. -->
           <article class="resena-item">
+            <span class="resena-item__estrellas" aria-label="5 de 5 estrellas">★★★★★</span>
             <blockquote class="resena-item__texto"><p>"Andrea me hizo sentir hermosa en mi boda sin perder mi esencia. Cada detalle, perfecto."</p></blockquote>
             <p class="resena-item__autor">Camila R. · Boda</p>
+            <div class="resena-item__imagen">
+              <img src="assets/section-class-resenas/resena-01.webp" alt="[ALT_PENDIENTE — resultado del maquillaje de novia de Camila]" loading="lazy">
+            </div>
           </article>
           <!-- FIN dato de muestra -->
           <!-- DATO DE MUESTRA — VERIFICAR/REEMPLAZAR: reseña de ejemplo -->
           <article class="resena-item">
+            <span class="resena-item__estrellas" aria-label="5 de 5 estrellas">★★★★★</span>
             <blockquote class="resena-item__texto"><p>"Tomé la clase de automaquillaje y ahora me maquillo en la mitad de tiempo. Súper paciente explicando."</p></blockquote>
             <p class="resena-item__autor">Valeria M. · Clase de automaquillaje</p>
+            <div class="resena-item__imagen">
+              <img src="assets/section-class-resenas/resena-02.webp" alt="[ALT_PENDIENTE — resultado del automaquillaje de Valeria]" loading="lazy">
+            </div>
           </article>
           <!-- FIN dato de muestra -->
           <!-- DATO DE MUESTRA — VERIFICAR/REEMPLAZAR: reseña de ejemplo -->
           <article class="resena-item">
+            <span class="resena-item__estrellas" aria-label="5 de 5 estrellas">★★★★★</span>
             <blockquote class="resena-item__texto"><p>"Contraté el paquete con prueba para mi evento y llegó puntual con todo listo. Recomendadísima."</p></blockquote>
             <p class="resena-item__autor">Fernanda G. · Evento social</p>
+            <div class="resena-item__imagen">
+              <img src="assets/section-class-resenas/resena-03.webp" alt="[ALT_PENDIENTE — resultado del maquillaje de evento de Fernanda]" loading="lazy">
+            </div>
           </article>
           <!-- FIN dato de muestra -->
         </div>
@@ -371,7 +392,31 @@
       </div>
     </section>
 
-    <!-- ===== 8 · FAQ — Preguntas frecuentes (CLARO) — NUEVA, briefing maestro v2 §6.8 ===== -->
+    <!-- ===== 8 · CIERRE — CTA final (OSCURO) — antes vivía como .faq__cta dentro de #faq,
+         separado a sección propia (2026-08-09, petición directa de Paul vía css/MA-F15): 3 rondas
+         de ajuste puramente CSS sobre el CTA compartiendo sección con las preguntas (MA-C25/27/28)
+         no lograron que se leyera como un momento propio del recorrido — el problema era
+         estructural (2 columnas del mismo `<section>`, mismo fondo), no de espaciado. Mismas
+         clases internas de siempre (`.faq__cta*`), sin renombrar, para que css solo tenga que
+         retargetear el selector padre en vez de reescribir cada regla — decisión acordada con css
+         en el handoff. `<aside>` aplanado a `.container` normal: ya no es contenido tangencial
+         de otra sección, es el contenido principal de esta. ALTERNANCIA: con esta sección oscura
+         justo después de #encuentra (clara) y #faq (ahora clara, ver sección siguiente) justo
+         después, la secuencia queda L-D-L sin ninguna adyacencia repetida — mejor que el estado
+         previo, no solo igual. -->
+    <section class="cierre" id="cierre" data-bg="dark" aria-labelledby="cierre-titulo">
+      <div class="container faq__cta">
+        <h2 id="cierre-titulo" class="faq__cta-titulo">Destaca tu belleza</h2>
+        <p class="faq__cta-sub">Reserva por WhatsApp. Sin pago online, sin complicaciones.</p>
+        <a href="CTA_DESTINO_PENDIENTE" class="btn-editorial faq__cta-btn" data-cta-pendiente="CTA_DESTINO">
+          <svg class="header-cta__icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.06-1.33A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.2c-.22.62-1.28 1.2-1.77 1.24-.45.05-1.02.07-1.65-.1-.38-.11-.87-.27-1.5-.53-2.64-1.14-4.36-3.8-4.5-3.98-.13-.18-1.08-1.43-1.08-2.73 0-1.3.68-1.94.93-2.2.24-.27.53-.33.7-.33h.5c.16 0 .38-.06.6.46.22.53.75 1.83.82 1.97.07.13.11.29.02.47-.09.18-.14.29-.27.44-.13.16-.28.35-.4.47-.13.13-.27.27-.12.53.16.27.7 1.15 1.5 1.86 1.04.92 1.91 1.21 2.18 1.35.27.13.42.11.58-.07.16-.18.68-.79.86-1.06.18-.27.36-.22.6-.13.24.09 1.53.72 1.79.85.27.13.44.2.51.31.07.11.07.65-.15 1.27z"/></svg>
+          RESERVAR
+        </a>
+        <p class="faq__cta-micro">Lima, Perú · Madrid, España · WhatsApp 920 595 147</p>
+      </div>
+    </section>
+
+    <!-- ===== 9 · FAQ — Preguntas frecuentes (CLARO) — briefing maestro v2 §6.8 ===== -->
     <!-- Acordeón con `<details name="faq">` nativo: agrupa los 6 `<details>` para que solo uno
          quede abierto a la vez ("una pregunta abierta a la vez") SIN JavaScript — el brief mismo
          autoriza "lista si el JS se quiere mínimo" y el reparto de agentes (§13) limita el JS de
@@ -379,60 +424,50 @@
          Respuestas tomadas literal de las pistas que el propio brief da entre paréntesis en 6.8 —
          ninguna inventada. La duración del servicio no se precisa en horas porque el brief no da
          un número para los paquetes de novia (solo para las clases, 3h) — no se inventa una cifra.
-         ALTERNANCIA: esta sección y #encuentra quedan las dos claras seguidas — inevitable con
-         #cierre fijo en oscuro (rediseño confirmado en 6.9) y #encuentra fijo en claro
-         (confirmada en 6.7): insertar una sección entre dos de distinto fondo siempre genera una
-         adyacencia igual a uno de los dos lados. Reportado en vez de forzado, con sugerencia a css
-         de diferenciarlas con --bg-light-alt o un borde superior — ver inbox/css.md. -->
-    <section class="faq" id="faq" data-bg="dark" aria-labelledby="faq-titulo">
-      <div class="container faq__grid">
-        <div class="faq__col">
-          <span class="eyebrow">Preguntas frecuentes</span>
-          <h2 id="faq-titulo" class="section-title">Antes de reservar</h2>
-          <div class="faq__list">
-            <details class="faq__item" name="faq">
-              <summary class="faq__question">¿A qué zonas vas a domicilio?</summary>
-              <p class="faq__answer">Lima, Perú y Madrid, España. La movilidad no está incluida en el precio del servicio.</p>
-            </details>
-            <details class="faq__item" name="faq">
-              <summary class="faq__question">¿Cuánto dura el servicio?</summary>
-              <p class="faq__answer">Depende del servicio elegido: cada paquete de novia tiene su propio tiempo, y las clases duran 3 horas.</p>
-            </details>
-            <details class="faq__item" name="faq">
-              <summary class="faq__question">¿Cómo reservo y cómo pago?</summary>
-              <p class="faq__answer">Me escribes por WhatsApp y te confirmo disponibilidad. Reservas tu fecha con un adelanto de 50 soles vía Yape; al enviarme la captura del pago, recibes por correo los datos verificados de tu cita.</p>
-            </details>
-            <details class="faq__item" name="faq">
-              <summary class="faq__question">¿Puedo cambiar la fecha?</summary>
-              <p class="faq__answer">Sí. El adelanto no se reembolsa, pero puedes mover tu fecha sin problema.</p>
-            </details>
-            <details class="faq__item" name="faq">
-              <summary class="faq__question">¿Llevas todo el material?</summary>
-              <p class="faq__answer">Sí, llevo todos los productos y herramientas necesarias.</p>
-            </details>
-            <details class="faq__item" name="faq">
-              <summary class="faq__question">¿Hacen prueba previa?</summary>
-              <p class="faq__answer">Sí, para novias — se reserva con una semana de anticipación.</p>
-            </details>
-          </div>
+         2026-08-09 (MA-F15): el CTA que antes compartía esta sección como `.faq__cta` (columna
+         derecha de `.faq__grid`) se separó a su propia sección `#cierre`, arriba — ver su
+         comentario para el motivo. Esta sección ahora solo contiene las preguntas; `.faq__col`
+         (sin reglas CSS propias, era un mero item de grid) y `.faq__grid` quedan sin uso, css
+         puede limpiarlos. Pasa de oscura a CLARA — con #cierre (oscuro) justo antes, la vieja
+         "adyacencia inevitable" con #encuentra (clara) desaparece: ahora hay un oscuro entre
+         medio, alternancia limpia sin necesitar `--bg-light-alt` como diferenciador. -->
+    <section class="faq" id="faq" data-bg="light" aria-labelledby="faq-titulo">
+      <div class="container">
+        <span class="eyebrow">Preguntas frecuentes</span>
+        <h2 id="faq-titulo" class="section-title">Antes de reservar</h2>
+        <div class="faq__list">
+          <details class="faq__item" name="faq">
+            <summary class="faq__question">¿A qué zonas vas a domicilio?</summary>
+            <p class="faq__answer">Lima, Perú y Madrid, España. La movilidad no está incluida en el precio del servicio.</p>
+          </details>
+          <details class="faq__item" name="faq">
+            <summary class="faq__question">¿Cuánto dura el servicio?</summary>
+            <p class="faq__answer">Depende del servicio elegido: cada paquete de novia tiene su propio tiempo, y las clases duran 3 horas.</p>
+          </details>
+          <details class="faq__item" name="faq">
+            <summary class="faq__question">¿Cómo reservo y cómo pago?</summary>
+            <p class="faq__answer">Me escribes por WhatsApp y te confirmo disponibilidad. Reservas tu fecha con un adelanto de 50 soles vía Yape; al enviarme la captura del pago, recibes por correo los datos verificados de tu cita.</p>
+          </details>
+          <details class="faq__item" name="faq">
+            <summary class="faq__question">¿Puedo cambiar la fecha?</summary>
+            <p class="faq__answer">Sí. El adelanto no se reembolsa, pero puedes mover tu fecha sin problema.</p>
+          </details>
+          <details class="faq__item" name="faq">
+            <summary class="faq__question">¿Llevas todo el material?</summary>
+            <p class="faq__answer">Sí, llevo todos los productos y herramientas necesarias.</p>
+          </details>
+          <details class="faq__item" name="faq">
+            <summary class="faq__question">¿Hacen prueba previa?</summary>
+            <p class="faq__answer">Sí, para novias — se reserva con una semana de anticipación.</p>
+          </details>
         </div>
-
-        <aside class="faq__cta">
-          <h2 class="faq__cta-titulo">Destaca tu belleza</h2>
-          <p class="faq__cta-sub">Reserva por WhatsApp. Sin pago online, sin complicaciones.</p>
-          <a href="CTA_DESTINO_PENDIENTE" class="btn-editorial faq__cta-btn" data-cta-pendiente="CTA_DESTINO">
-            <svg class="header-cta__icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.06-1.33A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.2c-.22.62-1.28 1.2-1.77 1.24-.45.05-1.02.07-1.65-.1-.38-.11-.87-.27-1.5-.53-2.64-1.14-4.36-3.8-4.5-3.98-.13-.18-1.08-1.43-1.08-2.73 0-1.3.68-1.94.93-2.2.24-.27.53-.33.7-.33h.5c.16 0 .38-.06.6.46.22.53.75 1.83.82 1.97.07.13.11.29.02.47-.09.18-.14.29-.27.44-.13.16-.28.35-.4.47-.13.13-.27.27-.12.53.16.27.7 1.15 1.5 1.86 1.04.92 1.91 1.21 2.18 1.35.27.13.42.11.58-.07.16-.18.68-.79.86-1.06.18-.27.36-.22.6-.13.24.09 1.53.72 1.79.85.27.13.44.2.51.31.07.11.07.65-.15 1.27z"/></svg>
-            RESERVAR
-          </a>
-          <p class="faq__cta-micro">Lima, Perú · Madrid, España · WhatsApp 920 595 147</p>
-        </aside>
       </div>
     </section>
 
   </main>
 
   <!-- ===== 10 · FOOTER ===== -->
-  <footer class="site-footer">
+  <footer class="site-footer" id="site-footer">
     <div class="site-footer__main">
       <div class="container site-footer__grid">
 
