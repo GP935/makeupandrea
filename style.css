@@ -22,11 +22,21 @@
      partido en dos según el fondo (regla 60/30/10, §2.1) — --accent-deep sobre
      CLARO, --accent-bright sobre OSCURO. --blush RETIRADO por completo (era
      "atmósfera cálida" — el sistema tinta es B/N + un único acento, sin
-     lavados de color secundarios; brief §0 lo pide explícitamente). */
+     lavados de color secundarios; brief §0 lo pide explícitamente).
+
+     REPINTADO SALMÓN (MA-C32, instrucción directa de Paul, sustituye el
+     rosewood de MA-C12 como "el sello" del sitio — MA-C12 decía "SE CONSERVA
+     sin cambios", esta instrucción nueva y explícita lo reemplaza a
+     propósito, no es un descuido). Un único cambio de VALOR en estos 2
+     tokens propaga el salmón a TODO lo que ya consumía accent-deep/
+     accent-bright sin tocar cada selector: hero__sello, dots de los 2
+     carruseles, "+"/"−" del acordeón FAQ, hovers de tarjetas/links
+     (servicio-card, credencial, artista, novias-promo, carrusel__arrow),
+     selector-card__level, botones automaquillaje/reserva-novias/paquete. */
   --bg-light:      #F7F7F5;   /* Blanco papel FRÍO — fondos claros, nunca blanco puro #fff */
   --bg-dark:       #0A0A0A;   /* Negro tinta casi puro — fondos oscuros, también alias de texto principal, ver --text-ink */
-  --accent-deep:   #6B2737;   /* Rosewood — "el sello", ÚNICO acento del sitio. SE CONSERVA sin cambios (brief §0/§2: es lo que separa el sitio de AP Beauty — no tocar por "consistencia fría") */
-  --accent-bright: #8E3A4C;   /* Rosewood sobre fondo OSCURO — un punto más luminoso que accent-deep para leerse contra el negro, pero más oscuro que el dusty rose sakura anterior (ya no hace falta "empolvarlo": el negro pleno le da rango de sobra) */
+  --accent-deep:   #C97157;   /* Salmón profundo — uso sobre CLARO. Valor dado literalmente por Paul como "hover/activo, un punto más profundo" del salmón medio; se usa aquí como variante de mayor contraste porque además de servir de hover, funciona sola sobre --bg-light (~3.4:1 con texto 700/1rem, umbral de texto grande) donde el salmón medio solo (accent-bright) no alcanza contraste (~2.1:1) */
+  --accent-bright: #E28F7A;   /* Salmón medio — "el sello", ÚNICO acento del sitio (reemplaza rosewood). Uso sobre OSCURO (~6.7:1 contra --bg-dark, de sobra) */
   --ink-mid:       #3A3A3C;   /* gris tinta medio — jerarquía intermedia entre negro pleno y blanco papel, nuevo en este sistema (brief §2.1, "ahora SÍ se puede jerarquizar fuerte") */
   --paper-line:    #DADAD7;   /* líneas de marco/registro sobre papel frío — reemplaza --blush como borde de .marco-papel/.galeria-novias__item (brief §3A, "marcos de registro") */
   --text-muted:    #7A7A78;   /* eyebrows, etiquetas, microtexto — gris FRÍO (antes cálido) */
@@ -34,21 +44,34 @@
   --silver-dim:    #9A9A98;   /* plata apagado — texto secundario/itálica de voz sobre --bg-dark */
   --star-gold:     #B8912F;   /* estrellas de rating en .resena-item__estrellas (MA-C26) — convención universal de rating, no compite como "acento de marca" (regla 60/30/10 sigue siendo solo rosewood) */
 
-  /* Rosa eléctrico "glowing" (MA-C27, petición directa de Paul) — SOLO para los
-     2 CTA de conversión más importantes del sitio (hero + cierre de FAQ), un
-     tratamiento deliberadamente fuera del sistema rosewood/60-30-10 para que
-     esos 2 botones destaquen por diseño, no un reemplazo del acento de marca. */
-  --cta-glow:       #FF2E7A;
-  --cta-glow-hover: #E01E64;
+  /* Glow del CTA (MA-C27, ajustado a salmón en MA-C32) — SOLO para los 2 CTA
+     de conversión más importantes del sitio (hero + cierre). MA-C27 lo sacó
+     a propósito del sistema rosewood/60-30-10 con un rosa eléctrico propio
+     (#FF2E7A) para que destacaran por diseño. MA-C32 (instrucción directa de
+     Paul, "reemplaza el rosa eléctrico actual") pide colapsar ESE color
+     también al salmón — se alían literalmente a accent-bright/-hover en vez
+     de llevar un hex propio: ahora es realmente "UN token" el que gobierna
+     todo el acento del sitio, CTA incluido, tal como pidió el punto 1. */
+  --cta-glow:       var(--accent-bright);
+  --cta-glow-hover: var(--accent-bright-hover);
+  /* Halo del glow — un salmón más CLARO/translúcido que el propio botón, para
+     que el pulso se lea como luz irradiando y no como un borde duro del
+     mismo color del relleno (punto 2 de MA-C32). Tono claro fijo, no derivado
+     por cálculo — mismo criterio que --silver/--silver-dim (tonos de rango
+     manual, no fórmula). */
+  --cta-glow-halo:  #F4C2B0;
 
-  /* Derivados — recalculados para la paleta tinta (antes derivados de sakura,
-     MA-C8). accent-deep no cambió de valor → su hover tampoco (mismo cálculo
-     que MA-C6/MA-C8). accent-bright-hover SÍ se recalcula sobre el nuevo valor
-     más oscuro. bg-light-alt/border-light pasan de tinte cálido (hacia
-     --blush, retirado) a gris neutro frío, coherente con --paper-line. */
+  /* Derivados — recalculados para el salmón (MA-C32). accent-bright-hover usa
+     el valor EXACTO que dio Paul ("hover/activo, un punto más profundo": el
+     mismo #C97157 que ya es --accent-deep — no es casualidad ni duplicado
+     por error, es que su "profundo" y nuestro "variante de fondo claro"
+     convergen en el mismo tono). accent-deep-hover se calcula oscureciendo
+     ese mismo profundo un ~20% más (mismo % que se usaba antes en rosewood),
+     no lo dio Paul explícitamente. bg-light-alt/border-light sin cambios,
+     no dependen del acento. */
   --text-ink:           var(--bg-dark);   /* alias semántico: texto principal sobre fondo claro */
-  --accent-deep-hover:  #56212B;          /* rosewood oscurecido, :hover sobre relleno accent-deep (accent-deep no cambió de valor → el hover se mantiene igual) */
-  --accent-bright-hover:#722E3D;          /* rosewood-oscuro aún más oscurecido, :hover sobre relleno accent-bright (recalculado sobre el nuevo #8E3A4C, mismo % de oscurecimiento que accent-deep→accent-deep-hover) */
+  --accent-deep-hover:  #A15A46;          /* salmón profundo oscurecido ~20%, :hover sobre relleno accent-deep */
+  --accent-bright-hover:#C97157;          /* = --accent-deep; valor dado literalmente por Paul como hover del salmón medio */
   --bg-light-alt:       #EBEBE9;          /* relleno de tarjetas sobre fondo claro (paquete-bloque, selector-card…) — gris neutro frío, ya no tinte cálido hacia --blush (retirado) */
   --border-light:       #DADAD7;          /* líneas/bordes sutiles sobre fondo claro — mismo valor que --paper-line (misma familia "línea sobre papel frío"); token separado por sitio de uso, no por color */
 
@@ -210,24 +233,80 @@ mark.content-tbd { background: var(--paper-line); color: var(--accent-deep-hover
    flex-shrink:0 para que no ceda espacio si el header se aprieta. Como
    .header-logo tiene margin-right:auto (empuja todo el resto a la derecha),
    fijar el 50% aquí deja el cluster ocupando la mitad derecha real del header,
-   justo antes de .header-right (hoy solo el botón de menú, área mínima). */
-.nav-cluster { display: flex; flex: 0 0 50%; flex-shrink: 0; justify-content: space-between; gap: clamp(16px, 2vw, 32px); }
+   justo antes de .header-right (hoy solo el botón de menú, área mínima).
+
+   PÍLDORA GLASS (MA-C32, instrucción directa de Paul, punto 3) — encapsula
+   solo el grupo de nav, el wordmark queda fuera a propósito (vive en
+   .header-logo, hermano de este elemento, no dentro). radius:999px es LOCAL
+   a este elemento — no toca --radius-pill (fijo en 3px a propósito en todo
+   el resto del sitio, brief §10.5 "nada de radius-pill:50px en botones/
+   cards"): la píldora es una excepción puntual de este patrón nuevo, no un
+   cambio del sistema de esquinas editorial. Fondo/borde en 2 variantes
+   (blanco-glass / negro-glass) porque el header es adaptativo — mismo gancho
+   `.site-header--on-light` que ya usa el resto de este bloque, así la
+   píldora nunca desaparece contra fondos claros ni se ve sucia sobre negro.
+   --nav-gap guarda el gap como variable propia (no solo la propiedad) para
+   que el divisor rómbico de abajo pueda centrarse en él vía calc(). */
+.nav-cluster {
+  display: flex; flex: 0 0 50%; flex-shrink: 0; justify-content: space-between;
+  --nav-gap: clamp(16px, 2vw, 32px);
+  gap: var(--nav-gap);
+  padding: 10px clamp(18px, 2vw, 28px);
+  border-radius: 999px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.16);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  transition: background .25s ease, border-color .25s ease;
+}
+.site-header--on-light .nav-cluster {
+  background: rgba(10,10,10,.05);
+  border-color: rgba(10,10,10,.10);
+}
 .nav-link {
   /* Negrita (revisión §5: "señal clara de clicable, ve directo") + más grande
      (MA-C16, "hacerlos más grande" — antes .82rem) para llenar con criterio
-     el 50% de ancho nuevo, no solo repartir el espacio con gaps enormes. */
+     el 50% de ancho nuevo, no solo repartir el espacio con gaps enormes.
+     position:relative (MA-C32) — ancla el divisor rómbico de ::after. */
+  position: relative;
   font: 700 1rem/1 var(--font-body); letter-spacing: .07em; text-transform: uppercase;
   color: #fff; text-decoration: none; transition: color .25s ease;
 }
 .site-header--on-light .nav-link { color: var(--text-ink); }
-/* Acento en hover/activo — vuelve a usar la regla 60/30/10 del resto del
-   sitio ahora que el estado es real (clase JS), no un blend impredecible:
-   accent-bright sobre el header oscuro por defecto, accent-deep cuando
-   `.site-header--on-light` indica que hay una sección clara detrás. */
-.nav-link:hover { color: var(--accent-bright); }
+/* Hover — MISMO salmón sobre header oscuro Y claro (MA-C32, punto 5: petición
+   textual "el salmón contrasta en los dos", resuelve el hover sin depender
+   del fondo). Antes usaba accent-bright/accent-deep como el resto de la
+   regla 60/30/10 (2 tonos distintos según fondo) — se rompe ADREDE solo acá:
+   --accent-deep (#C97157) es el salmón más profundo de los 2, es el único de
+   los dos con contraste real contra --bg-light (~3.4:1) y también se lee
+   bien contra --bg-dark (~4.1:1), así que es el que se usa fijo en ambos
+   estados. El texto en REPOSO sigue adaptándose por initAdaptiveHeader.js —
+   eso no se toca, solo se añade este :hover. */
+.nav-link:hover { color: var(--accent-deep); }
 .site-header--on-light .nav-link:hover { color: var(--accent-deep); }
 .nav-link--active { border-bottom: 2px solid var(--accent-bright); padding-bottom: 4px; }
 .site-header--on-light .nav-link--active { border-bottom-color: var(--accent-deep); }
+
+/* Divisores romboidales entre ítems de nav (MA-C32, punto 4) — pseudo-elemento
+   en el link ANTERIOR a cada hueco (`:not(:last-child)`, nunca hay uno tras
+   "Contactos"), centrado en el gap vía calc(var(--nav-gap)/-2) + translateX
+   50% de su propio ancho, así queda en el punto medio real del hueco sin
+   importar el valor fluido de --nav-gap. clip-path (no rotate:45deg) porque
+   la forma pedida es angosta y ALTA (rombo, puntas arriba/abajo) — rotar un
+   rectángulo no-cuadrado 45° lo dejaría en diagonal, no vertical. Nunca toca
+   el borde de la píldora: solo existe ENTRE links, la píldora tiene su propio
+   padding lateral antes del primer/después del último. */
+.nav-link:not(:last-child)::after {
+  content: "";
+  position: absolute; top: 50%; right: calc(var(--nav-gap) / -2);
+  transform: translate(50%, -50%);
+  width: 4px; height: 14px;
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  background: rgba(255,255,255,.35);
+  pointer-events: none;
+  transition: background .25s ease;
+}
+.site-header--on-light .nav-link:not(:last-child)::after { background: rgba(10,10,10,.22); }
 
 /* .header-cta__icon sigue viva — reutilizada por .hero__cta-btn y .cierre__cta,
    no es huérfana pese a que el botón del header (.header-cta) ya no existe en
@@ -343,19 +422,35 @@ mark.content-tbd { background: var(--paper-line); color: var(--accent-deep-hover
 .hero h1 { font-family: var(--font-display); font-size: clamp(2.2rem, 5.5vw, 4rem); font-weight: 800; line-height: 1.04; letter-spacing: -1px; color: var(--silver); margin: 0 0 22px; }
 .hero__sello { font-style: italic; color: var(--accent-bright); }
 .hero__cta-btn.btn-editorial { display: inline-flex; align-items: center; gap: 10px; padding: 18px 48px; font-size: 15px; letter-spacing: 2px; border: none; }
-/* Rosa eléctrico "glowing" + ondas pulsantes (MA-C27, petición directa de Paul,
+/* Glow salmón + ondas pulsantes (MA-C27, ajustado a salmón/lento en MA-C32,
    compartido con .faq__cta-btn) — glow vía box-shadow difuso, ondas vía 2
    pseudo-elementos con anillo que escala y se desvanece en loop, desfasados
    entre sí (::after arranca a mitad de ciclo) para que nunca se vea vacío.
    100% CSS, no necesita JS: es un efecto ambiental que llama la atención hacia
    el botón, no una animación disparada por el clic (eso sí sería JS — ripple
-   Material-style con coordenadas del puntero — pero no es lo que se pidió). */
+   Material-style con coordenadas del puntero — pero no es lo que se pidió).
+
+   MA-C32 (instrucción directa de Paul, punto 2) — 3 ajustes sobre el
+   mecanismo ya existente, no un rediseño: (a) box-shadow y anillos pasan de
+   rosa eléctrico (#FF2E7A, rgba hardcodeada del hex viejo) a --cta-glow-halo
+   (#F4C2B0, salmón CLARO, más claro que el propio --cta-glow del relleno —
+   "el halo debe leerse como luz", un halo del mismo tono que el relleno se
+   lee más como borde que como luz irradiando); (b) `filter:blur` en el
+   anillo + `inset:-1px` (antes `inset:0` pegado al borde del botón) para que
+   el anillo salga difuso desde el arranque, no nítido — refuerza la lectura
+   de "luz" en vez de "borde duro"; (c) ciclo de 2.4s→2.8s y delay 1.2s→1.4s
+   (proporcional), dentro del rango 2.5–3s pedido ("que respire, no que
+   parpadee"). Accesibilidad YA resuelta desde MA-C27/28 vía el bloque
+   `@media(prefers-reduced-motion:reduce)` de abajo (equivalente funcional al
+   `no-preference` que pide el punto 2: con `reduce` el anillo ni siquiera se
+   pinta, `display:none` — no hace falta re-envolver la regla base, el
+   resultado para quien pide menos movimiento es el mismo, cero pulso). */
 .hero__cta-btn.btn-editorial,
 .faq__cta-btn.btn-editorial {
   position: relative;
   background: var(--cta-glow);
   color: var(--bg-dark);
-  box-shadow: 0 0 20px 2px rgba(255,46,122,.55), 0 0 44px 10px rgba(255,46,122,.3);
+  box-shadow: 0 0 22px 3px rgba(244,194,176,.5), 0 0 50px 14px rgba(244,194,176,.26);
 }
 .hero__cta-btn.btn-editorial:hover,
 .faq__cta-btn.btn-editorial:hover {
@@ -364,18 +459,19 @@ mark.content-tbd { background: var(--paper-line); color: var(--accent-deep-hover
 }
 .hero__cta-btn.btn-editorial::before, .hero__cta-btn.btn-editorial::after,
 .faq__cta-btn.btn-editorial::before, .faq__cta-btn.btn-editorial::after {
-  content: ""; position: absolute; inset: 0; border-radius: inherit;
-  border: 2px solid var(--cta-glow);
-  animation: cta-pulse-ring 2.4s ease-out infinite;
+  content: ""; position: absolute; inset: -1px; border-radius: inherit;
+  border: 1.5px solid var(--cta-glow-halo);
+  filter: blur(1.5px);
+  animation: cta-pulse-ring 2.8s ease-out infinite;
   pointer-events: none;
 }
-.hero__cta-btn.btn-editorial::after, .faq__cta-btn.btn-editorial::after { animation-delay: 1.2s; }
-/* Palpitación reducida (MA-C28, feedback directo de Paul: "reduce un poco la
-   intensidad") — escala máxima de 1.9→1.45 y opacidad de arranque de .6→.4,
-   anillo más sutil sin perder el efecto. */
+.hero__cta-btn.btn-editorial::after, .faq__cta-btn.btn-editorial::after { animation-delay: 1.4s; }
+/* Palpitación reducida (MA-C28) y suavizada de nuevo (MA-C32) — escala máxima
+   1.9→1.45 (MA-C28) →1.4 (MA-C32, marginal) y opacidad de arranque .6→.4
+   (MA-C28), anillo sutil que respira sin perder el efecto. */
 @keyframes cta-pulse-ring {
-  0%   { transform: scale(1);    opacity: .4; }
-  100% { transform: scale(1.45); opacity: 0; }
+  0%   { transform: scale(1);   opacity: .35; }
+  100% { transform: scale(1.4); opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .hero__cta-btn.btn-editorial::before, .hero__cta-btn.btn-editorial::after,
@@ -621,6 +717,19 @@ mark.content-tbd { background: var(--paper-line); color: var(--accent-deep-hover
 }
 .carrusel__media { position: relative; overflow: hidden; background: rgba(255,255,255,.06); }
 .carrusel__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+/* 3er slide (MA-F16, "Formación internacional") — foto real 1:1, distinta a los
+   otros 2 slides (ya vienen recortadas/apaisadas de origen). `.carrusel__media`
+   siempre es más ancho que alto (fila del grid en desktop, `min-height` fijo en
+   móvil) — cover sobre un cuadrado ahí recorta VERTICAL, y con el
+   `object-position` por defecto (50% 50%, centrado) el recorte se reparte
+   arriba/abajo por igual: como en esta foto las 3 personas arrancan muy cerca
+   del borde superior (~6% del alto), ese reparto ya corta parte de las cabezas
+   — petición directa de Paul. `top` (recorta SOLO por abajo, nunca por arriba)
+   conserva cabezas/torso completos de los 3 y solo sacrifica algo de piernas/
+   pies, que es lo prescindible del encuadre. Scoped a este slide únicamente
+   (`data-slide="2"`) — los otros 2 slides no tienen este problema, no hace
+   falta tocar la regla general de arriba. */
+.carrusel__slide[data-slide="2"] .carrusel__media img { object-position: top; }
 .carrusel__content {
   display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
   max-width: 460px;
