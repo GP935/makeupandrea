@@ -333,10 +333,16 @@ mark.content-tbd { background: var(--paper-line); color: var(--accent-deep-hover
 }
 .menu-backdrop[hidden] { display: none; }
 .menu-backdrop.is-open { opacity: 1; visibility: visible; }
+/* MA-C41 (petición directa de Paul): panel oscuro en vez de claro — fondo
+   negro, letras blancas, wordmark blanco. Todo lo que dependía de la
+   convención "claro" (texto var(--text-ink), divisores var(--bg-light-alt),
+   acento var(--accent-deep) — ese es el par para fondo CLARO en todo el
+   sitio) pasa a su contraparte de fondo OSCURO, mismo criterio que usan
+   .capitulo[data-bg="dark"]/.condiciones/.faq en el resto del proyecto. */
 .menu-panel {
   position: fixed; top: 0; right: 0; bottom: 0; z-index: 1100;
   width: min(86vw, 380px);
-  background: var(--bg-light);
+  background: var(--bg-dark);
   display: flex; flex-direction: column;
   padding: clamp(20px, 4vw, 32px);
   transform: translateX(100%); transition: transform .35s cubic-bezier(.4, 0, .2, 1);
@@ -344,21 +350,32 @@ mark.content-tbd { background: var(--paper-line); color: var(--accent-deep-hover
 }
 .menu-panel.is-open { transform: translateX(0); }
 .menu-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: clamp(24px, 5vw, 40px); }
+/* .header-logo__wordmark ya es #fff por defecto (línea 226) — acá no vive
+   dentro de .site-header, así que el override on-light no aplicaba, pero
+   tampoco había nada que lo pusiera en blanco a propósito para este panel.
+   Se deja explícito para que el blanco sea intencional, no un default heredado. */
+.menu-top .header-logo__wordmark { color: #fff; }
+/* Círculo invertido a blanco — sobre panel negro, un círculo var(--bg-dark)
+   se fundía con el fondo y solo quedaba flotando la "✕". */
 .menu-close {
   width: 44px; height: 44px; border-radius: 50%; border: 0; cursor: pointer;
-  background: var(--bg-dark); color: #fff; font-size: 16px; line-height: 1;
+  background: #fff; color: var(--bg-dark); font-size: 16px; line-height: 1;
   display: inline-flex; align-items: center; justify-content: center;
 }
 .menu-primary { display: flex; flex-direction: column; }
 .menu-primary a {
   display: flex; align-items: center; justify-content: space-between;
   font-family: var(--font-display); font-size: 1.5rem; font-weight: 700;
-  color: var(--text-ink); text-decoration: none;
-  padding: clamp(12px, 2vw, 16px) 0; border-bottom: 1px solid var(--bg-light-alt);
+  color: #fff; text-decoration: none;
+  padding: clamp(12px, 2vw, 16px) 0; border-bottom: 1px solid rgba(255,255,255,.14);
 }
 .menu-primary a::after { content: "›"; color: var(--text-muted); font-weight: 400; }
-.menu-primary a[aria-current="page"] { color: var(--accent-deep); }
+.menu-primary a[aria-current="page"] { color: var(--accent-bright); }
 .menu-cta.btn-editorial { margin-top: clamp(24px, 5vw, 40px); width: 100%; }
+/* accent-deep (heredado de .btn-editorial--solid) es la variante para fondo
+   CLARO — sobre el panel ahora oscuro, mismo criterio que .automaquillaje/
+   .reserva-novias/.sobre-mi-cierre__cta en el resto del sitio. */
+.menu-cta.btn-editorial--solid { background: var(--accent-bright); }
 
 /* --------------------------------------------------------------------------
    3 · Hero (home) — layout B, apilado, AL RAS del viewport (petición directa
@@ -1140,8 +1157,8 @@ mark.content-tbd { background: var(--paper-line); color: var(--accent-deep-hover
    -------------------------------------------------------------------------- */
 
 /* Compensa el header sticky (mismo criterio que #servicios) */
-#hero-novias, #credencial, #condiciones, #paquetes, #incluye, #galeria-novias, #reserva-novias,
-#hero-clases, #selector, #automaquillaje, #perfeccionamiento, #condiciones-clases, #reserva-clases {
+#hero-novias, #condiciones, #paquetes, #incluye, #galeria-novias, #reserva-novias,
+#hero-clases, #selector, #automaquillaje, #perfeccionamiento, #condiciones-clases {
   scroll-margin-top: 100px;
 }
 
@@ -1193,9 +1210,38 @@ mark.content-tbd { background: var(--paper-line); color: var(--accent-deep-hover
   }
 }
 
+/* Overrides SOLO para .hero-clases (petición directa de Paul, MA-C40): a
+   diferencia de novias/sobre-mi (foto a inset:0, sin banda — MA-C37), acá el
+   header semi-transparente (`backdrop-filter:blur`, ver .site-header) queda
+   superpuesto directo sobre la foto y la difumina parcialmente. Se reinstala
+   el margen reservado arriba, pero en negro puro (no el --bg-light-alt gris
+   que se sacó en MA-C37) — el header flota sobre fondo sólido, no sobre la
+   imagen, sin blur visible. Mismo mecanismo que tenía el proyecto antes de
+   MA-C37 (fila +var(--header-gap), foto con top:var(--header-gap)), aplicado
+   únicamente a esta página. */
+.hero-clases__media { background: #000; }
+.hero-clases__grid { min-height: calc(clamp(480px, 52vw, 680px) + var(--header-gap)); }
+/* top + height:100% (heredado de la regla compartida) se pisaban entre sí: con
+   height fija al 100% del panel Y top desplazado var(--header-gap), la foto se
+   desbordaba esa misma medida por ABAJO del panel — overflow:hidden la recortaba
+   ahí, cortando el borde inferior de la imagen. height:calc(100% - header-gap)
+   la encoge lo justo para que quepa entera entre el margen negro y el borde
+   inferior real del panel, sin desbordarse. */
+.hero-clases__media img { top: var(--header-gap); height: calc(100% - var(--header-gap)); }
+.hero-clases__content { padding-top: clamp(40px, 5vw, 72px); }
+@media (max-width: 768px) {
+  .hero-clases__media { min-height: calc(clamp(360px, 90vw, 460px) + var(--header-gap)); }
+  .hero-clases__content { padding-top: clamp(32px, 8vw, 48px); }
+}
+
 /* C · Condiciones — "Antes de agendar" (oscuro, novias + clases comparten .condiciones-list) */
 .condiciones, .condiciones-clases { background: var(--bg-dark); }
 .condiciones .section-title, .condiciones-clases .section-title { color: #fff; }
+/* MA-F24: párrafo nuevo entre el h2 y la lista, sin color propio (heredaba el
+   texto oscuro por defecto, invisible sobre --bg-dark) — mismo tratamiento que
+   .condiciones-list li para que se lea como su introducción, no como un elemento
+   nuevo desconectado. */
+.condiciones-intro { font: 400 1rem/1.6 var(--font-body); color: rgba(255,255,255,.78); max-width: 72ch; margin: 0 0 clamp(16px, 2vw, 24px); }
 .condiciones-list {
   list-style: none; counter-reset: cond; margin: 0; padding: 0; max-width: 72ch;
   display: flex; flex-direction: column; gap: clamp(16px, 2vw, 24px);
@@ -1302,9 +1348,11 @@ mark.content-tbd { background: var(--paper-line); color: var(--accent-deep-hover
 /* Legible, no "gris casi invisible" (briefing pto.4) */
 .incluye-marcas-label { font: 600 .72rem/1 var(--font-body); letter-spacing: .18em; text-transform: uppercase; color: rgba(255,255,255,.68); margin: 0 0 12px; }
 .incluye-marcas-list { font: 400 .95rem/1.7 var(--font-body); color: rgba(255,255,255,.8); margin: 0; }
-/* Disclaimer bajo la lista de marcas (briefing maestro §7/§9) — hereda el
-   estilo de mark.content-tbd ya definido, solo se ajusta el espaciado del párrafo */
-.incluye-marcas-disclaimer { font: 400 .78rem/1.5 var(--font-body); margin: 12px 0 0; }
+/* Disclaimer bajo la lista de marcas (briefing maestro §7/§9). MA-F24: ya no es
+   <mark class="content-tbd"> (perdió el color que traía de ahí, quedó invisible
+   sobre --bg-dark) — más tenue que .incluye-marcas-list (.8) por ser texto legal
+   secundario, mismo criterio que sugirió front. */
+.incluye-marcas-disclaimer { font: 400 .78rem/1.5 var(--font-body); color: rgba(255,255,255,.5); margin: 12px 0 0; }
 @media (max-width: 768px) {
   .incluye-grid, .incluye-grid:not(:has(.incluye-col--marcas)) { grid-template-columns: 1fr; gap: 32px; }
   .incluye-servicio-list { grid-template-columns: 1fr; }
@@ -1329,6 +1377,14 @@ mark.content-tbd { background: var(--paper-line); color: var(--accent-deep-hover
   border: 2px solid transparent; transition: border-color .2s, transform .2s, box-shadow .2s;
 }
 .selector-card:hover { border-color: var(--text-ink); transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+/* MA-J6 dejó el hook sin estilo (inbox/css.md) — misma señal que :hover
+   [borde + elevación] pero persistente mientras la sección correspondiente
+   esté visible, y fondo var(--bg-light) [más claro que el var(--bg-light-alt)
+   de reposo] para que se note incluso sin el cursor encima. */
+.selector-card.is-active {
+  border-color: var(--text-ink); background: var(--bg-light);
+  transform: translateY(-2px); box-shadow: var(--shadow-hover);
+}
 .selector-card__level {
   display: inline-block; font: 700 .7rem/1 var(--font-body); letter-spacing: .14em; text-transform: uppercase;
   color: #fff; background: var(--text-ink); padding: 6px 12px; border-radius: var(--radius-pill);
@@ -1382,23 +1438,21 @@ mark.content-tbd { background: var(--paper-line); color: var(--accent-deep-hover
   .automaquillaje-grid, .perfeccionamiento-grid { grid-template-columns: 1fr; }
 }
 
-/* I · Reserva final — CTA (MA-C36: siempre oscuro en las 3 páginas, mismo negro que
-   .cierre del index — antes clases quedaba claro, decisión revertida a pedido directo
-   de Paul. Excepción deliberada a la regla de alternancia, mismo precedente que
-   #faq+#cierre en index.html (MA-C30): condiciones-clases→reserva-clases y
-   cap4→sobre-mi-cierre terminan en 2 oscuras seguidas a propósito, el cierre del
-   sitio "tiene que ser siempre negro" pesa más que la alternancia en este punto). */
-.reserva-novias, .reserva-clases { text-align: center; background: var(--bg-dark); }
-.reserva-novias .container, .reserva-clases .container { max-width: 640px; display: flex; flex-direction: column; align-items: center; }
-.reserva-novias h2, .reserva-clases h2 {
+/* I · Reserva final — CTA (MA-C36: siempre oscuro, mismo negro que .cierre del
+   index. Excepción deliberada a la regla de alternancia, mismo precedente que
+   #faq+#cierre en index.html — MA-C30). `.reserva-clases` (su equivalente en
+   clases.html) fue eliminada del HTML en MA-F28 — CSS muerto limpiado acá. */
+.reserva-novias { text-align: center; background: var(--bg-dark); }
+.reserva-novias .container { max-width: 640px; display: flex; flex-direction: column; align-items: center; }
+.reserva-novias h2 {
   font-family: var(--font-display); font-size: clamp(1.8rem, 3.2vw, 2.6rem); font-weight: 700;
   margin: 0 0 clamp(20px, 2.4vw, 28px); color: #fff;
 }
-/* CTA "RESERVAR FECHA/CLASE" sobre fondo oscuro — mismo criterio que .hero-overlay/.cierre/.automaquillaje (§2.1).
+/* CTA "RESERVAR FECHA" sobre fondo oscuro — mismo criterio que .hero-overlay/.cierre/.automaquillaje (§2.1).
    REPINTADO MA-C12: mismo fix de contraste que .automaquillaje .btn-editorial--solid, ver comentario ahí. */
-.reserva-novias .btn-editorial--solid, .reserva-clases .btn-editorial--solid { background: var(--accent-bright); color: #fff; }
-.reserva-novias .btn-editorial--solid:hover, .reserva-clases .btn-editorial--solid:hover { background: var(--accent-bright-hover); color: #fff; }
-.reserva-novias__micro, .reserva-clases__micro { font: 400 .85rem/1.5 var(--font-body); margin: clamp(18px, 2vw, 24px) 0 0; color: rgba(255,255,255,.6); }
+.reserva-novias .btn-editorial--solid { background: var(--accent-bright); color: #fff; }
+.reserva-novias .btn-editorial--solid:hover { background: var(--accent-bright-hover); color: #fff; }
+.reserva-novias__micro { font: 400 .85rem/1.5 var(--font-body); margin: clamp(18px, 2vw, 24px) 0 0; color: rgba(255,255,255,.6); }
 
 /* --------------------------------------------------------------------------
    13 · Unificación de foto (§10.3) — tinte sutil charcoal (10%, dentro del

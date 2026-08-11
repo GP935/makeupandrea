@@ -66,7 +66,7 @@
     <section class="hero-clases" id="hero-clases" aria-labelledby="hero-clases-titulo">
       <div class="hero-clases__grid">
         <div class="hero-clases__media">
-          <img src="assets/img/clases/hero.jpg" alt="[ALT_PENDIENTE]" loading="eager" fetchpriority="high">
+          <img src="assets/clases/hero.webp" alt="Antes y después de la aplicación de sombra de ojos ahumada" loading="eager" fetchpriority="high">
         </div>
         <div class="hero-clases__content">
           <p class="eyebrow">FORMACIÓN</p>
@@ -77,7 +77,25 @@
       </div>
     </section>
 
-    <!-- ===== 2.2 · SELECTOR — ¿Cuál es para ti? (CLARO) ===== -->
+    <!-- ===== 2.2 · CONDICIONES-CLASES — Antes de agendar (OSCURO) ===== -->
+    <!-- Movida debajo del hero (petición directa de Paul): legible de antemano, antes de que la clienta
+         llegue al selector de clases. Distintas de novias.html: NO existe el recargo del 25% antes de
+         las 7 AM; SÍ existe la cláusula de responsabilidad sobre productos y herramientas de la
+         maquilladora. Reutiliza .condiciones-list (mismo componente visual que novias.html, contenido
+         distinto). -->
+    <section class="condiciones-clases" id="condiciones-clases" data-bg="dark" aria-labelledby="condiciones-clases-titulo">
+      <div class="container">
+        <h2 id="condiciones-clases-titulo" class="section-title">Antes de agendar</h2>
+        <ol class="condiciones-list">
+          <li><strong>Asesoría personal incluida.</strong> Se elige un look acorde a tu tipo de ojos y rostro.</li>
+          <li><strong>Reserva con adelanto de 50 soles.</strong> En caso de cancelación no hay reembolso: solo se mueve la fecha de la clase.</li>
+          <li><strong>Servicio a domicilio.</strong> La movilidad no está incluida en los precios.</li>
+          <li><strong>La maquilladora aporta herramientas y productos</strong> para la clase. Se requiere el cuidado necesario, ya que el costo de estos deberá asumirse en caso de daño.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ===== 2.3 · SELECTOR — ¿Cuál es para ti? (CLARO) ===== -->
     <!-- Sección crítica: mismo precio (S/200) y duración (3h) para públicos opuestos. Separación visual
          fuerte obligatoria (dominio CSS) para que nadie se apunte a la clase equivocada. Cada tarjeta
          es un ancla real a su sección — funciona sin JS. -->
@@ -99,11 +117,11 @@
       </div>
     </section>
 
-    <!-- ===== 2.3 · AUTOMAQUILLAJE — Clase de Automaquillaje · S/200 (OSCURO) ===== -->
+    <!-- ===== 2.4 · AUTOMAQUILLAJE — Clase de Automaquillaje · S/200 (OSCURO) ===== -->
     <section class="automaquillaje" id="automaquillaje" data-bg="dark" aria-labelledby="automaquillaje-titulo">
       <div class="container automaquillaje-grid">
         <div class="automaquillaje-media">
-          <img src="assets/img/clases/automaquillaje.jpg" alt="[ALT_PENDIENTE]" loading="lazy">
+          <img src="assets/clases/maquillaje-principiante.webp" alt="Mujer aplicándose maquillaje frente a un espejo de mano" loading="lazy">
         </div>
         <div class="automaquillaje-content">
           <p class="eyebrow">NIVEL: SIN EXPERIENCIA</p>
@@ -133,7 +151,7 @@
       </div>
     </section>
 
-    <!-- ===== 2.4 · PERFECCIONAMIENTO — Clases para Maquilladoras · S/200 (CLARO) ===== -->
+    <!-- ===== 2.5 · PERFECCIONAMIENTO — Clases para Maquilladoras · S/200 (CLARO) ===== -->
     <!-- Diferencia frente a Automaquillaje: SIN kit de bienvenida (no inventar equivalencias).
          Temario de 14 especializaciones: lista PLANA (una sola <ul>, sin sub-agrupar en 3 <ul> fijas)
          a propósito — el briefing autoriza a CSS a rebalancear la distribución visual en columnas
@@ -142,7 +160,7 @@
     <section class="perfeccionamiento" id="perfeccionamiento" data-bg="light" aria-labelledby="perfeccionamiento-titulo">
       <div class="container perfeccionamiento-grid">
         <div class="perfeccionamiento-media">
-          <img src="assets/img/clases/perfeccionamiento.jpg" alt="[ALT_PENDIENTE]" loading="lazy">
+          <img src="assets/clases/maquillaje-profesional.webp" alt="Maquilladora profesional aplicando sombra ahumada a una clienta" loading="lazy">
         </div>
         <div class="perfeccionamiento-content">
           <p class="eyebrow">NIVEL: PROFESIONAL</p>
@@ -175,31 +193,6 @@
           </ul>
           <a href="https://api.whatsapp.com/send/?phone=393514383265&amp;text&amp;type=phone_number&amp;app_absent=0" target="_blank" rel="noopener noreferrer" class="btn-editorial btn-editorial--solid">RESERVAR CLASE</a>
         </div>
-      </div>
-    </section>
-
-    <!-- ===== 2.5 · CONDICIONES-CLASES — Antes de agendar (OSCURO) ===== -->
-    <!-- Distintas de novias.html: NO existe el recargo del 25% antes de las 7 AM; SÍ existe la cláusula
-         de responsabilidad sobre productos y herramientas de la maquilladora. Reutiliza .condiciones-list
-         (mismo componente visual que novias.html, contenido distinto). -->
-    <section class="condiciones-clases" id="condiciones-clases" data-bg="dark" aria-labelledby="condiciones-clases-titulo">
-      <div class="container">
-        <h2 id="condiciones-clases-titulo" class="section-title">Antes de agendar</h2>
-        <ol class="condiciones-list">
-          <li><strong>Asesoría personal incluida.</strong> Se elige un look acorde a tu tipo de ojos y rostro.</li>
-          <li><strong>Reserva con adelanto de 50 soles.</strong> En caso de cancelación no hay reembolso: solo se mueve la fecha de la clase.</li>
-          <li><strong>Servicio a domicilio.</strong> La movilidad no está incluida en los precios.</li>
-          <li><strong>La maquilladora aporta herramientas y productos</strong> para la clase. Se requiere el cuidado necesario, ya que el costo de estos deberá asumirse en caso de daño.</li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ===== 2.6 · RESERVA CLASES — CTA final (OSCURO, MA-C36: antes claro) ===== -->
-    <section class="reserva-clases" id="reserva-clases" data-bg="dark" aria-labelledby="reserva-clases-titulo">
-      <div class="container">
-        <h2 id="reserva-clases-titulo">Destaca tu belleza</h2>
-        <a href="https://api.whatsapp.com/send/?phone=393514383265&amp;text&amp;type=phone_number&amp;app_absent=0" target="_blank" rel="noopener noreferrer" class="btn-editorial btn-editorial--solid">RESERVAR CLASE</a>
-        <p class="reserva-clases__micro">Lima, Perú · Madrid, España · <mark class="content-tbd">[CONTACTO]</mark></p>
       </div>
     </section>
 
@@ -253,7 +246,7 @@
         <div class="footer-col footer-col--trust">
           <h2 class="footer-col__title">Cómo reservas</h2>
           <ul class="footer-col__links footer-col__links--plain">
-            <li>Reserva por WhatsApp, sin pago online</li>
+            <li>Reserva con pago online o directo al WhatsApp</li>
             <li>Adelanto no reembolsable, transferible a un cambio de fecha</li>
             <li>Atención personal directa</li>
           </ul>

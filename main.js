@@ -196,6 +196,50 @@ function initFooterYear() {
   if (el) el.textContent = new Date().getFullYear();
 }
 
+// 4b · Selector clases (clases.html) — #automaquillaje/#perfeccionamiento son
+// mutuamente excluyentes: solo una visible a la vez, según qué tarjeta del
+// selector (`href="#automaquillaje"`/`href="#perfeccionamiento"`) se pulsó.
+// Progresivo a propósito: las tarjetas siguen siendo anclas reales en el HTML
+// (comentario de front, "funciona sin JS") — sin este script ambas secciones
+// se ven normales, esto solo mejora la experiencia cuando JS está disponible.
+// Por defecto se muestra Automaquillaje (primera tarjeta) salvo que se llegue
+// con `#perfeccionamiento` en la URL (enlace "Ver clase →" de index.html).
+function initClassSelector() {
+  const automaquillaje = document.getElementById('automaquillaje');
+  const perfeccionamiento = document.getElementById('perfeccionamiento');
+  const selectorGrid = document.querySelector('.selector-grid');
+  if (!automaquillaje || !perfeccionamiento || !selectorGrid) return;
+
+  const btnAuto = selectorGrid.querySelector('a[href="#automaquillaje"]');
+  const btnPerf = selectorGrid.querySelector('a[href="#perfeccionamiento"]');
+  if (!btnAuto || !btnPerf) return;
+
+  function activate(target, { scroll } = {}) {
+    const showAuto = target === automaquillaje;
+    automaquillaje.hidden = !showAuto;
+    perfeccionamiento.hidden = showAuto;
+    btnAuto.classList.toggle('is-active', showAuto);
+    btnPerf.classList.toggle('is-active', !showAuto);
+    if (scroll) target.scrollIntoView({ block: 'start' });
+  }
+
+  btnAuto.addEventListener('click', (e) => {
+    e.preventDefault();
+    activate(automaquillaje, { scroll: true });
+  });
+  btnPerf.addEventListener('click', (e) => {
+    e.preventDefault();
+    activate(perfeccionamiento, { scroll: true });
+  });
+
+  const hash = location.hash.slice(1);
+  if (hash === 'perfeccionamiento') {
+    activate(perfeccionamiento, { scroll: true });
+  } else {
+    activate(automaquillaje, { scroll: hash === 'automaquillaje' });
+  }
+}
+
 // 5 · Header adaptativo — fondo transparente (css, MA-C18): blanco sobre secciones
 // oscuras, negro sobre claras, según lo que haya detrás del header en cada momento
 // del scroll. No usa mix-blend-mode (probado en Chrome: no invierte contra contenido
@@ -220,11 +264,21 @@ function initAdaptiveHeader() {
   // rgba(0,0,0,0) se leía como negro sólido y el header se quedaba blanco sobre
   // secciones claras que no pintan su propio fondo (bug real, encontrado con
   // clic real en sobre-mi.html, no solo por lectura de código).
+  //
+  // Umbral 0.5 (no ">0"): varios bloques de imagen (.formacion__media,
+  // .novias-promo__media, .carrusel__media) usan un overlay decorativo casi
+  // transparente (rgba(255,255,255,.06)) como placeholder. Con ">0" ese RGB
+  // (255,255,255) se leía en crudo, sin mezclarlo con el alpha, como blanco
+  // sólido — el header se ponía negro encima de esos bloques aunque la
+  // sección detrás siga siendo oscura (bug real: header ilegible en
+  // .formacion al scrollear un poco más). Un overlay tan tenue no debe
+  // considerarse el "fondo real" — se ignora y se sigue subiendo hasta la
+  // sección, que sí pinta su color sólido real.
   function effectiveBackground(el) {
     let node = el;
     while (node) {
       const m = getComputedStyle(node).backgroundColor.match(/[\d.]+/g);
-      if (m && m.length >= 3 && (m.length < 4 || Number(m[3]) > 0)) {
+      if (m && m.length >= 3 && (m.length < 4 || Number(m[3]) >= 0.5)) {
         return m.slice(0, 3).map(Number);
       }
       node = node.parentElement;
@@ -261,4 +315,5 @@ initQuienSoyCarrusel();
 initGaleriaCarrusel();
 initScrollReveals();
 initFooterYear();
+initClassSelector();
 initAdaptiveHeader();
