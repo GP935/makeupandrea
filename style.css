@@ -983,24 +983,30 @@ mark.content-tbd { background: var(--paper-line); color: var(--accent-deep-hover
    8 · Sobre mí — retrato + bio (split editorial, mismo patrón que hero-novias)
    -------------------------------------------------------------------------- */
 .sobre-mi-hero { padding-block: 0; overflow: hidden; }
-/* min-height +var(--header-gap) (MA-C23): el gap del header se SUMA al alto de
-   la fila, no se resta de la foto — con align-items:stretch ambas columnas
-   crecen esa misma medida, la foto conserva su tamaño íntegro debajo del gap
-   (antes perdía esa franja de su propio alto). */
+/* Header transparente flota como overlay directo sobre la foto (fixed,
+   background:transparent) — la fila ya NO reserva +var(--header-gap) de alto
+   extra (eso dejaba ver el background:var(--bg-light-alt) del panel como una
+   banda gris entre header y foto, rompiendo la estética). La foto llena el
+   100% del panel con inset:0; el espacio que antes vivía en la fila ahora se
+   recalculó como padding-top del propio texto (ver .sobre-mi-hero__content)
+   para que el header no le pise el título. */
 .sobre-mi-hero__grid {
   display: grid; grid-template-columns: 1fr 1fr; align-items: stretch;
-  min-height: calc(clamp(480px, 52vw, 680px) + var(--header-gap));
+  min-height: clamp(480px, 52vw, 680px);
 }
 .sobre-mi-hero__media { position: relative; overflow: hidden; background: var(--bg-light-alt); }
-/* Mismo criterio que .hero__media de index.html (MA-C20/C22): la foto no toca
-   el header flotante directamente — arranca más abajo, dejando ver el propio
-   background:var(--bg-light-alt) de este panel como banda donde flota el
-   header, en vez de la imagen empezando justo en el borde. */
-.sobre-mi-hero__media img { position: absolute; top: var(--header-gap); left: 0; right: 0; bottom: 0; object-fit: cover; object-position: center 25%; display: block; }
+/* width/height:100% explícitos (antes faltaban): el reset global `img{height:auto}`
+   (línea 114) gana sobre top/bottom:0 en un elemento reemplazado con ratio
+   intrínseco propio — sin esto, la altura usada se calculaba desde el ratio
+   natural de la imagen (aquí 1:1) en vez de estirarse al panel, la foto se
+   desbordaba por abajo y `overflow:hidden` recortaba la mitad superior real
+   (la causa de que se viera "no alineada" en desktop). */
+.sobre-mi-hero__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 25%; display: block; }
 .sobre-mi-hero__content {
   display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
   max-width: 480px;
-  padding-block: clamp(40px, 5vw, 72px);
+  padding-top: calc(var(--header-gap) + clamp(40px, 5vw, 72px));
+  padding-bottom: clamp(40px, 5vw, 72px);
   padding-left: clamp(24px, 3vw, 48px);
   padding-right: max(var(--gutter), calc(50vw - var(--container-max) / 2));
 }
@@ -1008,31 +1014,72 @@ mark.content-tbd { background: var(--paper-line); color: var(--accent-deep-hover
 .sobre-mi-hero__bio { font: 400 1.02rem/1.7 var(--font-body); color: var(--ink-mid); margin: 0; max-width: 46ch; }
 @media (max-width: 768px) {
   .sobre-mi-hero__grid { grid-template-columns: 1fr; min-height: 0; }
-  .sobre-mi-hero__media { min-height: calc(clamp(360px, 90vw, 460px) + var(--header-gap)); }
-  .sobre-mi-hero__content { max-width: none; padding-inline: var(--gutter); padding-block: clamp(32px, 8vw, 48px); }
+  .sobre-mi-hero__media { min-height: clamp(360px, 90vw, 460px); }
+  .sobre-mi-hero__content {
+    max-width: none; padding-inline: var(--gutter);
+    padding-top: calc(var(--header-gap) + clamp(32px, 8vw, 48px));
+    padding-bottom: clamp(32px, 8vw, 48px);
+  }
 }
 
 /* --------------------------------------------------------------------------
-   9 · Credenciales (sobre-mi, oscura) — datos destacados, no párrafo
+   9 · Historia (sobre-mi) — 4 capítulos zig-zag, reemplaza .credenciales (MA-C35)
+   Mismo patrón de grid que .artista-intro (§7/línea 686). data-bg por artículo
+   controla fondo/color (claro=papel/oscuro=tinta), .capitulo--img-der invierte
+   el zig-zag con order. Alternancia real de la página, ya verificada por front:
+   hero(claro)→cap1(claro)→cap2(oscuro)→cap3(claro)→cap4(oscuro)→cierre(claro).
    -------------------------------------------------------------------------- */
-.credenciales { background: var(--bg-dark); }
-.credenciales .section-title { color: #fff; }
-.credenciales-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 3vw, 40px); }
-.credencial-item { display: flex; flex-direction: column; gap: 6px; padding-top: clamp(16px, 2vw, 24px); border-top: 1px solid rgba(255,255,255,.2); }
-.credencial-item__num { font-family: var(--font-display); font-size: clamp(1.6rem, 2.6vw, 2.2rem); font-weight: 700; color: #fff; }
-.credencial-item__label { font: 400 .85rem/1.5 var(--font-body); color: rgba(255,255,255,.65); }
-@media (max-width: 600px) { .credenciales-grid { grid-template-columns: 1fr; } }
+/* padding-bottom:0 (MA-C38): el fondo de cada capítulo vive en el <article>
+   (data-bg), no en <section class="historia"> — el `padding-block` global de
+   `section` (línea 117) le agregaba a .historia su propio hueco DESPUÉS del
+   último capítulo, con el fondo por defecto de la página (claro), visible como
+   franja blanca entre el cap4 oscuro y la sección siguiente. padding-top se
+   deja intacto: el mismo hueco ANTES de cap1 es invisible (hero y cap1 son
+   ambos claros), no hace falta tocarlo. */
+.historia { padding-bottom: 0; }
+.capitulo__grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(40px, 6vw, 96px); align-items: center; }
+.capitulo__media { position: relative; aspect-ratio: 4/5; overflow: hidden; background: var(--bg-light-alt); }
+.capitulo__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.capitulo--img-der .capitulo__media { order: 2; }
+
+.capitulo[data-bg="light"] { background: var(--bg-light); }
+.capitulo[data-bg="light"] .capitulo__texto { color: var(--ink-mid); }
+.capitulo[data-bg="light"] .section-title { color: var(--text-ink); }
+.capitulo[data-bg="light"] .eyebrow { color: var(--text-muted); }
+
+.capitulo[data-bg="dark"] { background: var(--bg-dark); }
+.capitulo[data-bg="dark"] .capitulo__texto { color: var(--silver-dim); }
+.capitulo[data-bg="dark"] .section-title { color: var(--silver); }
+.capitulo[data-bg="dark"] .eyebrow { color: var(--text-muted); }
+
+/* Mismo "sello" que .artista__voz (línea 697) — cap 4 vive sobre --bg-dark,
+   así que usa accent-bright en vez de accent-deep (mismo criterio del comentario
+   de línea 695-696: el acento de la voz se adapta al fondo que la contiene). */
+.capitulo__voz {
+  font-family: var(--font-display); font-style: italic; font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+  line-height: 1.5; color: var(--silver); margin: 14px 0 0; padding-bottom: 14px;
+  border-bottom: 1.5px solid var(--accent-bright); display: inline-block;
+}
+
+@media (max-width: 768px) {
+  .capitulo__grid { grid-template-columns: 1fr; gap: clamp(28px, 5vw, 40px); }
+  .capitulo--img-der .capitulo__media { order: 0; }
+}
 
 /* --------------------------------------------------------------------------
    10 · Cierre sobre-mi (clara) — CTA doble
    -------------------------------------------------------------------------- */
-.sobre-mi-cierre { text-align: center; }
+/* MA-C36: oscuro (antes claro) — mismo negro que .cierre del index, a pedido directo
+   de Paul ("la zona del CTA tiene que ser siempre negra"). .btn-editorial--ghost ya
+   no necesita override: su versión global (blanca) es justo la que corresponde sobre
+   fondo oscuro, por eso se retira la que había aquí para fondo claro. */
+.sobre-mi-cierre { text-align: center; background: var(--bg-dark); }
 .sobre-mi-cierre .container { max-width: 640px; display: flex; flex-direction: column; align-items: center; }
-.sobre-mi-cierre h2 { font-family: var(--font-display); font-size: clamp(1.8rem, 3.2vw, 2.6rem); font-weight: 700; color: var(--text-ink); margin: 0 0 clamp(20px, 2.4vw, 28px); }
+.sobre-mi-cierre h2 { font-family: var(--font-display); font-size: clamp(1.8rem, 3.2vw, 2.6rem); font-weight: 700; color: #fff; margin: 0 0 clamp(20px, 2.4vw, 28px); }
 .sobre-mi-cierre__cta { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
-/* .btn-editorial--ghost global es blanco (fondos oscuros); aquí el fondo es claro */
-.sobre-mi-cierre__cta .btn-editorial--ghost { color: var(--text-ink); border-color: var(--text-ink); }
-.sobre-mi-cierre__cta .btn-editorial--ghost:hover { background: var(--text-ink); color: #fff; }
+/* CTA "Ver paquetes de novias" sobre fondo oscuro — mismo criterio que .reserva-novias/.automaquillaje (§2.1). */
+.sobre-mi-cierre__cta .btn-editorial--solid { background: var(--accent-bright); color: #fff; }
+.sobre-mi-cierre__cta .btn-editorial--solid:hover { background: var(--accent-bright-hover); color: #fff; }
 
 /* --------------------------------------------------------------------------
    11 · Footer — 5 columnas (Marca / Navegar / Contacto / Cómo reservas / Legal).
@@ -1100,24 +1147,27 @@ mark.content-tbd { background: var(--paper-line); color: var(--accent-deep-hover
 
 /* A · Hero (novias/clases) — split editorial */
 .hero-novias, .hero-clases { padding-block: 0; overflow: hidden; }
-/* min-height +var(--header-gap) (MA-C23): mismo criterio que .sobre-mi-hero__grid
-   — el gap se SUMA al alto de la fila, la foto conserva su tamaño íntegro. */
+/* Header transparente flota como overlay directo sobre la foto — la fila ya NO
+   reserva +var(--header-gap) de alto extra (mismo fix que .sobre-mi-hero__grid,
+   ver comentario ahí: eliminaba la banda gris de --bg-light-alt entre header y
+   foto). El espacio se recalculó como padding-top del texto. */
 .hero-novias__grid, .hero-clases__grid {
   display: grid; grid-template-columns: 1fr 1fr; align-items: stretch;
-  min-height: calc(clamp(480px, 52vw, 680px) + var(--header-gap));
+  min-height: clamp(480px, 52vw, 680px);
 }
 .hero-novias__media, .hero-clases__media { position: relative; overflow: hidden; background: var(--bg-light-alt); }
-/* Mismo criterio que .hero__media de index.html (MA-C20/C22): la foto no toca
-   el header flotante directamente — arranca más abajo, dejando ver el propio
-   background:var(--bg-light-alt) de este panel como banda donde flota el
-   header, en vez de la imagen empezando justo en el borde. */
+/* width/height:100% explícitos — mismo bug/fix que .sobre-mi-hero__media img:
+   el reset global `img{height:auto}` (línea 114) ganaba sobre top/bottom:0 y
+   calculaba el alto desde el ratio intrínseco de la foto en vez de estirarla
+   al panel. */
 .hero-novias__media img, .hero-clases__media img {
-  position: absolute; top: var(--header-gap); left: 0; right: 0; bottom: 0; object-fit: cover; object-position: center; display: block;
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;
 }
 .hero-novias__content, .hero-clases__content {
   display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
   max-width: 460px;
-  padding-block: clamp(40px, 5vw, 72px);
+  padding-top: calc(var(--header-gap) + clamp(40px, 5vw, 72px));
+  padding-bottom: clamp(40px, 5vw, 72px);
   padding-left: clamp(24px, 3vw, 48px);
   padding-right: max(var(--gutter), calc(50vw - var(--container-max) / 2));
 }
@@ -1135,9 +1185,11 @@ mark.content-tbd { background: var(--paper-line); color: var(--accent-deep-hover
 .hero-novias__cta .btn-editorial--ghost:hover { background: var(--text-ink); color: #fff; }
 @media (max-width: 768px) {
   .hero-novias__grid, .hero-clases__grid { grid-template-columns: 1fr; min-height: 0; }
-  .hero-novias__media, .hero-clases__media { min-height: calc(clamp(360px, 90vw, 460px) + var(--header-gap)); }
+  .hero-novias__media, .hero-clases__media { min-height: clamp(360px, 90vw, 460px); }
   .hero-novias__content, .hero-clases__content {
-    max-width: none; padding-inline: var(--gutter); padding-block: clamp(32px, 8vw, 48px);
+    max-width: none; padding-inline: var(--gutter);
+    padding-top: calc(var(--header-gap) + clamp(32px, 8vw, 48px));
+    padding-bottom: clamp(32px, 8vw, 48px);
   }
 }
 
@@ -1330,23 +1382,23 @@ mark.content-tbd { background: var(--paper-line); color: var(--accent-deep-hover
   .automaquillaje-grid, .perfeccionamiento-grid { grid-template-columns: 1fr; }
 }
 
-/* I · Reserva final — CTA (novias oscuro, clases claro) */
-.reserva-novias, .reserva-clases { text-align: center; }
-.reserva-novias { background: var(--bg-dark); }
+/* I · Reserva final — CTA (MA-C36: siempre oscuro en las 3 páginas, mismo negro que
+   .cierre del index — antes clases quedaba claro, decisión revertida a pedido directo
+   de Paul. Excepción deliberada a la regla de alternancia, mismo precedente que
+   #faq+#cierre en index.html (MA-C30): condiciones-clases→reserva-clases y
+   cap4→sobre-mi-cierre terminan en 2 oscuras seguidas a propósito, el cierre del
+   sitio "tiene que ser siempre negro" pesa más que la alternancia en este punto). */
+.reserva-novias, .reserva-clases { text-align: center; background: var(--bg-dark); }
 .reserva-novias .container, .reserva-clases .container { max-width: 640px; display: flex; flex-direction: column; align-items: center; }
 .reserva-novias h2, .reserva-clases h2 {
   font-family: var(--font-display); font-size: clamp(1.8rem, 3.2vw, 2.6rem); font-weight: 700;
-  margin: 0 0 clamp(20px, 2.4vw, 28px);
+  margin: 0 0 clamp(20px, 2.4vw, 28px); color: #fff;
 }
-.reserva-novias h2 { color: #fff; }
-.reserva-clases h2 { color: var(--text-ink); }
-/* CTA "RESERVAR FECHA" sobre fondo oscuro — mismo criterio que .hero-overlay/.cierre/.automaquillaje (§2.1).
+/* CTA "RESERVAR FECHA/CLASE" sobre fondo oscuro — mismo criterio que .hero-overlay/.cierre/.automaquillaje (§2.1).
    REPINTADO MA-C12: mismo fix de contraste que .automaquillaje .btn-editorial--solid, ver comentario ahí. */
-.reserva-novias .btn-editorial--solid { background: var(--accent-bright); color: #fff; }
-.reserva-novias .btn-editorial--solid:hover { background: var(--accent-bright-hover); color: #fff; }
-.reserva-novias__micro, .reserva-clases__micro { font: 400 .85rem/1.5 var(--font-body); margin: clamp(18px, 2vw, 24px) 0 0; }
-.reserva-novias__micro { color: rgba(255,255,255,.6); }
-.reserva-clases__micro { color: var(--text-muted); }
+.reserva-novias .btn-editorial--solid, .reserva-clases .btn-editorial--solid { background: var(--accent-bright); color: #fff; }
+.reserva-novias .btn-editorial--solid:hover, .reserva-clases .btn-editorial--solid:hover { background: var(--accent-bright-hover); color: #fff; }
+.reserva-novias__micro, .reserva-clases__micro { font: 400 .85rem/1.5 var(--font-body); margin: clamp(18px, 2vw, 24px) 0 0; color: rgba(255,255,255,.6); }
 
 /* --------------------------------------------------------------------------
    13 · Unificación de foto (§10.3) — tinte sutil charcoal (10%, dentro del

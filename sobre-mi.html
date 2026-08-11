@@ -61,38 +61,80 @@
 
     <!-- ===== 2 · RETRATO + BIO ===== -->
     <!-- Bio = texto real de los PDFs (briefing 2026-08-01), usado tal cual, no Lorem Ipsum.
-         REDACCIÓN 2026-08-05 (briefing maestro v2 §7 y §11): [CREDENCIAL_MATTA] queda BLOQUEADO —
-         la cláusula "actualmente me encuentro en el staff de Christian Mata" (además con la grafía
-         incorrecta, es "Matta" con 2 t) no está verificada. Se retira de la bio publicada hasta
-         confirmación; el resto del texto original se conserva literal. Restaurar completo cuando
-         Andrea confirme el vínculo real y la grafía. -->
+         [CREDENCIAL_MATTA] ya no está bloqueado — el dato (Christian Matta, mentor, dos T) se
+         desbloqueó y ahora vive real en el Capítulo 3 de #historia (abajo). Se retira el <mark>
+         de este bio para no duplicar el dato en 2 sitios distintos de la misma página. -->
     <section class="sobre-mi-hero" id="sobre-mi" aria-labelledby="sobre-mi-titulo">
       <div class="sobre-mi-hero__grid">
         <div class="sobre-mi-hero__media">
-          <img src="assets/img/sobre-mi/retrato.jpg" alt="[ALT_PENDIENTE]" loading="eager" fetchpriority="high">
+          <img src="assets/sobre-mi/1.webp" alt="Logotipo de MakeupAndrea" loading="eager" fetchpriority="high">
         </div>
         <div class="sobre-mi-hero__content">
           <p class="eyebrow">SOBRE MÍ</p>
           <h1 id="sobre-mi-titulo">Andrea Piñango</h1>
-          <p class="sobre-mi-hero__bio">¡Hola! Si llegaste aquí es porque te interesa saber quién está detrás de todo esto, hace 7 años he descubierto mi amor por la belleza y he logrado capacitarme para lograr técnicas de perfeccionamiento. He decidido dedicarme al 100% a mi emprendimiento porque me apasiona lo que hago. <mark class="content-tbd">[CREDENCIAL_MATTA]</mark> Mi misión: empoderarte para tu ocasión especial.</p>
+          <p class="sobre-mi-hero__bio">¡Hola! Si llegaste aquí es porque te interesa saber quién está detrás de todo esto, hace 7 años he descubierto mi amor por la belleza y he logrado capacitarme para lograr técnicas de perfeccionamiento. He decidido dedicarme al 100% a mi emprendimiento porque me apasiona lo que hago. Mi misión: empoderarte para tu ocasión especial.</p>
         </div>
       </div>
     </section>
 
-    <!-- ===== 3 · CREDENCIALES (datos destacados, no párrafo) ===== -->
-    <!-- Segundo dato ("Christian Mata / Staff actual") retirado — mismo bloqueo de [CREDENCIAL_MATTA]
-         que la bio de arriba. Queda 1 credencial verificada (7 años); grid a 1 columna hasta que
-         haya un segundo dato real que publicar (css puede decidir tratamiento visual). -->
-    <section class="credenciales" id="credenciales" data-bg="dark" aria-labelledby="credenciales-titulo">
-      <div class="container">
-        <h2 id="credenciales-titulo" class="section-title">Trayectoria</h2>
-        <div class="credenciales-grid">
-          <div class="credencial-item">
-            <span class="credencial-item__num">7 años</span>
-            <span class="credencial-item__label">De trayectoria en maquillaje profesional</span>
+    <!-- ===== 3 · HISTORIA — 4 capítulos en zig-zag (reemplaza la vieja .credenciales esquelética) =====
+         Arco intencional, NO reordenar: origen (2019, autodidacta) → autoridad actual (docente MUS)
+         → respaldo internacional (mentores, incluye Christian Matta ya desbloqueado) → filosofía/voz
+         ("elegimos juntas"). Zig-zag: cap1 img-izq, cap2 img-der, cap3 img-izq, cap4 img-der — mismo
+         patrón de grid que `.artista-intro` del home (style.css ~línea 686), solo que aquí alterna
+         lado Y fondo (papel/tinta) en vez de ser siempre claro. CSS/fotos: ver handoff en inbox/css.md
+         y pendientes de Paul (fotos reales cap-01..04, alt por foto). -->
+    <section class="historia" id="historia" aria-label="La historia de Andrea">
+
+      <!-- CAP 1 · imagen IZQ / texto DER · PAPEL (claro) -->
+      <article class="capitulo capitulo--img-izq" data-bg="light">
+        <div class="container capitulo__grid">
+          <div class="capitulo__media"><img src="assets/sobre-mi/2.webp" alt="Maquillaje editorial realizado en estudio, primer plano de rostro" loading="lazy"></div>
+          <div class="capitulo__texto">
+            <p class="eyebrow">2019 · Venezuela</p>
+            <h2 class="section-title">Empezó por amor a la belleza</h2>
+            <p>Maquilladora profesional venezolana. Empecé en 2019, primero de manera autodidacta y luego con estudios formales, incluyendo la academia Epic (Colombia) y una escuela de maquillaje virtual.</p>
           </div>
         </div>
-      </div>
+      </article>
+
+      <!-- CAP 2 · texto IZQ / imagen DER · TINTA (oscuro) -->
+      <article class="capitulo capitulo--img-der" data-bg="dark">
+        <div class="container capitulo__grid">
+          <div class="capitulo__media"><img src="assets/img/sobre-mi/cap-02.jpg" alt="[ALT_PENDIENTE]" loading="lazy"></div>
+          <div class="capitulo__texto">
+            <p class="eyebrow">Hoy · Academia MUS</p>
+            <h2 class="section-title">Maquilladora y docente</h2>
+            <p>Desde hace tres años formo parte de la academia MUS (Makeup Studio), donde trabajo como maquilladora y docente. Mi especialidad abarca el maquillaje nupcial, social y artístico, además de sesiones fotográficas. Como docente, transmito a nuevas generaciones las técnicas y estándares que definen mi trabajo.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- CAP 3 · imagen IZQ / texto DER · PAPEL (claro) -->
+      <article class="capitulo capitulo--img-izq" data-bg="light">
+        <div class="container capitulo__grid">
+          <div class="capitulo__media"><img src="assets/img/sobre-mi/cap-03.jpg" alt="[ALT_PENDIENTE]" loading="lazy"></div>
+          <div class="capitulo__texto">
+            <p class="eyebrow">Formación continua</p>
+            <h2 class="section-title">Formada por los mejores</h2>
+            <p>Mi formación continua incluye capacitaciones con referentes internacionales como Sergio Antón (España), Etienne Ortega (Estados Unidos), César Mushi (México) y Christian Matta —mi mentor, reconocido como uno de los principales maquilladores de Lima, Perú—, además de especialistas de Brasil, Venezuela y Colombia.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- CAP 4 · texto IZQ / imagen DER · TINTA (oscuro) -->
+      <article class="capitulo capitulo--img-der" data-bg="dark">
+        <div class="container capitulo__grid">
+          <div class="capitulo__media"><img src="assets/img/sobre-mi/cap-04.jpg" alt="[ALT_PENDIENTE]" loading="lazy"></div>
+          <div class="capitulo__texto">
+            <p class="eyebrow">Mi forma de trabajar</p>
+            <h2 class="section-title">Un estilo propio y versátil</h2>
+            <p>Esta formación me ha permitido integrar técnicas de distintos países en un estilo propio y versátil.</p>
+            <p class="capitulo__voz">Elegimos juntas el look que más te representa.</p>
+          </div>
+        </div>
+      </article>
+
     </section>
 
     <!-- ===== 4 · CIERRE — CTA doble ===== -->
@@ -100,7 +142,7 @@
          brief para copy en decisión abierta) a "Destaca tu belleza" — mismo titular real que ya se
          repite en index.html/novias.html/clases.html para el mismo tipo de bloque (CTA final de
          cierre). Decisión propia por consistencia, documentada en el log de sesión. -->
-    <section class="sobre-mi-cierre" id="sobre-mi-cierre" data-bg="light" aria-labelledby="sobre-mi-cierre-titulo">
+    <section class="sobre-mi-cierre" id="sobre-mi-cierre" data-bg="dark" aria-labelledby="sobre-mi-cierre-titulo">
       <div class="container">
         <h2 id="sobre-mi-cierre-titulo">Destaca tu belleza</h2>
         <div class="sobre-mi-cierre__cta">
