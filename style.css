@@ -1141,16 +1141,6 @@ mark.content-tbd { background: var(--paper-line); color: var(--accent-deep-hover
   }
 }
 
-/* B · Credencial (claro) */
-.credencial .container { max-width: 70ch; }
-.credencial__texto { font: 400 1.05rem/1.7 var(--font-body); color: var(--ink-mid); margin: 0 0 20px; }
-.credencial__link {
-  display: inline-block; font: 600 .82rem/1 var(--font-body); letter-spacing: .06em; text-transform: uppercase;
-  color: var(--text-ink); text-decoration: none; border-bottom: 1px solid var(--text-ink); padding-bottom: 4px;
-  transition: color .2s, border-color .2s;
-}
-.credencial__link:hover { color: var(--accent-deep); border-color: var(--accent-deep); }
-
 /* C · Condiciones — "Antes de agendar" (oscuro, novias + clases comparten .condiciones-list) */
 .condiciones, .condiciones-clases { background: var(--bg-dark); }
 .condiciones .section-title, .condiciones-clases .section-title { color: #fff; }
