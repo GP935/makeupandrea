@@ -1220,7 +1220,13 @@ mark.content-tbd { background: var(--paper-line); color: var(--accent-deep-hover
    MA-C37 (fila +var(--header-gap), foto con top:var(--header-gap)), aplicado
    únicamente a esta página. */
 .hero-clases__media { background: #000; }
-.hero-clases__grid { min-height: calc(clamp(480px, 52vw, 680px) + var(--header-gap)); }
+/* Fila alargada respecto al clamp base compartido con novias (petición directa
+   de Paul, MA-C44): justo debajo va #condiciones-clases (oscuro) — con la fila
+   en su alto normal, el claro del hero y el oscuro de "Antes de agendar" quedan
+   demasiado pegados y el patrón claro/oscuro/claro/oscuro del resto de la página
+   se siente forzado, sin respiro. Clamp subido completo [mín/preferido/máx, no
+   solo el techo] para que el blanco tenga más presencia antes de cruzar a negro. */
+.hero-clases__grid { min-height: calc(clamp(560px, 58vw, 760px) + var(--header-gap)); }
 /* top + height:100% (heredado de la regla compartida) se pisaban entre sí: con
    height fija al 100% del panel Y top desplazado var(--header-gap), la foto se
    desbordaba esa misma medida por ABAJO del panel — overflow:hidden la recortaba
@@ -1230,8 +1236,26 @@ mark.content-tbd { background: var(--paper-line); color: var(--accent-deep-hover
 .hero-clases__media img { top: var(--header-gap); height: calc(100% - var(--header-gap)); }
 .hero-clases__content { padding-top: clamp(40px, 5vw, 72px); }
 @media (max-width: 768px) {
-  .hero-clases__media { min-height: calc(clamp(360px, 90vw, 460px) + var(--header-gap)); }
+  .hero-clases__media { min-height: calc(clamp(420px, 90vw, 520px) + var(--header-gap)); }
   .hero-clases__content { padding-top: clamp(32px, 8vw, 48px); }
+}
+
+/* Overrides SOLO para .hero-novias (petición directa de Paul, MA-C44): mismo
+   ajuste que .hero-clases (MA-C40) — el header semi-transparente con blur
+   también queda superpuesto directo sobre esta foto. De paso resuelve un 2º
+   problema reportado: con el padding-top asimétrico que dejó MA-C37
+   [var(--header-gap)+aire arriba, solo aire abajo], el texto no quedaba
+   centrado de verdad en el alto del panel, se leía corrido hacia abajo. Con la
+   fila creciendo por var(--header-gap) otra vez y el padding-top/bottom
+   simétricos, justify-content:center centra de verdad y el aire arriba/abajo
+   respira igual. */
+.hero-novias__media { background: #000; }
+.hero-novias__grid { min-height: calc(clamp(480px, 52vw, 680px) + var(--header-gap)); }
+.hero-novias__media img { top: var(--header-gap); height: calc(100% - var(--header-gap)); }
+.hero-novias__content { padding-top: clamp(40px, 5vw, 72px); }
+@media (max-width: 768px) {
+  .hero-novias__media { min-height: calc(clamp(360px, 90vw, 460px) + var(--header-gap)); }
+  .hero-novias__content { padding-top: clamp(32px, 8vw, 48px); }
 }
 
 /* C · Condiciones — "Antes de agendar" (oscuro, novias + clases comparten .condiciones-list) */
